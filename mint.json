@@ -32,6 +32,10 @@
       "url": "https://github.com/pig-mesh/langchain4j-course"
     }
   ],
+  "topAnchor": {
+    "name": "Home",
+    "icon": "building"
+  },
   "topbarLinks": [
     {
     "name": "AI 交流群",
