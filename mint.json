@@ -42,7 +42,7 @@
     {
       "group": "零基础入门Java AI",
       "pages": [
-        "docs/introduction",
+        "introduction",
         "docs/01模型选择",
         "docs/02LangChain4j介绍",
         "docs/03Chat API",
