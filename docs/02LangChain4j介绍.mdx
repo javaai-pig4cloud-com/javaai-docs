@@ -1,0 +1,101 @@
+---
+title: LangChain4j 介绍
+---
+
+[LangChain4j](https://docs.langchain4j.dev/)  是一个专为Java开发者设计的开源库，旨在简化将大型语言模型（LLM）集成到Java应用程序中的过程。它于2023年初开发，灵感来源于Python和JavaScript的LLM库，特别是为了填补Java领域在这一方面的空白。
+
+### LangChain4j 的核心功能
+
+1. **统一API**：LangChain4j提供了一个标准化的API，使得开发者可以方便地接入15+个主流的LLM提供商（如OpenAI、Google 、阿里、 智谱）和15+个向量嵌入存储（Qdrant、Pinecone、Milvus）。这意味着开发者无需学习每个API的细节，可以轻松切换不同的模型和存储，而无需重写代码。
+
+2. **综合工具箱**：该框架包含多种工具，从低级的提示模板、聊天记忆管理到高级模式（如AI服务和RAG）。这些工具帮助开发者构建从聊天机器人到完整的数据检索管道等多种应用。
+
+3. **多模态支持**：LangChain4j支持文本和图像作为输入，能够处理更复杂的应用场景。
+
+## 优势
+
+* **模块化设计**：LangChain4j采用模块化结构，使得不同功能可以独立使用，便于扩展和维护。
+
+* **高层次抽象**：框架在两个抽象层次上运行，允许开发者根据需要选择低级或高级API进行开发，从而提高灵活性和可用性。
+
+* **良好的集成支持**：与Quarkus和Spring Boot等流行框架的集成，使得在现有Java项目中引入LLM变得更加简单。
+
+![1728219176](https://minio.pigx.top/oss/202410/1728219176.png)
+
+### 入门示例：集成通义模型
+
+本示例展示了如何通过低级 API 接入阿里百炼平台的通义模型 `qwen-turbo`。通过使用 LangChain4j 框架，开发者可以轻松调用该模型并集成到 Java 应用中。
+
+#### Maven 依赖配置
+
+首先，需要在项目中引入以下 Maven 依赖，用于集成 LangChain4j 与 DashScope：
+
+```xml
+<dependency>
+    <groupId>dev.langchain4j</groupId>
+    <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+</dependency>
+
+<!-- 加载bom 后，所有langchain4j引用不需要加版本号 -->
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-bom</artifactId>
+            <version>0.36.2</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+#### YML 配置文件
+
+在项目的 `application.yml` 中设置所使用的通义模型 `qwen-turbo`，以下是示例配置：
+
+```yaml
+langchain4j:
+  open-ai:
+    chat-model:
+      # 课程测试 KEY，需要更换为实际可用 KEY	
+      api-key: sk-xx
+      model-name: qwen-turbo
+      # 百炼兼容OpenAI接口规范，base_url为https://dashscope.aliyuncs.com/compatible-mode/v1
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+```
+
+#### 代码实现
+
+使用以下代码，快速启动一个基于 LangChain4j 和 Spring Boot 的 Java 应用，集成并调用阿里百炼平台的通义大语言模型。
+
+```java
+package com.pig4cloud.ai.simple;
+
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 用于处理与通义模型的交互请求测试。
+ * 作者: lengleng
+ */
+@SpringBootTest
+class SimplechatApplicationTest {
+
+    @Autowired
+    private ChatLanguageModel chatLanguageModel;
+
+    @Test
+    public void testChat(){
+        String generate = chatLanguageModel.generate("你好");
+
+        System.out.println(generate);
+    }
+}
+```
+
+### 总结
+
+通过引入上述依赖、配置和代码，你可以快速启动并集成阿里百炼平台的通义大语言模型 `qwen-turbo`。这种方式不仅便于开发者接入大型语言模型，也为项目的智能化提供了极大的便利和扩展性。

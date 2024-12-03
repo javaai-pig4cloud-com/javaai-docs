@@ -1,0 +1,82 @@
+---
+title: '模型敏感词处理'
+---
+
+大模型在开发和应用中，必须严格遵守法律法规，避免生成或传播违法、违规内容。同时，开发者和平台应采取多重措施，确保模型输出符合道德和法律标准，保护用户免受有害、冒犯或不适当内容的影响
+
+
+## 背景和简介
+
+sensitive-word是一个基于DFA(确定有限状态自动机)算法实现的高性能敏感词过滤工具,由GitHub用户houbb开发。它的主要特点和用法如下:
+
+
+#### 核心功能
+
+- 1. 检测文本是否包含敏感词
+- 2. 查找文本中的所有敏感词或第一个敏感词
+- 3. 替换敏感词(可自定义替换策略)
+- 4. 获取敏感词的标签信息
+
+#### 主要特性
+
+- 1. 支持忽略大小写、全角半角、中英文书写格式等
+- 2. 可以忽略数字的不同写法
+- 3. 支持繁简体转换
+- 4. 可以忽略重复词
+- 5. 支持邮箱、连续数字、网址、IPv4等特殊格式的检测
+- 6. 提供灵活的配置选项,如启用/禁用特定检测、自定义检测长度等
+
+## 使用方法
+
+#### 1. 通过Maven引入依赖
+
+```xml
+<dependency>
+    <groupId>com.github.houbb</groupId>
+    <artifactId>sensitive-word</artifactId>
+    <version>0.21.0</version>
+</dependency>
+```
+
+#### 2. 基本使用示例
+
+```java
+// 检查是否包含敏感词
+boolean contains = SensitiveWordHelper.contains(text);
+
+// 查找第一个敏感词
+String firstWord = SensitiveWordHelper.findFirst(text);
+
+// 查找所有敏感词
+List<String> allWords = SensitiveWordHelper.findAll(text);
+
+// 替换敏感词
+String replaced = SensitiveWordHelper.replace(text);
+```
+
+#### 3. 自定义配置
+
+可以使用SensitiveWordBs类来自定义各种配置选项,例如:
+
+```java
+SensitiveWordBs wordBs = SensitiveWordBs.newInstance()
+    // 使用默认的敏感词词库（黑名单）
+    .wordDeny(WordDenys.defaults())
+    // 使用默认的白名单词库，白名单中的词不会被视为敏感词，即使它们在黑名单中
+    .wordAllow(WordAllows.defaults())
+    // 忽略大小写，例如："FuCk" 和 "fuck" 将被同等对待
+    .ignoreCase(true)
+    // 忽略全角和半角字符的区别，例如："ｆｕｃｋ" 和 "fuck" 将被同等对待
+    .ignoreWidth(true)
+    // 启用连续数字检测， 可用于检测电话号码、QQ号等
+    .enableNumCheck(true)
+    // 启用邮箱地址检测，可用于过滤包含邮箱地址的文本
+    .enableEmailCheck(true)
+    // 初始化敏感词过滤器， 这一步必须在所有配置完成后调用
+    .init();
+
+// 使用配置好的过滤器检查文本是否包含敏感词
+boolean contains = wordBs.contains(text);
+```
+
+总的来说,sensitive-word提供了一个功能丰富、性能优秀且易于使用的敏感词过滤解决方案,适用于各种需要文本审核的场景。

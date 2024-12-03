@@ -1,0 +1,79 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "PIG AI",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "background": {
+    "style": "windows"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373",
+    "anchors": {
+      "from": "#0D9373",
+      "to": "#07C983"
+    }
+  },
+  "anchors": [
+    {
+      "name": "配套视频",
+      "icon": "video",
+      "color": "#f59f0b",
+      "url": "https://www.bilibili.com/video/BV1Yv21YzEP8/?spm_id_from=888.80997.embed_other.whitelist&t=9.471845&bvid=BV1Yv21YzEP8&vd_source=6987eadf3959341da330efcb8fa0742f"
+    },
+    {
+      "name": "配套源码",
+      "icon": "code",
+      "color": "#2564eb",
+      "url": "https://github.com/pig-mesh/langchain4j-course"
+    }
+  ],
+  "topbarLinks": [
+    {
+    "name": "AI 交流群",
+    "url": "https://minio.pigx.top/oss/202405/1716545540.jpg"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "零基础入门Java AI",
+      "pages": [
+        "docs/introduction",
+        "docs/01模型选择",
+        "docs/02LangChain4j介绍",
+        "docs/03Chat API",
+        "docs/04Chat 常用配置",
+        "docs/05Chat Stream",
+        "docs/06Chat 视觉理解",
+        "docs/07Chat 记忆",
+        "docs/08提示词工程",
+        "docs/09JSON输出",
+        "docs/11函数调用",
+        "docs/14动态函数调用",
+        "docs/18WebSearch",
+        "docs/12向量化",
+        "docs/13向量文本分类",
+        "docs/19敏感词处理",
+        "docs/16EasyRag",
+        "docs/15RAG API",
+        "docs/15RAG API2",
+        "docs/17RAG 重排",
+        "docs/20rag",
+        {
+          "group": "Cursor: 革新性的AI代码编辑器",
+          "pages": [
+            "docs/cursor/1cursor",
+            "docs/cursor/2cursor"
+          ]
+        }
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/pig-mesh/langchain4j-course"
+  }
+}

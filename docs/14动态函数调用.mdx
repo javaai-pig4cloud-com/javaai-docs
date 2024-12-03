@@ -1,0 +1,137 @@
+---
+title: 动态函数调用
+---
+
+#### 引言
+
+在现代软件开发中，代码执行引擎的应用场景日益广泛。LangChain4j框架通过集成多种代码执行引擎，为开发者提供了强大的工具支持。本文将详细介绍LangChain4j如何接入GraalVM，实现动态函数调用，并探讨其在实际业务场景中的应用。
+
+#### 代码执行引擎的使用场景
+
+<img src='https://minio.pigx.top/oss/202410/1728392891.png' alt='1728392891'/>
+
+在大模型执行function calling的流程中：
+1. 大模型首先返回可直接运行的脚本语言代码
+2. LangChain4j接收到这段可运行代码后，调用`CodeExecutionEngine`执行
+3. 执行结果返回给大模型
+
+#### LangChain4j支持的执行引擎
+
+LangChain4j目前支持两种主要的代码执行引擎：
+
+1. **GraalVM**
+   - **Polyglot**: 允许在同一应用中无缝使用多种编程语言
+   - **Truffle**: 用于构建语言引擎的框架，支持轻松添加新语言
+
+2. **Judge0**  
+   - 开源代码执行引擎，支持多种编程语言（C, C++, Java, Python, Ruby等）
+   - 被誉为"世界上最先进的开源在线代码执行系统"
+
+#### 执行引擎测试
+
+
+##### 1. 添加依赖
+
+```xml
+<dependency>
+    <groupId>dev.langchain4j</groupId>
+    <artifactId>langchain4j-code-execution-engine-graalvm-polyglot</artifactId>
+</dependency>
+```
+
+##### 2. 调用 js 版本斐波那契数列
+
+```java
+CodeExecutionEngine engine = new GraalVmJavaScriptExecutionEngine();
+
+String code = """
+        function fibonacci(n) {
+            if (n <= 1) return n;
+            return fibonacci(n - 1) + fibonacci(n - 2);
+        }
+                        
+        fibonacci(10)
+        """;
+
+String result = engine.execute(code);
+```
+
+
+#### 动态函数示例
+
+##### 1. 配置类
+
+```java
+ChatAssistant assistant = AiServices.builder(ChatAssistant.class)
+        .chatLanguageModel(chatLanguageModel)
+        .tools(new GraalVmJavaScriptExecutionTool())
+        .build();
+```
+
+##### 2. AI Service 定义
+
+```java
+public interface Assistant {
+    String chat(String message);
+}
+```
+
+##### 3. 测试
+
+```java
+String chat = chatAssistant.chat("What is the square root of 485906798473894056 in scientific notation?");
+System.out.println(chat);
+```
+
+#### 实现原理
+
+LangChain4j通过GraalVmJavaScriptExecutionTool类实现了JavaScript代码的动态执行。以下是该类的核心实现：
+
+```java
+public class GraalVmJavaScriptExecutionTool {
+
+    // 初始化一个GraalVM JavaScript执行引擎
+    private final CodeExecutionEngine engine = new GraalVmJavaScriptExecutionEngine();
+
+    /**
+     * 执行JavaScript代码的方法
+     * 
+     * @Tool 注解标记这个方法为一个工具，可以被AI助手调用
+     * 描述指定了这个工具必须用于精确计算，如数学运算、排序、过滤、聚合、字符串处理等
+     */
+    @Tool("MUST be used for accurate calculations: math, sorting, filtering, aggregating, string processing, etc")
+    public String executeJavaScriptCode(
+        // @P 注解用于描述参数
+        // 这里说明输入的JavaScript代码必须返回一个结果
+        @P("JavaScript code to execute, result MUST be returned by the code") String code
+    ) {
+        // 调用GraalVM执行引擎来执行传入的JavaScript代码
+        return engine.execute(code);
+    }
+}
+```
+
+这个类的主要功能包括：
+1. 封装GraalVM JavaScript执行引擎
+2. 提供一个被 `@Tool` 注解标记的方法，可以被AI助手调用
+3. 接受JavaScript代码作为输入，执行代码并返回结果
+
+通过这种方式，LangChain4j能够在运行时动态执行JavaScript代码，为AI助手提供强大的计算和数据处理能力。
+
+#### 优势与局限性
+
+优势：
+1. 灵活性：允许AI助手执行动态生成的代码，大大增强了系统的适应性
+2. 性能：GraalVM提供了高效的代码执行能力
+3. 多语言支持：GraalVM的Polyglot特性使得未来可以轻松扩展到其他编程语言
+
+局限性：
+1. 安全性考虑：动态执行代码可能带来安全风险，需要严格的代码审查和沙箱机制
+2. 复杂性：集成GraalVM可能增加系统的复杂性
+3. 资源消耗：动态编译和执行可能增加系统资源消耗
+
+#### 结论
+
+LangChain4j通过接入GraalVM实现的动态函数调用功能，为AI系统提供了强大的计算能力和灵活性。这种方法使得AI助手能够执行复杂的操作，大大扩展了其应用范围。然而，在实际应用中，开发者需要权衡其优势和潜在的风险，确保系统的安全性和稳定性。
+
+未来，随着技术的不断发展，我们可以期待看到更多创新的代码执行方案，进一步推动AI系统的进步。
