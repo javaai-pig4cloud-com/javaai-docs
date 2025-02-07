@@ -50,13 +50,8 @@
       },
       {
         "tab": "DeepSeek4J教程",
-        "groups": [
-          {
-            "group": "DeepSeek4J教程",
-            "pages": [
-              "deepseek/1readme"
-            ]
-          }
+        "pages": [
+          "deepseek/1readme"
         ]
       }
     ]
