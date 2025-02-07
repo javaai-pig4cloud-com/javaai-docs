@@ -75,6 +75,12 @@
           ]
         }
       ]
+    },
+    {
+      "group": "DeepSeek4J教程",
+      "pages": [
+        "docs/1readme"
+      ]
     }
   ],
   "footerSocials": {
