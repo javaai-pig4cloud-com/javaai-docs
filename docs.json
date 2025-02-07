@@ -60,7 +60,9 @@
       {
         "tab": "deepseek4j教程",
         "pages": [
-          "deepseek/1readme"
+          "deepseek/readme",
+          "deepseek/quickstart",
+          "deepseek/sse"
         ]
       }
     ]

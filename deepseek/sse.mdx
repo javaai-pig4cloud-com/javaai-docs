@@ -1,0 +1,78 @@
+## SSE 调试页面
+
+### 页面概览
+
+<img src='https://minio.pigx.vip/oss/202502/1738934760.png' alt='1738934760'/>
+
+项目提供了一个简单的 SSE 调试页面（sse.html），用于实时查看与 deepseek4j 后端的交互过程。页面分为三个主要区域：
+
+1. 原始数据区：显示 SSE 连接的原始响应数据
+2. 推理过程区：展示 AI 的思考链路
+3. 最终答案区：显示 AI 的最终回答
+
+### 使用步骤
+
+1. 双击运行项目根目录的 `sse.html` 文件
+2. 在页面顶部输入框中填入后端 SSE 接口地址，例如：
+```
+http://localhost:8080/chat?prompt=你的问题
+```
+3. 点击"连接"按钮开始与后端交互
+4. 实时观察推理过程和结果
+5. 可以通过"断开"按钮终止连接，"清空"按钮清除历史记录
+
+### 后端接入注意配置跨域
+
+在 Spring Boot 后端需要配置跨域支持，可以通过以下方式：
+
+接口类上添加 `@CrossOrigin` 注解：
+
+```
+@CrossOrigin("*")
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<String> chat(String prompt) {
+    return deepSeekClient.chatFluxCompletion(prompt);
+}
+```
+   
+
+
+### 常见问题
+
+1. **连接失败**
+   - 检查后端服务是否正常运行
+   - 确认 URL 地址是否正确
+   - 验证后端 CORS 配置是否正确
+   - 检查浏览器控制台是否有错误信息
+   - 确保使用的是支持 SSE 的现代浏览器
+
+2. **数据显示异常**
+   - 确认后端返回的数据格式是否符合要求
+   - 检查网络连接是否稳定
+   - 验证浏览器缓存设置
+
+### 前端集成参考
+
+该调试页面提供了完整的前端实现代码，你可以参考以下关键部分进行项目集成：
+
+1. SSE 连接建立：
+   ```javascript
+   const eventSource = new EventSource(url);
+   ```
+
+2. 消息处理：
+   ```javascript
+   eventSource.onmessage = (event) => {
+     const data = JSON.parse(event.data);
+     // 处理数据
+   };
+   ```
+
+3. 错误处理：
+   ```javascript
+   eventSource.onerror = (error) => {
+     // 处理错误
+   };
+   ```
+
+完整的实现代码可以在项目根目录的 `sse.html` 文件中找到。
