@@ -26,10 +26,11 @@
     "tabs": [
       {
         "tab": "零基础入门Java AI",
+        "icon": "fa-solid fa-graduation-cap",
         "pages": [
           "introduction",
           "docs/01模型选择",
-          "docs/02LangChain4j介绍",
+          "docs/02LangChain4j介绍", 
           "docs/03Chat API",
           "docs/04Chat 常用配置",
           "docs/05Chat Stream",
@@ -59,6 +60,7 @@
       },
       {
         "tab": "DeepSeek4J教程",
+        "icon": "fa-solid fa-brain",
         "pages": [
           "deepseek/1readme"
         ]
