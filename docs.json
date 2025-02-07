@@ -15,9 +15,18 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
+    "global": {
+
+    },
     "tabs": [
       {
         "tab": "零基础入门Java AI",
+        "anchors": [
+          {
+            "anchor": "配套视频",
+            "href": "https://www.bilibili.com/video/BV1Yv21YzEP8"
+          }
+        ],
         "pages": [
           "introduction",
           "docs/01模型选择",
