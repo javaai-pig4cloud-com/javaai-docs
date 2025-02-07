@@ -29,7 +29,7 @@ http://localhost:8080/chat?prompt=你的问题
 
 接口类上添加 `@CrossOrigin` 注解：
 
-```
+```java
 @CrossOrigin("*")
 @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 public Flux<String> chat(String prompt) {
