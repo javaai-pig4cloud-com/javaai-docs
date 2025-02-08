@@ -63,6 +63,8 @@
           "deepseek",
           "deepseek/quickstart",
           "deepseek/ollama",
+          "deepseek/siliconflow",
+          "deepseek/gitee",
           "deepseek/sse"
         ]
       }
