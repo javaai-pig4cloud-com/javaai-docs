@@ -1,0 +1,52 @@
+---
+title: 'Deepseek4j接入阿里 R1'
+---
+
+本文将介绍如何使用 Deepseek4j 接入阿里百炼平台的 R1 模型。
+
+## 百炼平台配置准备
+
+### 1. 获取百炼平台访问凭证
+
+1. 登录 [阿里云百炼平台控制台](https://bailian.console.aliyun.com/?apiKey=1#/api-key)
+2. 在访问控制页面创建新的 API Key 并保存
+
+<img src='https://minio.pigx.vip/oss/202502/1739002171.png' alt='1739002171'/>
+
+## Deepseek4j 配置
+
+### 1. Maven 依赖配置
+
+在项目的 `pom.xml` 中添加依赖：
+
+```xml
+<dependency>
+    <groupId>org.deepseek</groupId>
+    <artifactId>deepseek4j-spring-boot-starter</artifactId>
+    <version>latest-version</version>
+</dependency>
+```
+
+### 2. 配置文件设置
+
+在 `application.properties` 或 `application.yml` 中添加以下配置：
+
+<Warning>注意模型名称：deepseek-r1</Warning>
+
+```properties
+deepseek.base-url=https://dashscope.aliyuncs.com/compatible-mode/v1
+deepseek.model=deepseek-r1
+deepseek.api-key=sk-xxx
+```
+
+### 3. 代码示例
+
+```java
+@Autowired
+private DeepSeekClient deepSeekClient;
+
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<String> chat(String prompt) {
+    return deepSeekClient.chatFluxCompletion(prompt);
+}
+```

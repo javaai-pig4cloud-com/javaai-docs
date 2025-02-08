@@ -63,9 +63,11 @@
           "deepseek",
           "deepseek/quickstart",
           "deepseek/ollama",
+          "deepseek/tencent",
           "deepseek/siliconflow",
           "deepseek/volcengine",
           "deepseek/gitee",
+          "deepseek/bailian",
           "deepseek/configuration",
           "deepseek/sse"
         ]
