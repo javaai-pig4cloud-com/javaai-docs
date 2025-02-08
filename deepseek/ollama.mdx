@@ -1,0 +1,111 @@
+---
+title: 'Deepseek4j接入本地R1'
+---
+
+本文将介绍如何使用 Deepseek4j 接入 Ollama 的 Deepseek-r1:14b 模型。
+
+## Ollama 安装部署
+
+### 1. 安装 Ollama
+
+在 macOS 上安装 Ollama：
+
+```bash
+curl https://ollama.ai/install.sh | sh
+```
+
+在 Linux 上安装 Ollama：
+
+```bash
+curl https://ollama.ai/install.sh | sh
+```
+
+在 Windows 上安装：
+- 访问 [Ollama官网](https://ollama.ai/download) 下载安装包
+- 运行安装程序完成安装
+
+### 2. 下载 Deepseek-r1:14b 模型
+
+安装完成后，打开终端运行以下命令下载模型：
+
+```bash
+ollama pull deepseek-r1:14b
+```
+
+### 3. 启动 Ollama 服务
+
+```bash
+ollama serve
+```
+
+服务默认运行在 `http://127.0.0.1:11434`
+
+## Deepseek4j 配置
+
+### 1. Maven 依赖配置
+
+在项目的 `pom.xml` 中添加依赖：
+
+```xml
+<dependency>
+    <groupId>org.deepseek</groupId>
+    <artifactId>deepseek4j-spring-boot-starter</artifactId>
+    <version>latest-version</version>
+</dependency>
+```
+
+### 2. 配置文件设置
+
+在 `application.properties` 或 `application.yml` 中添加以下配置：
+
+```properties
+deepseek.base-url=http://127.0.0.1:11434/v1
+deepseek.model=deepseek-r1:14b
+deepseek.api-key=deepseek
+```
+
+### 3. 代码示例
+
+```java
+@Autowired
+private DeepSeekClient deepSeekClient;
+
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<String> chat(String prompt) {
+    return deepSeekClient.chatFluxCompletion(prompt);
+}
+```
+
+## 注意事项
+
+1. 确保 Ollama 服务正常运行
+2. 模型下载可能需要一些时间，取决于网络状况
+3. 首次使用时需要等待模型加载
+4. 建议使用 16GB 以上内存的机器运行
+
+## 常见问题
+
+### 1. 连接超时
+
+检查 Ollama 服务是否正常运行：
+```bash
+curl http://127.0.0.1:11434/v1/health
+```
+
+### 2. 内存不足
+
+可以通过设置环境变量来限制模型使用的显存：
+```bash
+export OLLAMA_GPU_LAYERS=0
+```
+
+### 3. 模型响应速度
+
+- 首次请求可能较慢，这是正常现象
+- 后续请求会更快，因为模型已经加载到内存中
+
+## 参考链接
+
+- [Ollama 官方文档](https://ollama.ai/docs)
+- [Deepseek4j 文档](https://github.com/deepseek-ai/deepseek4j)
+- [Deepseek-r1:14b 模型介绍](https://ollama.ai/library/deepseek-r1:14b)

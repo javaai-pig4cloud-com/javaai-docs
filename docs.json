@@ -62,6 +62,7 @@
         "pages": [
           "deepseek",
           "deepseek/quickstart",
+          "deepseek/ollama",
           "deepseek/sse"
         ]
       }

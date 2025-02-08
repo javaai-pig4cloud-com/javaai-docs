@@ -8,9 +8,9 @@ title: '快速开始'
 
 ```xml
 <dependency>
-    <groupId>io.github.pig-mesh.ai</groupId>
-    <artifactId>deepseek-spring-boot-starter</artifactId>
-    <version>1.1.0</version>
+  <groupId>io.github.pig-mesh.ai</groupId>
+  <artifactId>deepseek-spring-boot-starter</artifactId>
+  <version>latest-version</version>
 </dependency>
 ```
 
@@ -60,7 +60,7 @@ public Flux<String> chat(String prompt) {
 public Flux<String> chatAdvanced(String prompt) {
     ChatCompletionRequest request = ChatCompletionRequest.builder()
         // 模型选择，支持 DEEPSEEK_CHAT、DEEPSEEK_REASONER 等
-        .model(ChatCompletionModel.DEEPSEEK_CHAT)
+        .model(ChatCompletionModel.DEEPSEEK_REASONER)
         // 添加用户消息
         .addUserMessage(prompt)
         // 添加助手消息，用于多轮对话
@@ -70,8 +70,9 @@ public Flux<String> chatAdvanced(String prompt) {
         // 设置最大生成 token 数，默认 2048
         .maxTokens(1000)
         // 设置响应格式，支持 JSON 结构化输出
-        .responseFormat()
-        .tools() // function calling
+        .responseFormat(...) // 可选
+        // function calling
+        .tools(...) // 可选
         .build();
         
     return deepSeekClient.chatFluxCompletion(request);
