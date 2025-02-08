@@ -64,6 +64,7 @@
           "deepseek/quickstart",
           "deepseek/ollama",
           "deepseek/siliconflow",
+          "deepseek/volcengine",
           "deepseek/gitee",
           "deepseek/configuration",
           "deepseek/sse"

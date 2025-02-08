@@ -1,0 +1,59 @@
+---
+title: 'Deepseek4j接入火山引擎 R1'
+---
+
+本文将介绍如何使用 Deepseek4j 接入 火山引擎 的 R1 模型。
+
+
+## 参数获取
+
+### 1. 获取 API key
+
+<img src='https://minio.pigx.vip/oss/202502/1738984582.png' alt='1738984582'/>
+
+### 2. 获取接入模型名称
+
+<img src='https://minio.pigx.vip/oss/202502/1738984901.png' alt='1738984901'/>
+
+<Warning>好别扭，这一段才是模型名称</Warning>
+<img src='https://minio.pigx.vip/oss/202502/1738984964.png' alt='1738984964'/>
+
+
+# Deepseek4j 配置
+
+### 1. Maven 依赖配置
+
+在项目的 `pom.xml` 中添加依赖：
+
+```xml
+<dependency>
+    <groupId>org.deepseek</groupId>
+    <artifactId>deepseek4j-spring-boot-starter</artifactId>
+    <version>latest-version</version>
+</dependency>
+```
+
+### 2. 配置文件设置
+
+在 `application.properties` 或 `application.yml` 中添加以下配置：
+
+<Warning>注意模型名称和上边图片创建的接入点一致</Warning>
+
+
+```properties
+deepseek.base-url=https://ark.cn-beijing.volces.com/api/v3
+deepseek.model=和上图接入点一致
+deepseek.api-key=your-api-key
+```
+
+### 3. 代码示例
+
+```java
+@Autowired
+private DeepSeekClient deepSeekClient;
+
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<String> chat(String prompt) {
+    return deepSeekClient.chatFluxCompletion(prompt);
+}
+```
