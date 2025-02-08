@@ -1,5 +1,5 @@
 ---
-title: 'SSE 调试功能'
+title: 'SSE 前端调试功能'
 ---
 
 <img src='https://minio.pigx.vip/oss/202502/1738934760.png' alt='1738934760'/>
@@ -26,9 +26,9 @@ http://localhost:8080/chat?prompt=你的问题
 
 ### 配置跨域
 
-在 Spring Boot 后端需要配置跨域支持，可以通过以下方式：
+<Warning>在 Spring Boot 后端需要配置跨域支持</Warning>
 
-接口类上添加 `@CrossOrigin` 注解：
+可以通过在接口类上添加 `@CrossOrigin` 注解：
 
 ```java
 @CrossOrigin("*")
