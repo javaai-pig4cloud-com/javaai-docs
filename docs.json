@@ -65,6 +65,7 @@
           "deepseek/ollama",
           "deepseek/siliconflow",
           "deepseek/gitee",
+          "deepseek/configuration",
           "deepseek/sse"
         ]
       }
