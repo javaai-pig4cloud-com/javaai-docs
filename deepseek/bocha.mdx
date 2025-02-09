@@ -47,7 +47,7 @@ private DeepSeekClient deepSeekClient;
 
 @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 public Flux<String> chat(String prompt) {
-    return deepSeekClient.chatFluxCompletion(prompt);
+    return deepSeekClient.chatSearchCompletion(prompt);
 }
 ```
 
