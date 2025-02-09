@@ -1,0 +1,73 @@
+---
+title: 'Deepseek4j接入联网搜索'
+---
+
+本文将介绍如何使用 Deepseek4j 接入联网搜索。
+
+## 为什么需要联网搜索？
+
+- 突破预训练数据的时间边界
+模型可以突破预训练数据的时间边界，提供时效精准的智能问答服务。通过联网搜索，模型能够获取最新的信息和知识。
+- 获取时效性极强的信息
+网络搜索知识更适合于处理时效性极强的问题，能够从高质量信息来源网页获取最新资讯。
+- 解决大模型同质化问题
+当前大模型产品存在高度同质化的问题，技术差距并不明显，技术增长放缓。因此，大模型公司将重点转向了 AI 搜索入口，以期在这一领域实现差异化竞争。
+
+<CardGroup cols={2}>
+  <Card title="不联网的情况" icon="square-1">
+    <img src='https://minio.pigx.vip/oss/202502/1739089993.png' alt='1739089993'/>
+  </Card>
+  <Card title="联网的情况" icon="square-2">
+    <img src='https://minio.pigx.vip/oss/202502/1739090116.png' alt='1739090116'/>
+  </Card>
+</CardGroup>
+
+## 如何接入联网搜索？
+
+博查是一个给AI用的世界知识搜索引擎，它可以让你的AI应用连接世界知识，获得干净、准确、高质量的搜索结果。
+博查AI开放平台提供Web Search API、Semantic Reranker API等搜索服务，让你的AI应用可以通过API接口直接连接互联网，从近百亿网页和生态内容源中搜索高质量世界知识，包括新闻、图片、视频、百科、机酒、学术等。
+博查底层基于多模态混合搜索与语义排序技术的新一代搜索引擎，适用于 AI Agents、AI Chatbots、AI Search 以及各类 RAG 应用的线上应用或数据冷启动。博查在数据安全、成本控制及内容合规性方面表现卓越，确保数据不出海并符合国内安全规范。
+
+[登录博查AI开放平台，创建应用，获取API Key。](https://open.bochaai.com/api-keys)
+
+
+在 `application.properties` 或 `application.yml` 中添加以下配置：
+
+<Warning>注意配置search-api-key 为博查API Key</Warning>
+
+```properties
+deepseek.search-api-key=XXXX
+```
+
+## 代码示例
+
+```java
+@Autowired
+private DeepSeekClient deepSeekClient;
+
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<String> chat(String prompt) {
+    return deepSeekClient.chatFluxCompletion(prompt);
+}
+```
+
+## 进阶使用
+
+SearchRequest 是博查的搜索请求参数，可以设置搜索的时效性、摘要、返回条数、页码等。
+
+```
+@Autowired
+private DeepSeekClient deepSeekClient;
+
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<ChatCompletionResponse> chat(String prompt) {
+    SearchRequest searchRequest = SearchRequest.builder()
+            .enable(true)
+            .freshness(FreshnessEnums.ONE_DAY)// 一天内的数据
+            .summary(true) // 返回摘要
+            .count(10) // 返回10条
+            .page(1) // 第一页
+            .build();
+    return deepSeekClient.chatSearchCompletion(prompt,searchRequest);
+}
+```

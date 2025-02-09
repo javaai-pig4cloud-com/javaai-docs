@@ -68,6 +68,7 @@
           "deepseek/volcengine",
           "deepseek/gitee",
           "deepseek/bailian",
+          "deepseek/bocha",
           "deepseek/configuration",
           "deepseek/sse"
         ]
