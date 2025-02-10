@@ -70,7 +70,8 @@
           "deepseek/bailian",
           "deepseek/bocha",
           "deepseek/configuration",
-          "deepseek/sse"
+          "deepseek/sse",
+          "deepseek/qa"
         ]
       }
     ]

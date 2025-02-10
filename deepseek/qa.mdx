@@ -1,0 +1,75 @@
+---
+title: 'Deepseek4j常见问题'
+description: '本文档收集了使用 Deepseek4j 时的常见问题及其解决方案'
+---
+
+## 依赖版本冲突问题
+
+### Spring Boot 兼容性问题
+
+当使用 Spring Boot 2.4.x 以下版本时，可能会遇到 Jackson 和 OkHttp 的版本冲突问题。这是因为较低版本的 Spring Boot 依赖的这些库版本与 Deepseek4j 所需版本不兼容。
+
+#### 解决方案
+
+在项目的根 `pom.xml` 文件中添加以下依赖管理配置来解决版本冲突：
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-sse</artifactId>
+            <version>4.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson</groupId>
+            <artifactId>jackson-bom</artifactId>
+            <version>2.12.4</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+## 中文编码问题
+
+### 问题描述
+
+如果开发环境的字符编码不是 UTF-8，或在输出响应时遇到中文乱码问题，可能会出现如下情况：
+
+<img src='https://minio.pigx.vip/oss/202502/1739196317.png' alt='中文乱码示例' />
+
+### 解决方案
+
+在 Spring Controller 中设置响应的 Content-Type 时，需要明确指定字符编码为 UTF-8：
+
+```java
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE + ";charset=UTF-8")
+public Flux<ChatCompletionResponse> chat(String prompt) {
+    // 你的业务逻辑
+}
+```
+
+## API 使用量统计
+
+### 获取请求用量统计
+
+Deepseek 官方 API 会在流式响应的最后返回本次请求的用量统计信息。你可以通过以下方式获取：
+
+```java
+return deepSeekClient.chatFluxCompletion(prompt)
+    .doOnNext(response -> {
+        if (Objects.nonNull(response.usage())) {
+            // 在这里处理用量统计信息
+            // 可以记录到日志或数据库中
+        }
+    });
+```
