@@ -90,8 +90,11 @@ public Flux<ChatCompletionResponse> chat(String prompt) {
 ### 1. 连接超时
 
 检查 Ollama 服务是否正常运行：
+
 ```bash
-curl http://127.0.0.1:11434/v1/health
+curl http://127.0.0.1:11434
+
+Ollama is running
 ```
 
 ### 2. 内存不足
