@@ -48,7 +48,7 @@ deepseek:
 private DeepSeekClient deepSeekClient;
 
 @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-public Flux<String> chat(String prompt) {
+public Flux<ChatCompletionResponse> chat(String prompt) {
     return deepSeekClient.chatFluxCompletion(prompt);
 }
 ```
@@ -57,7 +57,7 @@ public Flux<String> chat(String prompt) {
 
 ```java
 @GetMapping(value = "/chat/advanced", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-public Flux<String> chatAdvanced(String prompt) {
+public Flux<ChatCompletionResponse> chatAdvanced(String prompt) {
     ChatCompletionRequest request = ChatCompletionRequest.builder()
         // 模型选择，支持 DEEPSEEK_CHAT、DEEPSEEK_REASONER 等
         .model(ChatCompletionModel.DEEPSEEK_REASONER)

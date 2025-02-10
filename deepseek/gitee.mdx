@@ -45,7 +45,7 @@ deepseek.api-key=your-gitee-ai-api-key
 private DeepSeekClient deepSeekClient;
 
 @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-public Flux<String> chat(String prompt) {
+public Flux<ChatCompletionResponse> chat(String prompt) {
     return deepSeekClient.chatFluxCompletion(prompt);
 }
 ```
