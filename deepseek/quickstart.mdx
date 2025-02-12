@@ -84,7 +84,7 @@ public Flux<ChatCompletionResponse> chatAdvanced(String prompt) {
 
 <Warning>不推荐使用同步阻塞调用方式，R1模型推理耗时较长易导致客户端连接超时，且响应延迟会影响用户体验</Warning>
 
-```
+```java
 @GetMapping(value = "/sync/chat")
 public ChatCompletionResponse syncChat(String prompt) {
   ChatCompletionRequest request = ChatCompletionRequest.builder()
