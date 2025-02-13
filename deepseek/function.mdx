@@ -1,0 +1,81 @@
+---
+title: 'DeepSeek4j FunctionCalling'
+---
+
+Function Calling 是大模型的一个强大特性，它允许模型调用预定义的函数来执行特定任务。这使得模型能够与外部系统和 API 进行交互，从而扩展其功能范围。
+
+
+<Warning>此功能只支持 deepseek-chat 模型</Warning>
+
+## 基础使用示例
+
+<img src='https://minio.pigx.vip/oss/202502/1739446054.png' alt='1739446054'/>
+
+### 1. 定义工具函数
+
+首先，需要定义工具函数的结构。推荐使用 JsonSchema 方式定义参数：
+
+```java
+Function WEATHER_FUNCTION = Function.builder()
+        .name("get_current_weather")
+        .description("Get the current weather in a given location")
+        .parameters(JsonObjectSchema.builder()
+                .properties(new LinkedHashMap<String, JsonSchemaElement>() {{
+                    put("location", JsonStringSchema.builder()
+                            .description("The city name")
+                            .build());
+                }})
+                .required(asList("location", "unit"))
+                .build())
+        .build();
+
+// 将 Function 转换为 Tool
+Tool WEATHER_TOOL = Tool.from(WEATHER_FUNCTION);
+```
+
+### 2. 创建请求
+
+```java
+String prompt = "北京天气怎么样？"
+ChatCompletionRequest request = ChatCompletionRequest.builder()
+    .model(ChatCompletionModel.DEEPSEEK_CHAT) // 请注意只支持Chat模型
+    .addUserMessage("prompt")
+    .tools(WEATHER_TOOL)  // 添加工具函数
+    .build();
+
+// 发送请求并获取响应
+ChatCompletionResponse response = deepSeekClient.chatCompletion(request).execute();
+
+// 获取工具调用信息
+AssistantMessage assistantMessage = response.choices().get(0).message();
+ToolCall toolCall = assistantMessage.toolCalls().get(0);
+
+// 解析函数调用参数
+FunctionCall functionCall = toolCall.function();
+String arguments = functionCall.arguments(); // {"location": "北京"}
+
+```
+
+### 3. 处理模型响应并返回给大模型
+
+```java
+ // 执行函数获取结果 根据 arguments 参数的地点 查询api返回结构
+Map map = Json.fromJson(arguments, Map.class);// {"location": "北京"}
+String weatherResult = map.get("location") + "气温 20°";
+
+// 创建工具消息
+ToolMessage toolMessage = ToolMessage.from(toolCall.id(), weatherResult);
+
+// 继续对话
+ChatCompletionRequest followUpRequest = ChatCompletionRequest.builder()
+        .model(ChatCompletionModel.DEEPSEEK_CHAT)
+        .messages(
+                UserMessage.from(prompt),
+                assistantMessage,
+                toolMessage // 添加工具消息
+        )
+        .build();
+
+
+return deepSeekClient.chatFluxCompletion(followUpRequest);
+```
