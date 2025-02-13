@@ -13,7 +13,7 @@ description: '本文档收集了使用 Deepseek4j 时的常见问题及其解决
 
 #### 解决方案
 
-在项目的根 `pom.xml` 文件中添加以下依赖管理配置来解决版本冲突：
+<Warning>请将以下依赖管理配置添加到项目根 pom.xml 文件的 dependencyManagement 节点中，以确保全局依赖版本的正确覆盖。</Warning>
 
 ```xml
 <dependencyManagement>
@@ -23,13 +23,11 @@ description: '本文档收集了使用 Deepseek4j 时的常见问题及其解决
             <artifactId>okhttp</artifactId>
             <version>4.12.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp-sse</artifactId>
             <version>4.12.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson</groupId>
             <artifactId>jackson-bom</artifactId>
