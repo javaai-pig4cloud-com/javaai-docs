@@ -1,0 +1,210 @@
+---
+title: 'Deepseek4j快速开发RAG'
+---
+
+## 快速上手
+
+本文章将带领大家从零开始构建一个基础 RAG 系统。通过白盒编码的方式，不仅能深入理解 RAG 的核心原理，还可以根据实际需求灵活调整和优化各个环节。**相比直接使用现有的开源 RAG 产品，这种方式能让我们更好地掌控系统行为，实现更精准的知识检索和问答效果。** 
+
+<img src='https://minio.pigx.vip/oss/202502/1739407145.png' alt='1739407145'/>
+
+### 1. 环境准备
+
+在开始构建 RAG 系统之前，我们需要准备以下环境：
+
+#### 1.1 Ollama 模型准备
+
+首先安装 [Ollama](https://ollama.ai/)，然后下载以下必要的模型：
+
+```bash
+# 下载推理模型 - 用于理解和生成回答
+ollama run deepseek-r1:14b
+
+# 下载向量模型 - 用于文本向量化
+ollama run bge-m3:latest
+```
+
+#### 1.2 向量数据库准备
+
+本文使用 Milvus 作为向量数据库，你可以选择以下两种方式之一进行安装：
+
+**方式一：使用milvus 测试环境**
+- 访问 Zilliz Cloud 中文版：https://cloud.zilliz.com.cn
+- 获取连接信息（后续配置需要用到）
+
+**方式二：Docker 安装**
+
+```bash
+# 1. 下载安装脚本
+curl -sfL https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh -o standalone_embed.sh
+
+# 2. 启动 Docker 容器
+bash standalone_embed.sh start
+```
+> 注意：如果选择 Docker 安装方式，请确保你的网络环境能够正常访问 Github。
+
+- 初始化向量数据：创建本次知识库存储、获取链接信息和表信息：
+<img src='https://minio.pigx.vip/oss/202502/1739410521.png' alt='1739410521'/>
+
+
+#### 1.3 项目依赖
+
+在你的 Maven 项目中添加以下依赖：
+
+```xml
+<dependency>
+    <groupId>io.github.pig-mesh.ai</groupId>
+    <artifactId>deepseek-spring-boot-starter</artifactId>
+    <version>1.4.0</version>
+</dependency>
+<!-- 链接 milvus SDK-->
+<dependency>
+    <groupId>io.milvus</groupId>
+    <artifactId>milvus-sdk-java</artifactId>
+    <version>2.5.3</version>
+</dependency>
+```
+
+#### application.yml  配置
+
+```yml
+# 推理模型链接信息
+deepseek:
+  base-url: http://127.0.0.1:11434/v1
+  model: deepseek-r1:14b
+  api-key: ollama-local
+# 向量模型链接信息
+embedding:
+  api-key: ${deepseek.api-key}
+  base-url: ${deepseek.base-url}
+  model: bge-m3:latest
+```
+
+
+### 2. 初始化私有知识
+
+在构建 RAG 系统时，第一步是将已有的知识内容转换为向量形式并存储到向量数据库中。
+
+#### 2.1 创建链接 链接客户端
+
+```java
+// 1. Connect to Milvus server
+ConnectConfig connectConfig = ConnectConfig.builder()
+        .uri(CLUSTER_ENDPOINT) // 1.2 获取的 Milvus 链接端点
+        .token(TOKEN)  // 1.2 获取的 Milvus 链接信息
+        .build();
+
+MilvusClientV2 milvusClientV2 = new MilvusClientV2(connectConfig);
+```
+
+#### 2.2 准备资料并向量化上传
+
+以下示例演示如何处理文本资料。对于 Office 文档、图片、PDF、音视频等其他格式的文件处理，deepseek4j 提供了完整的解决方案，详细使用方法请参考官方文档: https://javaai.pig4cloud.com/deepseek。
+
+```java
+@Autowired
+EmbeddingClient embeddingClient;
+
+{
+    // 这里以 2025最新的我司保密条例演示，可以换成你自己的
+    String law = FileUtil.readString("/Users/lengleng/Downloads/law.txt", Charset.defaultCharset());
+    String[] lawSplits = StrUtil.split(law, 400);
+
+
+    List<JsonObject> data = new ArrayList<>();
+    for (String lawSplit : lawSplits) {
+        List<Float> floatList = embeddingClient.embed(lawSplit);
+
+        JsonObject jsonObject = new JsonObject();
+
+        // 将 List<Float> 转换为 JsonArray
+        JsonArray jsonArray = new JsonArray();
+        for (Float value : floatList) {
+            jsonArray.add(value);
+        }
+        jsonObject.add("vector", jsonArray);
+        jsonObject.addProperty("text", lawSplit);
+
+        data.add(jsonObject);
+    }
+
+    InsertReq insertReq = InsertReq.builder()
+            .collectionName("deepseek4j_test")
+            .data(data)
+            .build();
+
+    milvusClientV2.insert(insertReq);
+}
+```
+
+### 3. 创建 RAG 接口 
+
+```java
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<ChatCompletionResponse> chat(String prompt) {
+    MilvusClientV2 milvusClientV2 = new MilvusClientV2(connectConfig);
+
+    List<Float> floatList = embeddingClientOptional.get().embed(prompt);
+
+    SearchReq searchReq = SearchReq.builder()
+            .collectionName("deepseek4j_test")
+            .data(Collections.singletonList(new FloatVec(floatList)))
+            .outputFields(Collections.singletonList("text"))
+            .topK(3)
+            .build();
+
+    SearchResp searchResp = milvusClientV2.search(searchReq);
+
+    List<String> resultList = new ArrayList<>();
+    List<List<SearchResp.SearchResult>> searchResults = searchResp.getSearchResults();
+    for (List<SearchResp.SearchResult> results : searchResults) {
+        System.out.println("TopK results:");
+        for (SearchResp.SearchResult result : results) {
+            resultList.add(result.getEntity().get("text").toString());
+        }
+    }
+
+
+    ChatCompletionRequest request = ChatCompletionRequest.builder()
+            // 根据渠道模型名称动态修改这个参数
+            .model("deepseek-r1:14b")
+            .addUserMessage(String.format("你要根据用户输入的问题：%s \n \n 参考如下内容： %s  \n\n 整理处理最终结果", prompt, resultList)).build();
+
+    return deepSeekClient.chatFluxCompletion(request);
+}
+```
+
+### 前端测试
+
+<img src='https://minio.pigx.vip/oss/202502/1739410900.png' alt='1739410900'/>
+
+
+## 总结
+
+本文通过以下核心步骤快速构建了基础 RAG 系统：
+
+1. 环境准备：部署推理模型和向量模型
+2. 知识库构建：向量化存储
+3. 检索增强：通过语义搜索获取关联知识
+4. 推理生成：结合上下文生成最终回答
+
+要让 RAG 系统达到生产可用水平，每个环节都需要进一步优化和完善：
+
+1. 检索策略优化：结合关键词和语义的混合检索，提高召回准确度
+2. 重排序优化：对检索结果进行二次排序，确保最相关内容排在前面
+3. 提示词工程：优化 Prompt 模板，引导模型生成更准确的回答
+4. 知识库管理：定期更新和维护知识库，保证数据时效性
+5. 性能调优：优化向量检索和模型推理的性能
+
+
+## 商业化选择
+
+如果你不想从零开始搭建 RAG 系统，也可以选择成熟的PIG AI 开发平台提供了开箱即用的 RAG 能力：
+
+- 开箱即用的知识库管理
+- 多种向量模型支持
+- 多种向量数据库支持
+- 完善的权限管理
+- 企业级运维监控
+
+访问地址：[https://ai.pig4cloud.com](https://ai.pig4cloud.com)

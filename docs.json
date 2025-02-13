@@ -69,6 +69,8 @@
           "deepseek/gitee",
           "deepseek/bailian",
           "deepseek/bocha",
+          "deepseek/rag",
+          "deepseek/office2md",
           "deepseek/configuration",
           "deepseek/sse",
           "deepseek/qa"
