@@ -73,6 +73,10 @@
           "deepseek/sse",
           "deepseek/qa"
         ]
+      },
+      {
+        "tab": "PIG AI开发平台",
+        "href": "https://ai.pig4cloud.com"
       }
     ]
   },
