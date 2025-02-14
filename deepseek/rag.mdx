@@ -139,7 +139,7 @@ EmbeddingClient embeddingClient;
 public Flux<ChatCompletionResponse> chat(String prompt) {
     MilvusClientV2 milvusClientV2 = new MilvusClientV2(connectConfig);
 
-    List<Float> floatList = embeddingClientOptional.get().embed(prompt);
+    List<Float> floatList = embeddingClient.embed(prompt);
 
     SearchReq searchReq = SearchReq.builder()
             .collectionName("deepseek4j_test")
