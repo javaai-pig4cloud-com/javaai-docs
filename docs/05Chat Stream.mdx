@@ -59,7 +59,7 @@ model.generate(userMessage, new StreamingResponseHandler<AiMessage>() {
 
 ### 示例说明
 1. **模型初始化**：通过 `OpenAiStreamingChatModel.builder()` 创建一个流式模型实例，并从环境变量中获取 API 密钥。
-2. **用户输入**：定义用户输入消息，此处为“讲个笑话”。
+2. **用户输入**：定义用户输入消息，此处为"讲个笑话"。
 3. **处理响应**：传递实现了 `StreamingResponseHandler` 的匿名类，分别定义 `onNext`、`onComplete` 和 `onError` 的处理逻辑。
 
 ## 使用 `TokenStream` 进行流式处理
@@ -136,4 +136,13 @@ tokenFlux.subscribe(
 LangChain4J 提供了一种高效且灵活的方式来流式传输语言模型的响应。通过 `StreamingResponseHandler`、`TokenStream` 或 `Flux`，开发者可以实现流畅的实时响应体验，从而提升应用的互动性和响应速度。
 
 流式处理让用户无需等待完整响应生成即可获取部分内容，尤其适用于聊天机器人和交互式 AI 应用的开发。
+
+<Card title="PIG AI应用开发平台 | 适合中大型企业构建自主可控的AI中台" icon="link" href="https://ai.pig4cloud.com">
+**为Java开发者提供全栈式AI工程化解决方案**，强类型/高可维护性架构，内置30+主流大模型支持。
+
+- **🔍 知识引擎体系**：RAG 知识引擎全自动化多模态解决方案
+- **📝 AI-OCR 中枢**：复杂非标场景高精度识别
+- **⚙️ 业务智能融合**：函数编排 + Chat2SQL，无缝对接现有业务系统
+- **🛡️ N维风控体系**：敏感词/IP/Token/User 规则控制引擎
+</Card>
 
