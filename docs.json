@@ -63,6 +63,7 @@
           "deepseek",
           "deepseek/quickstart",
           "deepseek/ollama",
+          "deepseek/ppinfra",
           "deepseek/tencent",
           "deepseek/siliconflow",
           "deepseek/volcengine",
