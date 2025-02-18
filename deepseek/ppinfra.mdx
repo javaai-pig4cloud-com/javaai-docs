@@ -1,0 +1,54 @@
+---
+title: 'Deepseek4j接入派欧 R1 🔥'
+---
+
+<Tip>目前实测派欧的R1 响应最快，并且注册赠送 5000万 的token，不用实名。</Tip>
+
+本文将介绍如何使用 Deepseek4j 接入 派欧的 R1 模型。 
+
+## 派欧 配置准备
+
+### 1. 获取 派欧 访问凭证
+
+1. 登录 [派欧 控制台](https://ppinfra.com/user/register?invited_by=KFWGG9)
+2. 创建新的 API 密钥并保存
+
+<img src='https://minio.pigx.vip/oss/202502/1739860940.png' alt='1739860940'/>
+## Deepseek4j 配置
+
+
+### 1. 配置文件设置
+
+在 `application.properties` 或 `application.yml` 中添加以下配置：
+
+<Warning>注意模型名称：deepseek/deepseek-r1/community</Warning>
+
+
+```properties
+deepseek:
+  base-url: https://api.ppinfra.com/v3/openai
+  api-key: sk_xxx
+  model: deepseek/deepseek-r1/community
+```
+
+### 2. 代码示例
+
+```java
+@Autowired
+private DeepSeekClient deepSeekClient;
+
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<ChatCompletionResponse> chat(String prompt) {
+    return deepSeekClient.chatFluxCompletion(prompt);
+}
+```
+
+<Card title="PIG AI应用开发平台 | 适合中大型企业构建自主可控的AI中台" icon="link" href="https://ai.pig4cloud.com">
+**为Java开发者提供全栈式AI工程化解决方案**，强类型/高可维护性架构，内置30+主流大模型支持。
+
+- **🔍 知识引擎体系**：RAG 知识引擎全自动化多模态解决方案
+- **📝 AI-OCR 中枢**：复杂非标场景高精度识别
+- **⚙️ 业务智能融合**：函数编排 + Chat2SQL，无缝对接现有业务系统
+- **🛡️ N维风控体系**：敏感词/IP/Token/User 规则控制引擎
+</Card>
+
