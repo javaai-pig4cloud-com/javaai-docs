@@ -90,6 +90,13 @@ public Flux<ChatCompletionResponse> chatAdvanced(String prompt) {
 			cache.merge(cacheCode, content, String::concat);
 		}).doOnError(e -> log.error("/chat/advanced error:{}", e.getMessage()));
 	}
+
+
+	Function<List<ChatCompletionChoice>, String> choicesProcess = list -> list.stream().map(e -> e.delta().content())
+			.collect(Collectors.joining());
+
+	Function<String, String> elt = s -> s.replaceAll("<think>[\\s\\S]*?</think>", "").replaceAll("\n", "");
+
 ```
 
 ### 3. 同步输出 （非实时响应流）
