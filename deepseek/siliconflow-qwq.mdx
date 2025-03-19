@@ -1,0 +1,115 @@
+---
+title: 'QwQ-32B API 集成指南'
+---
+
+<Card title="问题咨询与支持" icon="star" href="https://github.com/pig-mesh/deepseek4j/issues">
+- ⭐️ **请先 Star 项目后再提问**（未 Star 的问题将直接关闭）
+- 🐞 提交 [GitHub Issue](https://github.com/pig-mesh/deepseek4j/issues) 时请包含：
+  - 问题截图
+  - SDK 版本信息
+  - 相关配置代码
+</Card>
+
+## 模型概述
+
+<Warning>强烈推荐使用 QwQ 替代 R1 模型，QwQ 不仅具有更快的响应速度，同时提供更高的推理准确性和更稳定的性能表现</Warning>
+
+QwQ-32B 是阿里巴巴 Qwen 团队基于 Qwen2.5 架构研发的高性能大语言模型，专为企业级推理任务设计。该模型在保持高质量输出的同时，显著提升了推理速度和资源利用效率。
+
+### 核心优势
+
+- **高性能推理**：针对生产环境优化，显著降低延迟 
+- **强大的理解能力**：继承 Qwen2.5 架构的优秀语义理解能力
+- **多场景适配**：适用于对话、内容生成、代码辅助等多种应用场景
+
+<img src='https://minio.pigx.vip/oss/202503/1742365583.png' alt='模型架构图' style={{width: '100%', maxWidth: '800px'}}/>
+
+## 硅基流动平台配置
+
+### 1. 获取访问凭证
+
+1. 访问硅基流动控制台：[https://cloud.siliconflow.cn/account/ak](https://cloud.siliconflow.cn/i/YKcJJTYP)
+2. 登录账户并创建新的 API 密钥
+3. 妥善保存生成的密钥，后续将无法再次查看
+
+<img src='https://minio.pigx.vip/oss/202502/1738983332.png' alt='API密钥创建界面' style={{width: '100%', maxWidth: '700px'}}/>
+
+## deepseek4j SDK 集成
+
+### 1. 添加依赖
+
+在项目的 Maven 或 Gradle 配置中添加 deepseek4j 依赖：
+
+```xml
+<dependency>
+    <groupId>com.pig4cloud.deepseek</groupId>
+    <artifactId>deepseek4j-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### 2. 配置文件设置
+
+在应用的 `application.yml` 或 `application.properties` 中添加以下配置：
+
+<Warning>
+  注意：模型名称必须严格遵循 `Qwen/QwQ-32B` 格式，包括大小写
+</Warning>
+
+```yaml
+deepseek:
+  base-url: https://api.siliconflow.com/v1
+  model: Qwen/QwQ-32B
+  api-key: sk-xxx  # 替换为你的实际 API 密钥
+```
+
+### 3. 代码实现示例
+
+#### 基础对话接口
+
+```java
+@Autowired
+private DeepSeekClient deepSeekClient;
+
+@GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<ChatCompletionResponse> chat(String prompt) {
+    return deepSeekClient.chatFluxCompletion(prompt);
+}
+```
+
+#### 高级参数配置
+
+```java
+@GetMapping(value = "/chat-advanced", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public Flux<ChatCompletionResponse> chatAdvanced(String prompt) {
+    ChatCompletionRequest request = ChatCompletionRequest.builder()
+        .model("Qwen/QwQ-32B")
+        .messages(Collections.singletonList(
+            Message.builder().role(Role.USER).content(prompt).build()
+        ))
+        .temperature(0.7)
+        .maxTokens(2048)
+        .build();
+    
+    return deepSeekClient.chatCompletionFlux(request);
+}
+```
+
+## 应用场景与最佳实践
+
+- **智能客服**：利用模型出色的对话能力构建自然流畅的客户服务系统
+- **内容生成**：自动化内容创作，辅助营销文案、产品描述等撰写
+- **代码辅助**：提供代码补全、调试和优化建议，提升开发效率
+
+<Card title="PIG AI应用开发平台 | 企业级AI中台解决方案" icon="link" href="https://ai.pig4cloud.com">
+**为Java开发者提供全栈式AI工程化解决方案**，强类型/高可维护性架构，内置30+主流大模型支持。
+
+- **🔍 知识引擎体系**：RAG 知识引擎全自动化多模态解决方案
+- **📝 AI-OCR 中枢**：复杂非标场景高精度识别
+- **⚙️ 业务智能融合**：函数编排 + Chat2SQL，无缝对接现有业务系统
+- **🛡️ N维风控体系**：敏感词/IP/Token/User 规则控制引擎
+</Card>
+
+<Card title="文档改进" icon="pencil" href="https://github.com/javaai-pig4cloud-com/javaai-docs/edit/main/deepseek/siliconflow-qwq.mdx">
+  发现文档问题？点击此处直接在 GitHub 上编辑并提交 PR，帮助我们持续改进！
+</Card>
