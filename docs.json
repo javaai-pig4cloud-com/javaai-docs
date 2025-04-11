@@ -10,6 +10,10 @@
   "background": {
     "decoration": "grid"
   },
+  "banner": {
+    "content": "🚀 PIG AI 大模型平台已上线! [点击了解一下？](https://ai.pig4cloud.com)",
+    "dismissible": true
+  },
   "appearance": {
     "default": "dark"
   },
