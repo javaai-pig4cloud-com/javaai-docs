@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 这是一篇技术 mdx 文档每一篇文档应该 满足 mdx 的要求
+
+- 顶部增加元数据，根据文档内容推荐最合适的标题
+---
+title: "title of the page"
+---

@@ -1,0 +1,169 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+文档基于 Mintlify实现，补充文档时候考虑使用如下：Mintlify Components
+
+## 1. Accordions（折叠面板）
+
+适用场景：隐藏/展开详细说明内容，减少页面初始信息量。
+
+示例用法：
+
+<Accordion title="I am an Accordion.">
+  You can put any content in here.
+</Accordion>
+
+## 2. Accordion Groups（折叠组）
+
+适用场景：分组管理多个折叠面板，组织复杂文档内容。
+
+示例用法：
+
+<AccordionGroup>
+  <Accordion title="FAQ with Icon" icon="alien-8bit">
+    Check out the [Accordion](mdc:content/components/accordions) docs for all the supported props.
+  </Accordion>
+
+  <Accordion title="FAQ without Icon">
+    Check out the [Accordion](mdc:content/components/accordions) docs for all the supported props.
+  </Accordion>
+</AccordionGroup
+
+## 3. Callout Boxes（提示框）
+
+适用场景：高亮提醒、注意事项、警告信息等。
+
+示例用法：
+<Tip>This suggests a helpful tip</Tip>
+<Note>This adds a note in the content</Note>
+<Warning>This raises a warning to watch out for</Warning>
+
+## 4. Cards（卡片）
+
+适用场景：独立展示一组信息，如功能简介、博客预览等。
+
+示例用法：
+
+<Card title="Click on me" icon="link" href="/content/components/card-group">
+  This is how you use a card with an icon and a link. Clicking on this card
+  brings you to the Card Group page.
+</Card>
+
+## 5. Card Groups（卡片组）
+
+适用场景：排列展示多张卡片，如多个产品功能对比。
+
+示例用法：
+
+<CardGroup cols={2}>
+  <Card title="First Card" icon="square-1">
+    Neque porro quisquam est qui dolorem ipsum quia dolor sit amet
+  </Card>
+  <Card title="Second Card" icon="square-2">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </Card>
+  <Card title="Third Card" icon="square-3">
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco
+  </Card>
+  <Card title="Fourth Card" icon="square-4">
+    Excepteur sint occaecat cupidatat non proident
+  </Card>
+</CardGroup>
+
+## 6. Code Blocks（代码块）
+
+适用场景：显示单段代码。
+
+示例用法：
+
+```python
+print("Hello World")
+```
+
+## 7. Code Groups（代码组）
+
+适用场景：多个编程语言的示例切换展示。
+
+示例用法：
+
+<CodeGroup>
+
+```javascript helloWorld.js
+console.log("Hello World");
+```
+</CodeGroup>
+## 8. Frames（内嵌框架）
+**适用场景**：嵌入外部网页、文档、演示页面。
+
+**示例用法**：
+<Frame caption="Caption Text">
+  <img src="/path/image.jpg" />
+</Frame>
+
+## 9. Icons（图标）
+
+适用场景：在文档中快速插入小图标，美化内容。 图标来源：Font Awesome 和 Lucide
+
+示例用法：
+
+<Icon icon="check" size={32} />
+
+## 10. Mermaid Diagrams（流程图/图表）
+
+适用场景：绘制流程图、时序图、组织结构图等。
+
+示例用法：
+
+```mermaid
+flowchart TD
+    A[Start] --> B[Process]
+    B --> C{Decision}
+    C -->|Yes| D[End]
+    C -->|No| E[Back]
+```
+
+## 11. Steps（步骤列表）
+
+适用场景：展示按顺序进行的操作流程。
+
+示例用法：
+
+<Steps>
+  <Step title="First Step">
+    These are instructions or content that only pertain to the first step.
+  </Step>
+  <Step title="Second Step">
+    These are instructions or content that only pertain to the second step.
+  </Step>
+  <Step title="Third Step">
+    These are instructions or content that only pertain to the third step.
+  </Step>
+</Steps>
+
+## 12. Tabs（标签页）
+
+适用场景：切换显示不同的内容区域，如安装指南（Mac/Linux/Windows）。
+
+示例用法：
+
+<Tabs>
+  <Tab title="First Tab">
+    ☝️ Welcome to the content that you can only see inside the first Tab.
+  </Tab>
+  <Tab title="Second Tab">
+    ✌️ Here's content that's only inside the second Tab.
+  </Tab>
+  <Tab title="Third Tab">
+    💪 Here's content that's only inside the third Tab.
+  </Tab>
+</Tabs>
+
+
+## 13. Tooltips（悬浮提示）
+
+适用场景：对关键词提供悬浮解释，不打断阅读流。
+
+示例用法：
+<Tooltip tip="This is a tooltip</Tooltip>
