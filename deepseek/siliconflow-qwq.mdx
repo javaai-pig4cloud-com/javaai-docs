@@ -70,16 +70,16 @@ public Flux<ChatCompletionResponse> chat(String prompt) {
 ```java
 @GetMapping(value = "/chat-advanced", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 public Flux<ChatCompletionResponse> chatAdvanced(String prompt) {
-    ChatCompletionRequest request = ChatCompletionRequest.builder()
-        .model("Qwen/QwQ-32B")
-        .messages(Collections.singletonList(
-            Message.builder().role(Role.USER).content(prompt).build()
-        ))
-        .temperature(0.7)
-        .maxTokens(2048)
-        .build();
-    
-    return deepSeekClient.chatCompletionFlux(request);
+  ChatCompletionRequest request = ChatCompletionRequest.builder()
+      .model("Qwen/QwQ-32B")
+      .messages(Collections.singletonList(
+          UserMessage.from(prompt)
+      ))
+      .temperature(0.7)
+      .maxTokens(2048)
+      .build();
+
+  return deepSeekClient.chatFluxCompletion(request);
 }
 ```
 
