@@ -112,7 +112,7 @@ RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
 
 // 构建AI服务
 Assistant assistant = AiServices.builder(Assistant.class)
-    .chatLanguageModel(/* 配置你的语言模型 */)
+    .chatModel(/* 配置你的语言模型 */)
     .retrievalAugmentor(retrievalAugmentor)
     .build();
 ```

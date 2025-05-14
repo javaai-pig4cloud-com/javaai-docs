@@ -16,7 +16,7 @@ title: Chat 视觉理解
 
 ```java
 @Bean
-public ChatLanguageModel chatLanguageModel() {
+public ChatModel chatModel() {
 return OpenAiChatModel.builder()
         .apiKey(System.getenv("DASHSCOPE_KEY"))
         .modelName("qwen-vl-max")  // 设置使用的模型名称
@@ -37,13 +37,13 @@ return OpenAiChatModel.builder()
 @SpringBootTest
 class LLMConfigTest {
     @Autowired
-    private ChatLanguageModel chatLanguageModel;
+    private ChatModel chatModel;
 
     @Value("1.png")
     private Resource resource;
 
     @Test
-    void chatLanguageModel() throws IOException {
+    void chatModel() throws IOException {
 
         byte[] byteArray = resource.getContentAsByteArray();
         String encodeToString = Base64.getEncoder().encodeToString(byteArray);
@@ -53,7 +53,7 @@ class LLMConfigTest {
                 ,
                 ImageContent.from(encodeToString, "image/png")
         );
-        Response<AiMessage> response = chatLanguageModel.generate(userMessage);
+        Response<AiMessage> response = chatModel.generate(userMessage);
         System.out.println(response.content().text());
     }
 }

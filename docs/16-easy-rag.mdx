@@ -50,9 +50,9 @@ public InMemoryEmbeddingStore<TextSegment> embeddingStore() {
 
 
 @Bean
-public ChatAssistant assistant(ChatLanguageModel chatLanguageModel, EmbeddingStore<TextSegment> embeddingStore) {
+public ChatAssistant assistant(ChatModel chatModel, EmbeddingStore<TextSegment> embeddingStore) {
     return AiServices.builder(ChatAssistant.class)
-            .chatLanguageModel(chatLanguageModel)
+            .chatModel(chatModel)
             .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
             .contentRetriever(EmbeddingStoreContentRetriever.from(embeddingStore))
             .build();

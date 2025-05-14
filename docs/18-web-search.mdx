@@ -43,14 +43,14 @@ public interface ChatAssistant {
 
 ```java
 @Bean
-public ChatAssistant chatAssistant(ChatLanguageModel chatLanguageModel) {
+public ChatAssistant chatAssistant(ChatModel chatModel) {
     SearchApiWebSearchEngine searchEngine = SearchApiWebSearchEngine.builder()
             .apiKey("p8SZVNAweqTtoZBBTVnXttcj")// 测试使用
             .engine("google")
             .build();
 
     WebSearchTool webSearchTool = WebSearchTool.from(searchEngine);
-    return AiServices.builder(ChatAssistant.class).chatLanguageModel(chatLanguageModel).tools(webSearchTool).build();
+    return AiServices.builder(ChatAssistant.class).chatModel(chatModel).tools(webSearchTool).build();
 }
 ```
 

@@ -42,7 +42,7 @@ title: LangChain4j 介绍
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-bom</artifactId>
-            <version>0.36.2</version>
+            <version>1.0.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -70,28 +70,27 @@ langchain4j:
 使用以下代码，快速启动一个基于 LangChain4j 和 Spring Boot 的 Java 应用，集成并调用阿里百炼平台的通义大语言模型。
 
 ```java
-package com.pig4cloud.ai.simple;
+package com.pig4cloud.ai.langchain4j01simple;
 
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import dev.langchain4j.model.chat.ChatModel;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-/**
- * 用于处理与通义模型的交互请求测试。
- * 作者: lengleng
- */
 @SpringBootTest
-class SimplechatApplicationTest {
-
+class Langchain4j01simpleApplicationTests {
     @Autowired
-    private ChatLanguageModel chatLanguageModel;
+    private ChatModel chatModel;
 
+
+    /**
+     * 测试ChatModel基本功能
+     * 验证ChatModel是否能正确响应简单的问候语"你好"
+     */
     @Test
-    public void testChat(){
-        String generate = chatLanguageModel.generate("你好");
-
-        System.out.println(generate);
+    void testBasicChatModelResponse() {
+        String chatted = chatModel.chat("你好");
+        System.out.println(chatted);
     }
 }
 ```

@@ -13,7 +13,7 @@ title: RAG API 增强
 ```java
 
 @Bean
-public ChatAssistant assistant(ChatLanguageModel chatLanguageModel, EmbeddingStore<TextSegment> embeddingStore) {
+public ChatAssistant assistant(ChatModel chatModel, EmbeddingStore<TextSegment> embeddingStore) {
 
     DefaultRetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
             .queryTransformer()  // 查询增强
@@ -25,7 +25,7 @@ public ChatAssistant assistant(ChatLanguageModel chatLanguageModel, EmbeddingSto
             .build();
 
     return AiServices.builder(ChatAssistant.class)
-            .chatLanguageModel(chatLanguageModel)
+            .chatModel(chatModel)
             .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
             .retrievalAugmentor(retrievalAugmentor)
             .build();

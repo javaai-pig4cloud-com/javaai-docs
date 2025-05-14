@@ -32,7 +32,7 @@ logging:
 ```
 
 ### 2. 监控 (Observability)
-LangChain4j 提供了一些语言模型（如 `ChatLanguageModel` 和 `StreamingChatLanguageModel`），支持通过 `ChatModelListener` 监听以下事件：
+LangChain4j 提供了一些语言模型（如 `ChatModel` 和 `StreamingChatModel`），支持通过 `ChatModelListener` 监听以下事件：
 
 + 请求到达 LLM
 + LLM 返回的响应
@@ -68,7 +68,7 @@ ChatModelListener listener = new ChatModelListener() {
     }
 };
 
-ChatLanguageModel model = OpenAiChatModel.builder()
+ChatModel model = OpenAiChatModel.builder()
         ...
         .listeners(List.of(listener))  // 添加监听器
         .build();
@@ -80,7 +80,7 @@ LangChain4j 支持重试配置，可用于处理失败的请求。
 可以通过 `maxRetries` 来配置重试逻辑，指定重试次数和延迟等参数：
 
 ```java
-ChatLanguageModel model = OpenAiChatModel.builder()
+ChatModel model = OpenAiChatModel.builder()
     ...
     .maxRetries(5)  // 设置重试策略
     .build();
@@ -90,7 +90,7 @@ ChatLanguageModel model = OpenAiChatModel.builder()
 对于超时配置，可以通过 `timeout` 设置请求的超时时间：
 
 ```java
-ChatLanguageModel model = OpenAiChatModel.builder()
+ChatModel model = OpenAiChatModel.builder()
     ...
     .timeout(Duration.ofSeconds(10)) // 设置10秒超时
     .build();

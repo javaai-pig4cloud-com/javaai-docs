@@ -36,7 +36,7 @@ public interface FunctionAssistant {
 
 ```java
 @Bean
-public FunctionAssistant functionAssistant(ChatLanguageModel chatLanguageModel) {
+public FunctionAssistant functionAssistant(ChatModel chatModel) {
     // 工具说明 ToolSpecification
     ToolSpecification toolSpecification = ToolSpecification.builder()
             .name("invoice_assistant")
@@ -54,7 +54,7 @@ public FunctionAssistant functionAssistant(ChatLanguageModel chatLanguageModel) 
     };
 
     return AiServices.builder(FunctionAssistant.class)
-            .chatLanguageModel(chatLanguageModel)
+            .chatModel(chatModel)
             .tools(Map.of(toolSpecification, toolExecutor))
             .build();
 }
@@ -79,9 +79,9 @@ public class InvoiceHandler {
 
 ```java
 @Bean
-public FunctionAssistant functionAssistant(ChatLanguageModel chatLanguageModel) {
+public FunctionAssistant functionAssistant(ChatModel chatModel) {
     return AiServices.builder(FunctionAssistant.class)
-            .chatLanguageModel(chatLanguageModel)
+            .chatModel(chatModel)
             .tools(new InvoiceHandler())
             .build();
 }

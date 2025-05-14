@@ -63,7 +63,7 @@ String result = engine.execute(code);
 
 ```java
 ChatAssistant assistant = AiServices.builder(ChatAssistant.class)
-        .chatLanguageModel(chatLanguageModel)
+        .chatModel(chatModel)
         .tools(new GraalVmJavaScriptExecutionTool())
         .build();
 ```

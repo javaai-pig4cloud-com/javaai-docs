@@ -95,7 +95,7 @@ public interface ChatAssistant {
 ```java
 ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
 ChatAssistant assistant = AiServices.builder(ChatAssistant.class)
-        .chatLanguageModel(chatLanguageModel)
+        .chatModel(chatModel)
         .chatMemory(chatMemory)
         .build();
 
@@ -109,7 +109,7 @@ String answer2 = assistant.chat("我的名字是什么？");
 
 ```java
 ChatAssistant assistant = AiServices.builder(ChatAssistant.class)
-        .chatLanguageModel(chatLanguageModel)
+        .chatModel(chatModel)
         // 注意每个memoryId对应创建一个ChatMemory
         .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10))
         .build();

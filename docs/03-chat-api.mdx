@@ -48,12 +48,12 @@ title: Chat API 上手
 </dependency>
 ```
 
-#### 2. 配置  ChatLanguageModel 提供模型元信息
+#### 2. 配置  ChatModel 提供模型元信息
 
 
 ```java
 @Bean
-public ChatLanguageModel chatLanguageModel() {
+public ChatModel chatModel() {
     return OpenAiChatModel.builder()
             .apiKey(System.getenv("DASHSCOPE_KEY"))
             .modelName("qwen-turbo")
@@ -65,10 +65,10 @@ public ChatLanguageModel chatLanguageModel() {
 
 ### 低级LLM API 调用
 
-使用`ChatLanguageModel`接口与大模型进行交互。以下是接口的主要方法：
+使用`ChatModel`接口与大模型进行交互。以下是接口的主要方法：
 
 ```java
-public interface ChatLanguageModel {
+public interface ChatModel {
     String generate(String userMessage);
     Response<AiMessage> generate(List<ChatMessage> messages);
 }
@@ -79,11 +79,11 @@ public interface ChatLanguageModel {
 class SimplechatApplicationTest {
 
     @Autowired
-    private ChatLanguageModel chatLanguageModel;
+    private ChatModel chatModel;
 
     @Test
     public void testChat(){
-        String generate = chatLanguageModel.generate("你好");
+        String generate = chatModel.generate("你好");
         System.out.println(generate);
     }
 }
@@ -112,7 +112,7 @@ public interface ChatAssistant {
 @Bean
 public ChatAssistant chatAssistant() {
     return AiServices.builder(ChatAssistant.class)
-            .chatLanguageModel(chatLanguageModel())
+            .chatModel(chatModel())
             .build();
 }
 ```
