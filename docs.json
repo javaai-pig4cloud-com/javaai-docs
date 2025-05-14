@@ -25,6 +25,10 @@
         {
           "anchor": "配套视频",
           "href": "https://www.bilibili.com/video/BV1Yv21YzEP8"
+        },
+        {
+          "anchor": "课程源码",
+          "href": "https://github.com/pig-mesh/langchain4j-course"
         }
       ]
     },
