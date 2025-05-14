@@ -53,8 +53,7 @@ ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
 
 **使用示例:**
 ```java
-Tokenizer tokenizer = new OpenAiTokenizer(GPT_3_5_TURBO);
-ChatMemory chatMemory = TokenWindowChatMemory.withMaxTokens(1000, tokenizer);
+ChatMemory chatMemory = TokenWindowChatMemory.withMaxTokens(1000, new OpenAiTokenCountEstimator(GPT_3_5_TURBO);
 ```
 
 **注意:** 使用TokenWindowChatMemory需要提供一个Tokenizer实例,用于计算消息的token数量。不同的语言模型可能需要不同的Tokenizer。

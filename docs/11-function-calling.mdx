@@ -32,8 +32,6 @@ public interface FunctionAssistant {
 
 - 工具说明 ToolSpecification
 
-- 业务逻辑 ToolExecutor
-
 ```java
 @Bean
 public FunctionAssistant functionAssistant(ChatModel chatModel) {
@@ -41,9 +39,13 @@ public FunctionAssistant functionAssistant(ChatModel chatModel) {
     ToolSpecification toolSpecification = ToolSpecification.builder()
             .name("invoice_assistant")
             .description("根据用户提交的开票信息，开具发票")
-            .addParameter("companyName", type("string"), description("公司名称"))
-            .addParameter("dutyNumber", type("string"), description("税号"))
-            .addParameter("amount", type("number"), description("金额"))
+            .parameters(JsonObjectSchema.builder()
+                    .addStringProperty("companyName", "公司名称")
+                    .addStringProperty("dutyNumber", "税号")
+                    .addStringProperty("amount", "金额，保留两位有效数字")
+                    .addEnumProperty("temperatureUnit", List.of("CELSIUS", "FAHRENHEIT"))
+                    .required("companyName") // the required properties should be specified explicitly
+                    .build())
             .build();
 
     // 业务逻辑 ToolExecutor
@@ -56,6 +58,7 @@ public FunctionAssistant functionAssistant(ChatModel chatModel) {
     return AiServices.builder(FunctionAssistant.class)
             .chatModel(chatModel)
             .tools(Map.of(toolSpecification, toolExecutor))
+            .tools(new InvoiceHandler())
             .build();
 }
 ```
@@ -97,10 +100,16 @@ LangChain4j 支持动态工具配置，开发者可以基于用户输入的上�
 ToolProvider toolProvider = (toolProviderRequest) -> {
     if (toolProviderRequest.userMessage().singleText().contains("booking")) {
         ToolSpecification toolSpecification = ToolSpecification.builder()
-            .name("get_booking_details")
-            .description("Returns booking details")
-            .addParameter("bookingNumber", type("string"))
-            .build();
+                .name("invoice_assistant")
+                .description("根据用户提交的开票信息，开具发票")
+                .parameters(JsonObjectSchema.builder()
+                        .addStringProperty("companyName", "公司名称")
+                        .addStringProperty("dutyNumber", "税号")
+                        .addStringProperty("amount", "金额，保留两位有效数字")
+                        .addEnumProperty("temperatureUnit", List.of("CELSIUS", "FAHRENHEIT"))
+                        .required("companyName") // the required properties should be specified explicitly
+                        .build())
+                .build();
         return ToolProviderResult.builder()
             .add(toolSpecification, toolExecutor)
             .build();

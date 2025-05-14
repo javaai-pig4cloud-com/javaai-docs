@@ -2,21 +2,20 @@
 title: Chat 流式输出
 ---
 
-
 LangChain4J 是一个强大的库，专门用于与语言学习模型（LLMs）进行交互。其核心功能之一是能够逐个令牌地流式传输来自 LLMs 的响应。这项功能极大地提升了用户体验，使用户可以在模型生成完整响应前，实时获取部分信息。
 
 本文将详细介绍如何使用 LangChain4J 实现流式聊天功能。
 
 ## 流式响应处理
-### `StreamingResponseHandler` 接口
-流式响应的关键接口是 `StreamingResponseHandler`。它允许开发者定义在响应生成过程中的各个事件的处理逻辑。
+### `StreamingChatResponseHandler` 接口
+流式响应的关键接口是 `StreamingChatResponseHandler`。它允许开发者定义在响应生成过程中的各个事件的处理逻辑。
 
 ```java
-public interface StreamingResponseHandler<T> {
+public interface StreamingChatResponseHandler<T> {
 
-    void onNext(String token);
+    void onPartialResponse(String partialResponse);
  
-    default void onComplete(Response<T> response) {}
+    void onCompleteResponse(ChatResponse completeResponse);
 
     void onError(Throwable error);
 }
@@ -36,34 +35,40 @@ StreamingChatModel model = OpenAiStreamingChatModel.builder()
     ...
     .build();
 
-String userMessage = "讲个笑话";
+/**
+    * 测试流式聊天模型的基本功能
+    * 验证StreamingChatModel能否正确处理流式响应，并通过回调接口获取结果
+    */
+@Test
+void testStreamingChatModelWithCallback() throws InterruptedException {
 
-model.generate(userMessage, new StreamingResponseHandler<AiMessage>() {
+    streamingChatLanguageModel.chat("hello, 北京有什么好吃的？", new StreamingChatResponseHandler() {
+        @Override
+        public void onPartialResponse(String token) {
+            System.out.println("onNext: " + token);
+        }
 
-    @Override
-    public void onNext(String token) {
-        System.out.println("onNext: " + token);
-    }
+        @Override
+        public void onCompleteResponse(ChatResponse chatResponse) {
 
-    @Override
-    public void onComplete(Response<AiMessage> response) {
-        System.out.println("onComplete: " + response);
-    }
+        }
 
-    @Override
-    public void onError(Throwable error) {
-        error.printStackTrace();
-    }
-});
+        @Override
+        public void onError(Throwable throwable) {
+
+        }
+    });
+
+}
 ```
 
 ### 示例说明
 1. **模型初始化**：通过 `OpenAiStreamingChatModel.builder()` 创建一个流式模型实例，并从环境变量中获取 API 密钥。
 2. **用户输入**：定义用户输入消息，此处为"讲个笑话"。
-3. **处理响应**：传递实现了 `StreamingResponseHandler` 的匿名类，分别定义 `onNext`、`onComplete` 和 `onError` 的处理逻辑。
+3. **处理响应**：传递实现了 `StreamingChatResponseHandler` 的匿名类，分别定义 `onPartialResponse`、`onCompleteResponse` 和 `onError` 的处理逻辑。
 
 ## 使用 `TokenStream` 进行流式处理
-除了 `StreamingResponseHandler`，您还可以使用 `TokenStream` 逐个令牌流式处理响应。
+除了 `StreamingChatResponseHandler`，您还可以使用 `TokenStream` 逐个令牌流式处理响应。
 
 ### 示例代码
 ```java
@@ -78,12 +83,12 @@ StreamingChatModel model = OpenAiStreamingChatModel.builder()
 
 Assistant assistant = AiServices.create(Assistant.class, model);
 
-TokenStream tokenStream = assistant.chat("讲个笑话");
+TokenStream tokenStream = assistant.chat("北京有什么好吃的？");
 
-tokenStream.onNext(System.out::println)
-    .onComplete(System.out::println)
-    .onError(Throwable::printStackTrace)
-    .start();
+tokenStream.onPartialResponse(System.out::println)
+        .onCompleteResponse(System.out::println)
+        .onError(Throwable::printStackTrace)
+        .start();
 ```
 
 ### 示例说明
@@ -100,7 +105,6 @@ tokenStream.onNext(System.out::println)
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-reactor</artifactId>
-    <version>0.35.0</version>
 </dependency>
 ```
 
@@ -117,13 +121,11 @@ StreamingChatModel model = OpenAiStreamingChatModel.builder()
 
 Assistant assistant = AiServices.create(Assistant.class, model);
 
-Flux<String> tokenFlux = assistant.chat("讲个笑话");
 
-tokenFlux.subscribe(
-    System.out::println,  // onNext
-    Throwable::printStackTrace,  // onError
-    () -> System.out.println("onComplete")  // onComplete
-);
+@GetMapping("/chat")
+public Flux<String> chat(@RequestParam("message") String message) {
+    return assistant.chat("讲个笑话");
+}
 ```
 
 ### 示例说明
@@ -133,7 +135,7 @@ tokenFlux.subscribe(
 3. **订阅处理**：使用 `Flux.subscribe` 来处理每个生成的令牌、错误和完成事件。
 
 ## 总结
-LangChain4J 提供了一种高效且灵活的方式来流式传输语言模型的响应。通过 `StreamingResponseHandler`、`TokenStream` 或 `Flux`，开发者可以实现流畅的实时响应体验，从而提升应用的互动性和响应速度。
+LangChain4J 提供了一种高效且灵活的方式来流式传输语言模型的响应。通过 `StreamingChatResponseHandler`、`TokenStream` 或 `Flux`，开发者可以实现流畅的实时响应体验，从而提升应用的互动性和响应速度。
 
 流式处理让用户无需等待完整响应生成即可获取部分内容，尤其适用于聊天机器人和交互式 AI 应用的开发。
 

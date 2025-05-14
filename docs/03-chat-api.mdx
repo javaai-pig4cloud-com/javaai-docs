@@ -69,8 +69,8 @@ public ChatModel chatModel() {
 
 ```java
 public interface ChatModel {
-    String generate(String userMessage);
-    Response<AiMessage> generate(List<ChatMessage> messages);
+    String chat(String userMessage);
+    ChatResponse chat(List<ChatMessage> messages);
 }
 ```
 
@@ -81,9 +81,15 @@ class SimplechatApplicationTest {
     @Autowired
     private ChatModel chatModel;
 
+    /**
+     * 测试直接使用字符串调用ChatModel
+     * 验证使用简单字符串参数调用chat方法的响应
+     */
     @Test
-    public void testChat(){
-        String generate = chatModel.generate("你好");
+    void testChatWithStringInput() {
+        //你好！很高兴能为你服务。有什么问题或需要帮助的吗？
+        //你好！很高兴能为你提供帮助。有什么我可以为你做的吗？
+        String generate = chatModel.chat("你好");
         System.out.println(generate);
     }
 }
@@ -124,12 +130,11 @@ public ChatAssistant chatAssistant() {
 class ChatAssistantTest {
     @Autowired
     private ChatAssistant chatAssistant;
-
+    
     @Test
-    public void testChat() {
-        String message = "Hello";
-        String response = chatAssistant.chat(message);
-        System.out.println(response);
+    void testChatAssistantMemoryCapability() {
+        String chat = chatAssistant.chat("你好，我的名字叫冷冷");
+        System.out.println(chat);
     }
 }
 ```

@@ -2,7 +2,6 @@
 title: Chat 视觉理解
 ---
 
-
 ### 示例代码：基于Dashscope的LangChain4j视觉理解
 
 这个示例展示了如何通过Dashscope的API，结合LangChain4j进行图像理解。使用的模型是`qwen-vl-max`，其支持视觉-语言的多模态任务。 
@@ -17,11 +16,11 @@ title: Chat 视觉理解
 ```java
 @Bean
 public ChatModel chatModel() {
-return OpenAiChatModel.builder()
-        .apiKey(System.getenv("DASHSCOPE_KEY"))
-        .modelName("qwen-vl-max")  // 设置使用的模型名称
-        .baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1")
-        .build();
+  return OpenAiChatModel.builder()
+          .apiKey(System.getenv("DASHSCOPE_KEY"))
+          .modelName("qwen-vl-max")  // 设置使用的模型名称
+          .baseUrl("https://dashscope.aliyuncs.com/compatible-mode/v1")
+          .build();
 }
 ```
 
@@ -42,19 +41,20 @@ class LLMConfigTest {
     @Value("1.png")
     private Resource resource;
 
+    /**
+     * 测试多模态图像识别功能
+     * 验证ChatModel能否正确分析图片并从中提取上证指数数据
+     */
     @Test
-    void chatModel() throws IOException {
-
+    void testImageRecognitionAndDataExtraction() throws IOException {
         byte[] byteArray = resource.getContentAsByteArray();
         String encodeToString = Base64.getEncoder().encodeToString(byteArray);
 
-        UserMessage userMessage = UserMessage.from(
-                TextContent.from("提取图片中 9月30号的上证指数点数")
-                ,
-                ImageContent.from(encodeToString, "image/png")
-        );
-        Response<AiMessage> response = chatModel.generate(userMessage);
-        System.out.println(response.content().text());
+        UserMessage userMessage = UserMessage.from(TextContent.from("从以下图片中获取 9.30号的上证指数"),
+                ImageContent.from(encodeToString, "image/png"));
+
+        ChatResponse response = chatModel.chat(userMessage);
+        System.out.println(response.aiMessage().text());
     }
 }
 ```
