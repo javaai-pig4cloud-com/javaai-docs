@@ -23,8 +23,8 @@ public interface StreamingChatResponseHandler<T> {
 
 ### 事件说明
 
-+ **onNext(String token)**：每当生成下一个令牌时触发，通常用于将实时生成的内容及时反馈给前端。
-+ **onComplete(Response response)**：当模型生成完成时触发。此时返回一个完整的 `Response` 对象。对于 `StreamingChatModel`，`T` 为 `AiMessage`；对于 `StreamingLanguageModel`，`T` 为 `String`。
++ **onPartialResponse(String token)**：每当生成下一个令牌时触发，通常用于将实时生成的内容及时反馈给前端。
++ **onCompleteResponse(Response response)**：当模型生成完成时触发。此时返回一个完整的 `Response` 对象。对于 `StreamingChatModel`，`T` 为 `AiMessage`；对于 `StreamingLanguageModel`，`T` 为 `String`。
 + **onError(Throwable error)**：当生成过程中发生错误时触发。
 
 ## 实现流式聊天的基本示例
