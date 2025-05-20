@@ -1,0 +1,188 @@
+---
+title: "Neo4j Vector Database"
+---
+
+Neo4j Vector Database integration in Spring AI provides vector storage and search capabilities using Neo4j's graph-based vector features.
+
+## Overview
+
+Neo4j Vector Database enables:
+- Graph-based vector storage
+- Relationship-aware search
+- Real-time vector operations
+- Graph analytics integration
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Graph-based" icon="project-diagram">
+    Graph vector storage
+  </Card>
+  <Card title="Relationships" icon="link">
+    Relationship-aware search
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+  <Card title="Analytics" icon="chart-line">
+    Graph analytics
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-neo4j-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Neo4j Vector Database Configuration
+spring.ai.neo4j.vectordb.enabled=true
+spring.ai.neo4j.vectordb.uri=bolt://localhost:7687
+spring.ai.neo4j.vectordb.username=neo4j
+spring.ai.neo4j.vectordb.password=password
+spring.ai.neo4j.vectordb.database=vectordb
+```
+
+### Usage
+
+```java
+@Service
+public class Neo4jVectorService {
+    private final Neo4jVectorClient vectorClient;
+
+    public Neo4jVectorService(Neo4jVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class Neo4jVectorStorageConfig {
+    @Bean
+    public VectorStorage neo4jVectorStorage(Neo4jVectorProperties properties) {
+        return new Neo4jVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class Neo4jSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch neo4jSimilaritySearch(Neo4jVectorProperties properties) {
+        return new Neo4jSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Graph Operations
+
+```java
+@Service
+public class GraphService {
+    private final Neo4jVectorClient vectorClient;
+
+    public void createVectorNode(String id, float[] vector) {
+        vectorClient.createNode(id, vector);
+    }
+
+    public void createRelationship(String fromId, String toId, String type) {
+        vectorClient.createRelationship(fromId, toId, type);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Node Configuration
+
+```java
+@Configuration
+public class NodeConfig {
+    @Bean
+    public NodeConfig nodeConfig() {
+        return NodeConfig.builder()
+            .label("Vector")
+            .properties(Arrays.asList("id", "vector", "metadata"))
+            .build();
+    }
+}
+```
+
+### Index Management
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("vector_index")
+            .type(IndexType.VECTOR)
+            .dimension(1536)
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=neo4j-vectordb
+management.endpoint.neo4j-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Neo4j Vector Database, consider these best practices:
+</Note>
+
+- **Graph Design**: Design efficient graph structure
+- **Index Management**: Optimize index configuration
+- **Relationship Strategy**: Implement effective relationships
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection URI
+   - Check authentication
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize graph structure
+   - Adjust index configuration
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor graph size
+   - Implement cleanup
+   - Review retention policy 

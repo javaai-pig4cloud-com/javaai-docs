@@ -1,0 +1,190 @@
+---
+title: "GemFire Vector Database"
+---
+
+GemFire Vector Database integration in Spring AI provides vector storage and search capabilities using VMware GemFire's vector features.
+
+## Overview
+
+GemFire Vector Database enables:
+- Distributed vector storage
+- In-memory vector operations
+- Real-time vector search
+- High-performance scaling
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="In-memory" icon="memory">
+    In-memory vector storage
+  </Card>
+  <Card title="Distributed" icon="network-wired">
+    Distributed architecture
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+  <Card title="Scalability" icon="arrows-up-down-left-right">
+    High-performance scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-gemfire-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# GemFire Vector Database Configuration
+spring.ai.gemfire.vectordb.enabled=true
+spring.ai.gemfire.vectordb.locator-host=localhost
+spring.ai.gemfire.vectordb.locator-port=10334
+spring.ai.gemfire.vectordb.region-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class GemFireVectorService {
+    private final GemFireVectorClient vectorClient;
+
+    public GemFireVectorService(GemFireVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector) {
+        vectorClient.store(id, vector);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class GemFireVectorStorageConfig {
+    @Bean
+    public VectorStorage gemFireVectorStorage(GemFireVectorProperties properties) {
+        return new GemFireVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class GemFireSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch gemFireSimilaritySearch(GemFireVectorProperties properties) {
+        return new GemFireSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Region Configuration
+
+```java
+@Configuration
+public class RegionConfig {
+    @Bean
+    public RegionConfig regionConfig() {
+        return RegionConfig.builder()
+            .name("vectors")
+            .dataPolicy(DataPolicy.REPLICATE)
+            .build();
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Region Configuration
+
+```java
+@Configuration
+public class CustomRegionConfig {
+    @Bean
+    public RegionConfig customRegionConfig() {
+        return RegionConfig.builder()
+            .name("custom-vectors")
+            .dataPolicy(DataPolicy.PARTITION)
+            .partitionAttributes(partitionAttributes())
+            .build();
+    }
+
+    private PartitionAttributes partitionAttributes() {
+        return PartitionAttributes.builder()
+            .redundantCopies(1)
+            .build();
+    }
+}
+```
+
+### Persistence Configuration
+
+```java
+@Configuration
+public class PersistenceConfig {
+    @Bean
+    public PersistenceConfig persistenceConfig() {
+        return PersistenceConfig.builder()
+            .diskStoreName("vectorStore")
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=gemfire-vectordb
+management.endpoint.gemfire-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using GemFire Vector Database, consider these best practices:
+</Note>
+
+- **Region Design**: Design efficient region structure
+- **Memory Management**: Configure appropriate memory settings
+- **Persistence**: Set up proper persistence
+- **Partitioning**: Optimize partition strategy
+- **Monitoring**: Implement comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify locator settings
+   - Check network connectivity
+   - Review security settings
+
+2. **Performance Issues**
+   - Optimize region configuration
+   - Adjust memory settings
+   - Review partition strategy
+
+3. **Storage Issues**
+   - Monitor memory usage
+   - Configure persistence
+   - Review cleanup policies 

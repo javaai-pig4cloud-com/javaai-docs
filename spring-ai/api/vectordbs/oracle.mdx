@@ -1,0 +1,204 @@
+---
+title: "Oracle Vector Database"
+---
+
+Oracle Vector Database integration in Spring AI provides vector storage and search capabilities using Oracle's vector features.
+
+## Overview
+
+Oracle Vector Database enables:
+- Relational vector storage
+- SQL-based vector operations
+- Enterprise-grade security
+- High-performance scaling
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Relational" icon="database">
+    Relational vector storage
+  </Card>
+  <Card title="Enterprise" icon="building">
+    Enterprise features
+  </Card>
+  <Card title="Security" icon="shield-alt">
+    Advanced security
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    High-performance scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-oracle-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Oracle Vector Database Configuration
+spring.ai.oracle.vectordb.enabled=true
+spring.ai.oracle.vectordb.url=jdbc:oracle:thin:@localhost:1521:XE
+spring.ai.oracle.vectordb.username=system
+spring.ai.oracle.vectordb.password=oracle
+spring.ai.oracle.vectordb.table-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class OracleVectorService {
+    private final OracleVectorClient vectorClient;
+
+    public OracleVectorService(OracleVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class OracleVectorStorageConfig {
+    @Bean
+    public VectorStorage oracleVectorStorage(OracleVectorProperties properties) {
+        return new OracleVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class OracleSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch oracleSimilaritySearch(OracleVectorProperties properties) {
+        return new OracleSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Table Management
+
+```java
+@Service
+public class TableService {
+    private final OracleVectorClient vectorClient;
+
+    public void createTable(String name, int dimension) {
+        vectorClient.createTable(name, dimension);
+    }
+
+    public void dropTable(String name) {
+        vectorClient.dropTable(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Table Configuration
+
+```java
+@Configuration
+public class TableConfig {
+    @Bean
+    public TableConfig tableConfig() {
+        return TableConfig.builder()
+            .name("custom_vectors")
+            .vectorColumn("vector")
+            .metadataColumns(Arrays.asList("title", "content"))
+            .build();
+    }
+}
+```
+
+### Index Management
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("vector_idx")
+            .type(IndexType.VECTOR)
+            .dimension(1536)
+            .build();
+    }
+}
+```
+
+### Security Configuration
+
+```java
+@Configuration
+public class SecurityConfig {
+    @Bean
+    public SecurityConfig securityConfig() {
+        return SecurityConfig.builder()
+            .encryptionEnabled(true)
+            .auditEnabled(true)
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=oracle-vectordb
+management.endpoint.oracle-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Oracle Vector Database, consider these best practices:
+</Note>
+
+- **Table Design**: Design efficient table structure
+- **Index Management**: Optimize index configuration
+- **Security**: Implement proper security measures
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection URL
+   - Check credentials
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize table structure
+   - Configure indexes
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor table size
+   - Implement cleanup
+   - Review retention policy 

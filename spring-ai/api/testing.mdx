@@ -1,0 +1,198 @@
+---
+title: "Model Evaluation"
+---
+
+Model Evaluation in Spring AI provides comprehensive tools and frameworks for testing and evaluating AI models.
+
+## Overview
+
+Model Evaluation enables developers to:
+- Test model performance
+- Compare different models
+- Validate model outputs
+- Measure model metrics
+
+## Evaluation Types
+
+<CardGroup cols={2}>
+  <Card title="Performance Testing" icon="gauge">
+    Measure model speed and resource usage
+  </Card>
+  <Card title="Accuracy Testing" icon="bullseye">
+    Evaluate model accuracy and precision
+  </Card>
+  <Card title="Regression Testing" icon="code-compare">
+    Ensure model stability across versions
+  </Card>
+  <Card title="Integration Testing" icon="plug">
+    Test model integration with other components
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Test Setup
+
+```java
+@SpringBootTest
+public class ModelEvaluationTest {
+    @Autowired
+    private ChatClient chatClient;
+    
+    @Test
+    public void testModelResponse() {
+        String prompt = "What is Spring AI?";
+        String response = chatClient.generate(prompt);
+        
+        assertNotNull(response);
+        assertTrue(response.length() > 0);
+    }
+}
+```
+
+### Performance Testing
+
+```java
+@Test
+public void testModelPerformance() {
+    ModelEvaluator evaluator = new ModelEvaluator(chatClient);
+    
+    PerformanceMetrics metrics = evaluator.evaluatePerformance(
+        "Test prompt",
+        Duration.ofSeconds(5)
+    );
+    
+    assertTrue(metrics.getAverageResponseTime() < 1000);
+    assertTrue(metrics.getSuccessRate() > 0.95);
+}
+```
+
+### Accuracy Testing
+
+```java
+@Test
+public void testModelAccuracy() {
+    ModelEvaluator evaluator = new ModelEvaluator(chatClient);
+    
+    AccuracyMetrics metrics = evaluator.evaluateAccuracy(
+        testDataset,
+        expectedOutputs
+    );
+    
+    assertTrue(metrics.getAccuracy() > 0.9);
+    assertTrue(metrics.getPrecision() > 0.85);
+    assertTrue(metrics.getRecall() > 0.85);
+}
+```
+
+## Test Categories
+
+### 1. Unit Tests
+
+```java
+@Test
+public void testModelConfiguration() {
+    ModelConfig config = new ModelConfig();
+    config.setTemperature(0.7);
+    config.setMaxTokens(100);
+    
+    assertNotNull(config);
+    assertEquals(0.7, config.getTemperature());
+    assertEquals(100, config.getMaxTokens());
+}
+```
+
+### 2. Integration Tests
+
+```java
+@Test
+public void testModelIntegration() {
+    // Test model integration with other components
+    ModelService service = new ModelService(chatClient, memory, tools);
+    
+    String result = service.processRequest("Test request");
+    assertNotNull(result);
+}
+```
+
+### 3. Load Tests
+
+```java
+@Test
+public void testModelLoad() {
+    LoadTester loadTester = new LoadTester(chatClient);
+    
+    LoadTestResults results = loadTester.runLoadTest(
+        concurrentUsers: 100,
+        duration: Duration.ofMinutes(5)
+    );
+    
+    assertTrue(results.getAverageResponseTime() < 2000);
+    assertTrue(results.getErrorRate() < 0.01);
+}
+```
+
+## Configuration Properties
+
+```properties
+spring.ai.testing.enabled=true
+spring.ai.testing.timeout=30000
+spring.ai.testing.retry-count=3
+spring.ai.testing.metrics-enabled=true
+```
+
+## Best Practices
+
+<Note>
+When implementing model evaluation, consider these best practices:
+</Note>
+
+- **Test Coverage**: Ensure comprehensive test coverage
+- **Performance Metrics**: Monitor key performance indicators
+- **Error Handling**: Test error scenarios and edge cases
+- **Data Quality**: Use high-quality test datasets
+- **Continuous Testing**: Implement continuous testing in CI/CD
+
+## Advanced Features
+
+### Custom Evaluators
+
+```java
+@Component
+public class CustomModelEvaluator implements ModelEvaluator {
+    @Override
+    public EvaluationResults evaluate(Model model, TestDataset dataset) {
+        // Custom evaluation logic
+        return results;
+    }
+}
+```
+
+### Test Reporting
+
+Generate detailed test reports:
+
+```properties
+spring.ai.testing.reporting.enabled=true
+spring.ai.testing.reporting.format=html
+spring.ai.testing.reporting.location=reports
+```
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Test Failures**
+   - Check model configuration
+   - Verify test data
+   - Review error logs
+
+2. **Performance Issues**
+   - Optimize test execution
+   - Use appropriate test data size
+   - Implement proper cleanup
+
+3. **Integration Problems**
+   - Verify component connections
+   - Check configuration
+   - Test in isolation 

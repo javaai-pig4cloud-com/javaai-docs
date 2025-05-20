@@ -1,0 +1,90 @@
+---
+title: Prompt Engineering Patterns
+description: Best practices for prompt engineering in Spring AI
+---
+
+# Prompt Engineering Patterns
+
+This guide covers common patterns and best practices for prompt engineering in Spring AI applications.
+
+## Overview
+
+Prompt engineering is the practice of designing and optimizing prompts to get the best results from AI models.
+
+## Common Patterns
+
+### Chain of Thought
+
+```java
+String prompt = """
+    Let's solve this step by step:
+    1. First, analyze the problem
+    2. Then, break it down into parts
+    3. Finally, provide a solution
+    
+    Problem: {problem}
+    """;
+```
+
+### Few-Shot Learning
+
+```java
+String prompt = """
+    Here are some examples:
+    
+    Example 1:
+    Input: "What is the capital of France?"
+    Output: "Paris"
+    
+    Example 2:
+    Input: "What is the capital of Japan?"
+    Output: "Tokyo"
+    
+    Now, answer this:
+    Input: "{question}"
+    """;
+```
+
+### Role-Based Prompts
+
+```java
+String prompt = """
+    You are an expert software architect. 
+    Your task is to review the following code and provide suggestions:
+    
+    {code}
+    """;
+```
+
+## Best Practices
+
+1. Be specific and clear
+2. Provide context
+3. Use examples when possible
+4. Break down complex tasks
+5. Include constraints and requirements
+
+## Advanced Techniques
+
+### Temperature Control
+
+```java
+ChatOptions options = ChatOptions.builder()
+    .withTemperature(0.7)
+    .build();
+```
+
+### System Messages
+
+```java
+String systemMessage = """
+    You are a helpful AI assistant specialized in Java development.
+    Always provide code examples in Java.
+    """;
+```
+
+## Testing and Evaluation
+
+- Use test cases to validate prompts
+- Measure response quality
+- Iterate and improve based on results 

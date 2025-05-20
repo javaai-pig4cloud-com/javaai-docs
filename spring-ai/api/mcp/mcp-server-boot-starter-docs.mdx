@@ -1,0 +1,200 @@
+---
+title: "MCP Server Boot Starters"
+---
+
+MCP Server Boot Starters provide easy setup of Model Context Protocol (MCP) servers in Spring Boot applications.
+
+## Overview
+
+MCP Server Boot Starters enable:
+- Quick server setup
+- Automatic configuration
+- Model deployment
+- Request handling
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Server Setup" icon="server">
+    Easy server configuration
+  </Card>
+  <Card title="Model Deployment" icon="robot">
+    Simple model deployment
+  </Card>
+  <Card title="Request Handling" icon="arrows-rotate">
+    Efficient request processing
+  </Card>
+  <Card title="Monitoring" icon="chart-line">
+    Built-in monitoring
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-mcp-server-starter</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# MCP Server Configuration
+spring.ai.mcp.server.enabled=true
+spring.ai.mcp.server.port=8080
+spring.ai.mcp.server.model-path=/models
+spring.ai.mcp.server.max-requests=1000
+```
+
+### Server Usage
+
+```java
+@Configuration
+public class MCPServerConfig {
+    @Bean
+    public MCPServer mcpServer(MCPServerProperties properties) {
+        return MCPServer.builder()
+            .properties(properties)
+            .modelRegistry(modelRegistry())
+            .build();
+    }
+
+    @Bean
+    public ModelRegistry modelRegistry() {
+        return new ModelRegistry();
+    }
+}
+```
+
+## Server Types
+
+### 1. Standard Server
+
+```java
+@Configuration
+public class StandardMCPServerConfig {
+    @Bean
+    public MCPServer standardMCPServer(MCPServerProperties properties) {
+        return new StandardMCPServer(properties);
+    }
+}
+```
+
+### 2. Async Server
+
+```java
+@Configuration
+public class AsyncMCPServerConfig {
+    @Bean
+    public AsyncMCPServer asyncMCPServer(MCPServerProperties properties) {
+        return new AsyncMCPServer(properties);
+    }
+}
+```
+
+### 3. Reactive Server
+
+```java
+@Configuration
+public class ReactiveMCPServerConfig {
+    @Bean
+    public ReactiveMCPServer reactiveMCPServer(MCPServerProperties properties) {
+        return new ReactiveMCPServer(properties);
+    }
+}
+```
+
+## Model Deployment
+
+### Basic Model Deployment
+
+```java
+@Service
+public class ModelDeploymentService {
+    private final ModelRegistry modelRegistry;
+
+    public ModelDeploymentService(ModelRegistry modelRegistry) {
+        this.modelRegistry = modelRegistry;
+    }
+
+    public void deployModel(Model model) {
+        modelRegistry.register(model);
+    }
+}
+```
+
+### Model Configuration
+
+```java
+@Configuration
+public class ModelConfig {
+    @Bean
+    public Model model() {
+        return Model.builder()
+            .name("my-model")
+            .version("1.0.0")
+            .type(ModelType.TEXT)
+            .build();
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Server Configuration
+
+```java
+@Configuration
+public class CustomMCPServerConfig {
+    @Bean
+    public MCPServer customMCPServer(MCPServerProperties properties) {
+        return MCPServer.builder()
+            .properties(properties)
+            .interceptor(new CustomInterceptor())
+            .build();
+    }
+}
+```
+
+### Server Monitoring
+
+```properties
+management.endpoints.web.exposure.include=mcp-server
+management.endpoint.mcp-server.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using MCP Server Boot Starters, consider these best practices:
+</Note>
+
+- **Resource Management**: Monitor server resources
+- **Security**: Implement proper security measures
+- **Scalability**: Configure for your scale needs
+- **Monitoring**: Set up comprehensive monitoring
+- **Error Handling**: Implement robust error handling
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Server Startup Issues**
+   - Check port availability
+   - Verify configuration
+   - Review logs
+
+2. **Performance Problems**
+   - Optimize server configuration
+   - Implement caching
+   - Use appropriate server type
+
+3. **Model Deployment Issues**
+   - Verify model compatibility
+   - Check resource availability
+   - Review deployment logs 

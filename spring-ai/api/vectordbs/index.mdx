@@ -1,0 +1,47 @@
+---
+title: Vector Databases
+description: Overview of vector database integrations in Spring AI
+---
+
+# Vector Databases
+
+Spring AI provides support for various vector databases to store and retrieve vector embeddings efficiently. These databases are essential for implementing Retrieval Augmented Generation (RAG) patterns and other vector-based operations.
+
+## Supported Vector Databases
+
+Spring AI supports the following vector databases:
+
+<CardGroup cols={3}>
+  <Card title="Apache Cassandra" href="/spring4ai/api/vectordbs/apache-cassandra" />
+  <Card title="Azure Cosmos DB" href="/spring4ai/api/vectordbs/azure" />
+  <Card title="Chroma" href="/spring4ai/api/vectordbs/chroma" />
+  <Card title="Couchbase" href="/spring4ai/api/vectordbs/couchbase" />
+  <Card title="Elasticsearch" href="/spring4ai/api/vectordbs/elasticsearch" />
+  <Card title="GemFire" href="/spring4ai/api/vectordbs/gemfire" />
+  <Card title="HANA" href="/spring4ai/api/vectordbs/hana" />
+  <Card title="MariaDB" href="/spring4ai/api/vectordbs/mariadb" />
+  <Card title="Milvus" href="/spring4ai/api/vectordbs/milvus" />
+  <Card title="MongoDB" href="/spring4ai/api/vectordbs/mongodb" />
+  <Card title="Neo4j" href="/spring4ai/api/vectordbs/neo4j" />
+  <Card title="OpenSearch" href="/spring4ai/api/vectordbs/opensearch" />
+  <Card title="Oracle" href="/spring4ai/api/vectordbs/oracle" />
+  <Card title="PGVector (PostgreSQL)" href="/spring4ai/api/vectordbs/pgvector" />
+  <Card title="Pinecone" href="/spring4ai/api/vectordbs/pinecone" />
+  <Card title="Qdrant" href="/spring4ai/api/vectordbs/qdrant" />
+  <Card title="Redis" href="/spring4ai/api/vectordbs/redis" />
+  <Card title="Typesense" href="/spring4ai/api/vectordbs/typesense" />
+  <Card title="Weaviate" href="/spring4ai/api/vectordbs/weaviate" />
+</CardGroup>
+
+Each integration provides a consistent API while leveraging the unique features of the underlying database. The Spring AI Vector Store API offers a portable interface across all these databases, making it easy to switch between them without changing your application code.
+
+## Common Features
+
+All vector database integrations in Spring AI provide:
+
+- **Vector storage**: Store embeddings generated from your text data
+- **Similarity search**: Find the most similar vectors to a query vector
+- **Metadata filtering**: Filter results based on metadata attributes
+- **RAG integration**: Seamless integration with Spring AI's Retrieval Augmented Generation (RAG) capabilities
+
+For detailed information about specific vector database implementations, please visit the respective documentation pages. 

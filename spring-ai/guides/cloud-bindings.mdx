@@ -1,0 +1,122 @@
+---
+title: Deploying to the Cloud
+description: Guide to deploying Spring AI applications to cloud platforms
+---
+
+# Deploying to the Cloud
+
+This guide covers best practices for deploying Spring AI applications to various cloud platforms.
+
+## Overview
+
+Spring AI applications can be deployed to various cloud platforms with different configurations and optimizations.
+
+## Cloud Platforms
+
+### AWS
+
+```yaml
+# application-aws.yml
+spring:
+  ai:
+    aws:
+      region: us-west-2
+      credentials:
+        access-key: ${AWS_ACCESS_KEY}
+        secret-key: ${AWS_SECRET_KEY}
+```
+
+### Azure
+
+```yaml
+# application-azure.yml
+spring:
+  ai:
+    azure:
+      endpoint: ${AZURE_ENDPOINT}
+      api-key: ${AZURE_API_KEY}
+```
+
+### Google Cloud
+
+```yaml
+# application-gcp.yml
+spring:
+  ai:
+    google:
+      project-id: ${GCP_PROJECT_ID}
+      credentials: ${GOOGLE_APPLICATION_CREDENTIALS}
+```
+
+## Deployment Strategies
+
+### 1. Container Deployment
+
+```dockerfile
+FROM openjdk:17-jdk-slim
+COPY target/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+```
+
+### 2. Serverless Deployment
+
+```yaml
+# serverless.yml
+service: spring-ai-app
+provider:
+  name: aws
+  runtime: java17
+functions:
+  api:
+    handler: com.example.AiApplication
+    events:
+      - http:
+          path: /api
+          method: any
+```
+
+## Best Practices
+
+1. Security
+   - Use environment variables for secrets
+   - Implement proper IAM roles
+   - Enable encryption at rest
+
+2. Performance
+   - Configure appropriate resources
+   - Enable caching where possible
+   - Monitor and optimize costs
+
+3. Monitoring
+   - Set up cloud monitoring
+   - Configure alerts
+   - Log important events
+
+4. Scaling
+   - Configure auto-scaling
+   - Use load balancing
+   - Implement circuit breakers
+
+## Example Configuration
+
+```java
+@Configuration
+public class CloudConfig {
+    
+    @Bean
+    public CloudProperties cloudProperties() {
+        return CloudProperties.builder()
+            .withRegion(System.getenv("CLOUD_REGION"))
+            .withCredentials(new CloudCredentials())
+            .withMonitoring(true)
+            .build();
+    }
+}
+```
+
+## Troubleshooting
+
+- Check cloud provider logs
+- Monitor application metrics
+- Review security configurations
+- Verify network connectivity 

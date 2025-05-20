@@ -1,0 +1,187 @@
+---
+title: "Milvus Vector Database"
+---
+
+Milvus Vector Database integration in Spring AI provides vector storage and search capabilities using Milvus's vector features.
+
+## Overview
+
+Milvus Vector Database enables:
+- Distributed vector storage
+- High-performance similarity search
+- Real-time vector operations
+- Scalable architecture
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Distributed" icon="network-wired">
+    Distributed architecture
+  </Card>
+  <Card title="High Performance" icon="tachometer-alt">
+    Fast similarity search
+  </Card>
+  <Card title="Scalability" icon="arrows-up-down-left-right">
+    Horizontal scaling
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-milvus-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Milvus Vector Database Configuration
+spring.ai.milvus.vectordb.enabled=true
+spring.ai.milvus.vectordb.host=localhost
+spring.ai.milvus.vectordb.port=19530
+spring.ai.milvus.vectordb.collection-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class MilvusVectorService {
+    private final MilvusVectorClient vectorClient;
+
+    public MilvusVectorService(MilvusVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class MilvusVectorStorageConfig {
+    @Bean
+    public VectorStorage milvusVectorStorage(MilvusVectorProperties properties) {
+        return new MilvusVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class MilvusSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch milvusSimilaritySearch(MilvusVectorProperties properties) {
+        return new MilvusSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Collection Management
+
+```java
+@Service
+public class CollectionService {
+    private final MilvusVectorClient vectorClient;
+
+    public void createCollection(String name, int dimension) {
+        vectorClient.createCollection(name, dimension);
+    }
+
+    public void dropCollection(String name) {
+        vectorClient.dropCollection(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Collection Configuration
+
+```java
+@Configuration
+public class CollectionConfig {
+    @Bean
+    public CollectionConfig collectionConfig() {
+        return CollectionConfig.builder()
+            .name("custom-collection")
+            .dimension(1536)
+            .indexType(IndexType.IVF_FLAT)
+            .metricType(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Partition Management
+
+```java
+@Configuration
+public class PartitionConfig {
+    @Bean
+    public PartitionConfig partitionConfig() {
+        return PartitionConfig.builder()
+            .name("custom-partition")
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=milvus-vectordb
+management.endpoint.milvus-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Milvus Vector Database, consider these best practices:
+</Note>
+
+- **Collection Design**: Design efficient collection structure
+- **Index Selection**: Choose appropriate index types
+- **Partition Strategy**: Implement effective partitioning
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify host and port
+   - Check network connectivity
+   - Review authentication
+
+2. **Performance Issues**
+   - Optimize index configuration
+   - Adjust partition strategy
+   - Review resource allocation
+
+3. **Storage Issues**
+   - Monitor collection size
+   - Implement cleanup
+   - Review retention policy 

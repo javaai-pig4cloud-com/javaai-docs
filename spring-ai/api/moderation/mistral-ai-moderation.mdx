@@ -1,0 +1,179 @@
+---
+title: "Mistral AI Moderation"
+---
+
+Mistral AI Moderation in Spring AI provides content moderation capabilities using Mistral AI's moderation models.
+
+## Overview
+
+Mistral AI Moderation enables:
+- Advanced content filtering
+- Multi-language support
+- Custom moderation rules
+- Real-time content analysis
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Content Analysis" icon="magnifying-glass">
+    Deep content analysis
+  </Card>
+  <Card title="Multi-language" icon="language">
+    Support for multiple languages
+  </Card>
+  <Card title="Custom Rules" icon="gear">
+    Customizable moderation rules
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time content moderation
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-mistral-moderation</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Mistral AI Moderation Configuration
+spring.ai.mistral.moderation.enabled=true
+spring.ai.mistral.moderation.api-key=${MISTRAL_API_KEY}
+spring.ai.mistral.moderation.model=mistral-moderation
+```
+
+### Usage
+
+```java
+@Service
+public class MistralModerationService {
+    private final MistralModerationClient moderationClient;
+
+    public MistralModerationService(MistralModerationClient moderationClient) {
+        this.moderationClient = moderationClient;
+    }
+
+    public ModerationResult moderateContent(String content) {
+        return moderationClient.moderate(content);
+    }
+}
+```
+
+## Moderation Features
+
+### 1. Basic Moderation
+
+```java
+@Configuration
+public class MistralModerationConfig {
+    @Bean
+    public ModerationClient mistralModerationClient(MistralModerationProperties properties) {
+        return new MistralModerationClient(properties);
+    }
+}
+```
+
+### 2. Language-specific Moderation
+
+```java
+@Configuration
+public class LanguageModerationConfig {
+    @Bean
+    public ModerationClient languageModerationClient(MistralModerationProperties properties) {
+        return ModerationClient.builder()
+            .properties(properties)
+            .languages(Arrays.asList("en", "fr", "es"))
+            .build();
+    }
+}
+```
+
+### 3. Custom Moderation Rules
+
+```java
+@Configuration
+public class CustomModerationConfig {
+    @Bean
+    public ModerationClient customModerationClient(MistralModerationProperties properties) {
+        return ModerationClient.builder()
+            .properties(properties)
+            .rules(customRules())
+            .build();
+    }
+
+    private List<ModerationRule> customRules() {
+        return Arrays.asList(
+            new ModerationRule("hate", 0.7),
+            new ModerationRule("harassment", 0.6),
+            new ModerationRule("violence", 0.8)
+        );
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Moderation Logic
+
+```java
+@Component
+public class CustomModerationLogic implements ModerationLogic {
+    @Override
+    public ModerationResult process(String content) {
+        // Custom moderation logic
+        return result;
+    }
+
+    @Override
+    public boolean isAllowed(ModerationResult result) {
+        // Custom allowance logic
+        return allowed;
+    }
+}
+```
+
+### Moderation Monitoring
+
+```properties
+management.endpoints.web.exposure.include=mistral-moderation
+management.endpoint.mistral-moderation.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Mistral AI Moderation, consider these best practices:
+</Note>
+
+- **API Security**: Secure your API key
+- **Error Handling**: Implement robust error handling
+- **Rate Limiting**: Monitor API usage
+- **Language Support**: Configure appropriate languages
+- **Rule Management**: Maintain clear moderation rules
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **API Issues**
+   - Verify API key
+   - Check API limits
+   - Review error messages
+
+2. **Language Issues**
+   - Verify language support
+   - Check language detection
+   - Review language settings
+
+3. **Performance Issues**
+   - Optimize request frequency
+   - Implement caching
+   - Use batch processing 

@@ -1,0 +1,192 @@
+---
+title: "Typesense Vector Database"
+---
+
+Typesense Vector Database integration in Spring AI provides vector storage and search capabilities using Typesense's vector features.
+
+## Overview
+
+Typesense Vector Database enables:
+- Fast vector search
+- Full-text search integration
+- Real-time operations
+- Simple deployment
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Fast" icon="tachometer-alt">
+    Fast search
+  </Card>
+  <Card title="Simple" icon="magic">
+    Simple deployment
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+  <Card title="Search" icon="search">
+    Full-text search
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-typesense-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Typesense Vector Database Configuration
+spring.ai.typesense.vectordb.enabled=true
+spring.ai.typesense.vectordb.host=localhost
+spring.ai.typesense.vectordb.port=8108
+spring.ai.typesense.vectordb.api-key=xyz
+spring.ai.typesense.vectordb.collection-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class TypesenseVectorService {
+    private final TypesenseVectorClient vectorClient;
+
+    public TypesenseVectorService(TypesenseVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class TypesenseVectorStorageConfig {
+    @Bean
+    public VectorStorage typesenseVectorStorage(TypesenseVectorProperties properties) {
+        return new TypesenseVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class TypesenseSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch typesenseSimilaritySearch(TypesenseVectorProperties properties) {
+        return new TypesenseSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Collection Management
+
+```java
+@Service
+public class CollectionService {
+    private final TypesenseVectorClient vectorClient;
+
+    public void createCollection(String name, int dimension) {
+        vectorClient.createCollection(name, dimension);
+    }
+
+    public void dropCollection(String name) {
+        vectorClient.dropCollection(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Collection Configuration
+
+```java
+@Configuration
+public class CollectionConfig {
+    @Bean
+    public CollectionConfig collectionConfig() {
+        return CollectionConfig.builder()
+            .name("custom-vectors")
+            .dimension(1536)
+            .fields(Arrays.asList(
+                new Field("vector", FieldType.VECTOR),
+                new Field("title", FieldType.STRING),
+                new Field("content", FieldType.STRING)
+            ))
+            .build();
+    }
+}
+```
+
+### Search Configuration
+
+```java
+@Configuration
+public class SearchConfig {
+    @Bean
+    public SearchConfig searchConfig() {
+        return SearchConfig.builder()
+            .vectorField("vector")
+            .textFields(Arrays.asList("title", "content"))
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=typesense-vectordb
+management.endpoint.typesense-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Typesense Vector Database, consider these best practices:
+</Note>
+
+- **Collection Design**: Design efficient collection structure
+- **Field Configuration**: Optimize field types
+- **Search Strategy**: Implement effective search
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify host and port
+   - Check API key
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize collection structure
+   - Adjust search configuration
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor collection size
+   - Implement cleanup
+   - Review retention policy 

@@ -1,0 +1,183 @@
+---
+title: "Elasticsearch Vector Database"
+---
+
+Elasticsearch Vector Database integration in Spring AI provides vector storage and search capabilities using Elasticsearch's vector features.
+
+## Overview
+
+Elasticsearch Vector Database enables:
+- Distributed vector storage
+- Advanced search capabilities
+- Real-time vector operations
+- Full-text search integration
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Distributed Storage" icon="network-wired">
+    Distributed vector storage
+  </Card>
+  <Card title="Advanced Search" icon="magnifying-glass">
+    Rich search capabilities
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+  <Card title="Integration" icon="plug">
+    Full-text search integration
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-elasticsearch-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Elasticsearch Vector Database Configuration
+spring.ai.elasticsearch.vectordb.enabled=true
+spring.ai.elasticsearch.vectordb.host=localhost
+spring.ai.elasticsearch.vectordb.port=9200
+spring.ai.elasticsearch.vectordb.index-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class ElasticsearchVectorService {
+    private final ElasticsearchVectorClient vectorClient;
+
+    public ElasticsearchVectorService(ElasticsearchVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class ElasticsearchVectorStorageConfig {
+    @Bean
+    public VectorStorage elasticsearchVectorStorage(ElasticsearchVectorProperties properties) {
+        return new ElasticsearchVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class ElasticsearchSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch elasticsearchSimilaritySearch(ElasticsearchVectorProperties properties) {
+        return new ElasticsearchSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Hybrid Search
+
+```java
+@Service
+public class HybridSearchService {
+    private final ElasticsearchVectorClient vectorClient;
+
+    public List<SearchResult> hybridSearch(String text, float[] queryVector, int k) {
+        return vectorClient.hybridSearch(text, queryVector, k);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Index Configuration
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("vector-index")
+            .dimension(1536)
+            .metric(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Mapping Configuration
+
+```java
+@Configuration
+public class MappingConfig {
+    @Bean
+    public MappingConfig mappingConfig() {
+        return MappingConfig.builder()
+            .vectorField("vector")
+            .metadataFields(Arrays.asList("title", "content"))
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=elasticsearch-vectordb
+management.endpoint.elasticsearch-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Elasticsearch Vector Database, consider these best practices:
+</Note>
+
+- **Index Design**: Design efficient index structure
+- **Mapping Optimization**: Optimize field mappings
+- **Shard Management**: Configure appropriate sharding
+- **Query Optimization**: Optimize search queries
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify host and port
+   - Check cluster health
+   - Review authentication
+
+2. **Performance Issues**
+   - Optimize index settings
+   - Adjust shard configuration
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor index size
+   - Configure cleanup
+   - Review retention policy 

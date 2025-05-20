@@ -1,0 +1,39 @@
+---
+title: Azure OpenAI Transcriptions
+description: Using Azure OpenAI's Whisper models for speech-to-text
+---
+
+# Azure OpenAI Transcriptions
+
+Spring AI provides integration with Azure OpenAI's Whisper models for speech-to-text capabilities.
+
+## Configuration
+
+Add the following dependency to your project:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-azure-openai-spring-boot-starter</artifactId>
+</dependency>
+```
+
+## Properties
+
+```properties
+spring.ai.azure.openai.api-key=YOUR_API_KEY
+spring.ai.azure.openai.endpoint=YOUR_ENDPOINT
+spring.ai.azure.openai.audio.model=whisper-1
+```
+
+## Usage
+
+```java
+@Autowired
+private TranscriptionClient transcriptionClient;
+
+// Transcribe audio
+TranscriptionResponse response = transcriptionClient.call(
+    new TranscriptionPrompt(audioFile)
+);
+``` 

@@ -1,0 +1,38 @@
+---
+title: OpenAI Image Generation
+description: Using OpenAI's DALL-E models for image generation
+---
+
+# OpenAI Image Generation
+
+Spring AI provides integration with OpenAI's DALL-E models for image generation capabilities.
+
+## Configuration
+
+Add the following dependency to your project:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+</dependency>
+```
+
+## Properties
+
+```properties
+spring.ai.openai.api-key=YOUR_API_KEY
+spring.ai.openai.image.model=dall-e-3
+```
+
+## Usage
+
+```java
+@Autowired
+private ImageClient imageClient;
+
+// Generate an image
+ImageResponse response = imageClient.call(
+    new ImagePrompt("A futuristic cityscape at night")
+);
+``` 

@@ -1,0 +1,162 @@
+---
+title: "MCP Client Boot Starters"
+---
+
+MCP Client Boot Starters provide easy integration of Model Context Protocol (MCP) clients in Spring Boot applications.
+
+## Overview
+
+MCP Client Boot Starters enable:
+- Quick setup of MCP clients
+- Automatic configuration
+- Integration with Spring Boot
+- Easy model management
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Auto Configuration" icon="gear">
+    Automatic client configuration
+  </Card>
+  <Card title="Model Management" icon="robot">
+    Easy model registration and management
+  </Card>
+  <Card title="Health Checks" icon="heart">
+    Built-in health monitoring
+  </Card>
+  <Card title="Metrics" icon="chart-line">
+    Performance metrics collection
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-mcp-client-starter</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# MCP Client Configuration
+spring.ai.mcp.client.enabled=true
+spring.ai.mcp.client.server-url=http://localhost:8080
+spring.ai.mcp.client.timeout=5000
+spring.ai.mcp.client.retry-count=3
+```
+
+### Client Usage
+
+```java
+@Service
+public class MCPClientService {
+    private final MCPClient mcpClient;
+
+    public MCPClientService(MCPClient mcpClient) {
+        this.mcpClient = mcpClient;
+    }
+
+    public String processRequest(String input) {
+        return mcpClient.process(input);
+    }
+}
+```
+
+## Client Types
+
+### 1. Standard Client
+
+```java
+@Configuration
+public class MCPClientConfig {
+    @Bean
+    public MCPClient mcpClient(MCPClientProperties properties) {
+        return new StandardMCPClient(properties);
+    }
+}
+```
+
+### 2. Async Client
+
+```java
+@Configuration
+public class AsyncMCPClientConfig {
+    @Bean
+    public AsyncMCPClient asyncMCPClient(MCPClientProperties properties) {
+        return new AsyncMCPClient(properties);
+    }
+}
+```
+
+### 3. Reactive Client
+
+```java
+@Configuration
+public class ReactiveMCPClientConfig {
+    @Bean
+    public ReactiveMCPClient reactiveMCPClient(MCPClientProperties properties) {
+        return new ReactiveMCPClient(properties);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Client Configuration
+
+```java
+@Configuration
+public class CustomMCPClientConfig {
+    @Bean
+    public MCPClient customMCPClient(MCPClientProperties properties) {
+        return MCPClient.builder()
+            .properties(properties)
+            .interceptor(new CustomInterceptor())
+            .build();
+    }
+}
+```
+
+### Client Monitoring
+
+```properties
+management.endpoints.web.exposure.include=mcp-client
+management.endpoint.mcp-client.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using MCP Client Boot Starters, consider these best practices:
+</Note>
+
+- **Error Handling**: Implement proper error handling
+- **Retry Strategy**: Configure appropriate retry policies
+- **Monitoring**: Set up proper monitoring
+- **Security**: Secure client connections
+- **Performance**: Optimize client configuration
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Check server URL
+   - Verify network connectivity
+   - Review timeout settings
+
+2. **Performance Problems**
+   - Optimize client configuration
+   - Implement caching
+   - Use appropriate client type
+
+3. **Integration Issues**
+   - Verify Spring Boot version
+   - Check dependency conflicts
+   - Review configuration 

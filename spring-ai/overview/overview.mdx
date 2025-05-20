@@ -1,0 +1,95 @@
+---
+title: "Overview"
+---
+
+<Frame caption="Spring AI Logo">
+  <img src="/images/spring_ai_logo_with_text.svg" width="300" />
+</Frame>
+
+The `Spring AI` project aims to streamline the development of applications that incorporate artificial intelligence functionality without unnecessary complexity.
+
+The project draws inspiration from notable Python projects, such as LangChain and LlamaIndex, but Spring AI is not a direct port of those projects.
+The project was founded with the belief that the next wave of Generative AI applications will not be only for Python developers but will be ubiquitous across many programming languages.
+
+<Note>Spring AI addresses the fundamental challenge of AI integration: **Connecting your enterprise Data and APIs with AI Models**.</Note>
+
+<Frame caption="Spring AI Integration">
+  <img src="/images/spring-ai-integration-diagram-3.svg" width="500" />
+</Frame>
+
+Spring AI provides abstractions that serve as the foundation for developing AI applications.
+These abstractions have multiple implementations, enabling easy component swapping with minimal code changes.
+
+## Features
+
+Spring AI provides the following features:
+
+<AccordionGroup>
+  <Accordion title="Model Support" icon="robot">
+    Portable API support across AI providers for Chat, text-to-image, and Embedding models. Both synchronous and streaming API options are supported. Access to model-specific features is also available.
+  </Accordion>
+  
+  <Accordion title="AI Model Providers" icon="building">
+    Support for all major AI Model providers such as Anthropic, OpenAI, Microsoft, Amazon, Google, and Ollama. Supported model types include:
+    
+    - [Chat Completion](/spring4ai/api/chatmodel)
+    - [Embedding](/spring4ai/api/embeddings)
+    - [Text to Image](/spring4ai/api/imageclient)
+    - [Audio Transcription](/spring4ai/api/audio/transcriptions)
+    - [Text to Speech](/spring4ai/api/audio/speech)
+    - [Moderation](/spring4ai/api/moderation)
+  </Accordion>
+  
+  <Accordion title="Structured Outputs" icon="code">
+    [Structured Outputs](/spring4ai/api/structured-output-converter) - Mapping of AI Model output to POJOs.
+  </Accordion>
+  
+  <Accordion title="Vector Database Support" icon="database">
+    Support for all major Vector Database providers such as Apache Cassandra, Azure Cosmos DB, Azure Vector Search, Chroma, Elasticsearch, GemFire, MariaDB, Milvus, MongoDB Atlas, Neo4j, OpenSearch, Oracle, PostgreSQL/PGVector, PineCone, Qdrant, Redis, SAP Hana, Typesense and Weaviate.
+  </Accordion>
+  
+  <Accordion title="Tools & Function Calling" icon="wrench">
+    [Tools/Function Calling](/spring4ai/api/tools) - Permits the model to request the execution of client-side tools and functions, thereby accessing necessary real-time information as required and taking action.
+  </Accordion>
+  
+  <Accordion title="Observability" icon="eye">
+    [Observability](/spring4ai/observability) - Provides insights into AI-related operations.
+  </Accordion>
+  
+  <Accordion title="ETL Framework" icon="gears">
+    Document ingestion [ETL framework](/spring4ai/api/etl-pipeline) for Data Engineering.
+  </Accordion>
+  
+  <Accordion title="Model Evaluation" icon="chart-line">
+    [AI Model Evaluation](/spring4ai/api/testing) - Utilities to help evaluate generated content and protect against hallucinated response.
+  </Accordion>
+  
+  <Accordion title="Spring Boot Integration" icon="spring">
+    Spring Boot Auto Configuration and Starters for AI Models and Vector Stores.
+  </Accordion>
+  
+  <Accordion title="ChatClient API" icon="comments">
+    [ChatClient API](/spring4ai/api/chatclient) - Fluent API for communicating with AI Chat Models, idiomatically similar to the WebClient and RestClient APIs.
+  </Accordion>
+  
+  <Accordion title="Advisors API" icon="user-gear">
+    [Advisors API](/spring4ai/api/advisors) - Encapsulates recurring Generative AI patterns, transforms data sent to and from Language Models (LLMs), and provides portability across various models and use cases.
+  </Accordion>
+  
+  <Accordion title="Memory & RAG" icon="brain">
+    Support for [Chat Conversation Memory](/spring4ai/api/chatclient#chat-memory) and [Retrieval Augmented Generation (RAG)](/spring4ai/api/chatclient#retrieval-augmented-generation).
+  </Accordion>
+</AccordionGroup>
+
+This feature set lets you implement common use cases, such as "Q&A over your documentation" or "Chat with your documentation."
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="AI Concepts" icon="lightbulb" href="/spring4ai/overview/concepts">
+    Understand high-level AI concepts and their representation in Spring AI
+  </Card>
+  <Card title="Getting Started" icon="rocket" href="/spring4ai/getting-started">
+    Create your first AI application with Spring AI
+  </Card>
+</CardGroup> 

@@ -1,0 +1,204 @@
+---
+title: "pgvector Vector Database"
+---
+
+pgvector Vector Database integration in Spring AI provides vector storage and search capabilities using PostgreSQL's pgvector extension.
+
+## Overview
+
+pgvector Vector Database enables:
+- PostgreSQL-based vector storage
+- SQL-based vector operations
+- Full-text search integration
+- Transaction support
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="PostgreSQL" icon="database">
+    PostgreSQL integration
+  </Card>
+  <Card title="SQL" icon="code">
+    SQL-based operations
+  </Card>
+  <Card title="Transactions" icon="exchange-alt">
+    Transaction support
+  </Card>
+  <Card title="Search" icon="search">
+    Full-text search
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-pgvector-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# pgvector Vector Database Configuration
+spring.ai.pgvector.vectordb.enabled=true
+spring.ai.pgvector.vectordb.url=jdbc:postgresql://localhost:5432/vectordb
+spring.ai.pgvector.vectordb.username=postgres
+spring.ai.pgvector.vectordb.password=postgres
+spring.ai.pgvector.vectordb.table-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class PgVectorService {
+    private final PgVectorClient vectorClient;
+
+    public PgVectorService(PgVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class PgVectorStorageConfig {
+    @Bean
+    public VectorStorage pgVectorStorage(PgVectorProperties properties) {
+        return new PgVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class PgVectorSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch pgVectorSimilaritySearch(PgVectorProperties properties) {
+        return new PgVectorSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Table Management
+
+```java
+@Service
+public class TableService {
+    private final PgVectorClient vectorClient;
+
+    public void createTable(String name, int dimension) {
+        vectorClient.createTable(name, dimension);
+    }
+
+    public void dropTable(String name) {
+        vectorClient.dropTable(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Table Configuration
+
+```java
+@Configuration
+public class TableConfig {
+    @Bean
+    public TableConfig tableConfig() {
+        return TableConfig.builder()
+            .name("custom_vectors")
+            .vectorColumn("vector")
+            .metadataColumns(Arrays.asList("title", "content"))
+            .build();
+    }
+}
+```
+
+### Index Management
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("vector_idx")
+            .type(IndexType.IVFFLAT)
+            .dimension(1536)
+            .build();
+    }
+}
+```
+
+### Extension Management
+
+```java
+@Configuration
+public class ExtensionConfig {
+    @Bean
+    public ExtensionConfig extensionConfig() {
+        return ExtensionConfig.builder()
+            .name("vector")
+            .version("0.5.1")
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=pgvector-vectordb
+management.endpoint.pgvector-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using pgvector Vector Database, consider these best practices:
+</Note>
+
+- **Table Design**: Design efficient table structure
+- **Index Management**: Optimize index configuration
+- **Extension Version**: Keep pgvector updated
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection URL
+   - Check credentials
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize table structure
+   - Configure indexes
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor table size
+   - Implement cleanup
+   - Review retention policy 

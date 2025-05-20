@@ -1,0 +1,38 @@
+---
+title: OpenAI Speech
+description: Using OpenAI's TTS models for text-to-speech
+---
+
+# OpenAI Speech
+
+Spring AI provides integration with OpenAI's Text-to-Speech (TTS) models for speech synthesis capabilities.
+
+## Configuration
+
+Add the following dependency to your project:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+</dependency>
+```
+
+## Properties
+
+```properties
+spring.ai.openai.api-key=YOUR_API_KEY
+spring.ai.openai.speech.model=tts-1
+```
+
+## Usage
+
+```java
+@Autowired
+private SpeechClient speechClient;
+
+// Generate speech
+SpeechResponse response = speechClient.call(
+    new SpeechPrompt("Hello, this is a test of the text-to-speech system.")
+);
+``` 

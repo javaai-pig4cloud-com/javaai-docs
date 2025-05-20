@@ -1,0 +1,203 @@
+---
+title: "Hugging Face Embeddings"
+---
+
+Hugging Face Hub is a platform that provides a collaborative environment for creating and sharing tens of thousands of Open Source ML/AI models, data sets, and demo applications.
+
+Inference Endpoints let you deploy AI Models on dedicated infrastructure with a pay-as-you-go billing model.
+You can use infrastructure provided by Amazon Web Services, Microsoft Azure, and Google Cloud Platform.
+Hugging Face lets you run the models on your own machine, but it is quite common to not have enough CPU/GPU resources to run the larger, more AI-focused models.
+
+## Prerequisites
+
+You will need to create an Inference Endpoint on Hugging Face and create an API token to access the endpoint.
+Further details can be found [here](https://huggingface.co/docs/inference-endpoints/index).
+
+The Spring AI project defines two configuration properties:
+
+1. `spring.ai.huggingface.embedding.api-key`: Set this to the value of the API token obtained from Hugging Face.
+2. `spring.ai.huggingface.embedding.url`: Set this to the inference endpoint URL obtained when provisioning your model in Hugging Face.
+
+You can find your inference endpoint URL on the Inference Endpoint's UI [here](https://ui.endpoints.huggingface.co/).
+
+You can set these configuration properties in your `application.properties` file:
+
+```properties
+spring.ai.huggingface.embedding.api-key=<your-huggingface-api-key>
+spring.ai.huggingface.embedding.url=<your-inference-endpoint-url>
+```
+
+For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference custom environment variables:
+
+```yaml
+# In application.yml
+spring:
+  ai:
+    huggingface:
+      embedding:
+        api-key: ${HUGGINGFACE_API_KEY}
+        url: ${HUGGINGFACE_ENDPOINT_URL}
+```
+
+```bash
+# In your environment or .env file
+export HUGGINGFACE_API_KEY=<your-huggingface-api-key>
+export HUGGINGFACE_ENDPOINT_URL=<your-inference-endpoint-url>
+```
+
+You can also set these configurations programmatically in your application code:
+
+```java
+// Retrieve API key and endpoint URL from secure sources or environment variables
+String apiKey = System.getenv("HUGGINGFACE_API_KEY");
+String endpointUrl = System.getenv("HUGGINGFACE_ENDPOINT_URL");
+```
+
+## Add Repositories and BOM
+
+Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
+Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+
+To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+
+## Auto-configuration
+
+> **Note**: There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
+> Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+
+Spring AI provides Spring Boot auto-configuration for the Hugging Face Embedding Client.
+To enable it add the following dependency to your project's Maven `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-starter-model-huggingface</artifactId>
+</dependency>
+```
+
+or to your Gradle `build.gradle` build file.
+
+```groovy
+dependencies {
+    implementation 'org.springframework.ai:spring-ai-starter-model-huggingface'
+}
+```
+
+> **Tip**: Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+
+### Embedding Properties
+
+> **Note**: Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+>
+> To enable, spring.ai.model.embedding=huggingface (It is enabled by default)
+>
+> To disable, spring.ai.model.embedding=none (or any value which doesn't match huggingface)
+>
+> This change is done to allow configuration of multiple models.
+
+The prefix `spring.ai.huggingface.embedding` is property prefix that configures the `EmbeddingModel` implementation for Hugging Face embeddings.
+
+| Property | Description | Default |
+|----------|-------------|---------|
+| spring.ai.huggingface.embedding.enabled (Removed and no longer valid) | Enable Hugging Face embedding model. | true |
+| spring.ai.model.embedding | Enable Hugging Face embedding model. | huggingface |
+| spring.ai.huggingface.embedding.api-key | The API key for Hugging Face. | - |
+| spring.ai.huggingface.embedding.url | The inference endpoint URL. | - |
+| spring.ai.huggingface.embedding.options.model | The model to use for embeddings. | - |
+| spring.ai.huggingface.embedding.options.metadataMode | Document metadata aggregation mode | EMBED |
+
+> **Tip**: All properties prefixed with `spring.ai.huggingface.embedding.options` can be overridden at runtime by adding a request specific embedding options to the `EmbeddingRequest` call.
+
+## Runtime Options
+
+Use the `HuggingFaceEmbeddingOptions` to configure the `HuggingFaceEmbeddingModel` with options, such as the model to use and etc.
+
+On start you can pass a `HuggingFaceEmbeddingOptions` to the `HuggingFaceEmbeddingModel` constructor to configure the default options used for all embedding requests.
+
+At run-time you can override the default options, using a `HuggingFaceEmbeddingOptions` in your `EmbeddingRequest`.
+
+For example to override the default model name for a specific request:
+
+```java
+EmbeddingResponse embeddingResponse = embeddingModel.call(
+    new EmbeddingRequest(List.of("Hello World", "World is big and salvation is near"),
+            HuggingFaceEmbeddingOptions.builder()
+                .model("sentence-transformers/all-MiniLM-L6-v2")
+                .build()));
+```
+
+## Sample Controller
+
+This will create a `EmbeddingModel` implementation that you can inject into your class.
+Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+
+```java
+@RestController
+public class EmbeddingController {
+
+    private final EmbeddingModel embeddingModel;
+
+    @Autowired
+    public EmbeddingController(EmbeddingModel embeddingModel) {
+        this.embeddingModel = embeddingModel;
+    }
+
+    @GetMapping("/ai/embedding")
+    public Map embed(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+        EmbeddingResponse embeddingResponse = this.embeddingModel.embedForResponse(List.of(message));
+        return Map.of("embedding", embeddingResponse);
+    }
+}
+```
+
+## Manual configuration
+
+Instead of using the Spring Boot auto-configuration, you can create the `HuggingFaceEmbeddingModel` manually.
+For this add the `spring-ai-huggingface` dependency to your project's Maven `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-huggingface</artifactId>
+</dependency>
+```
+
+or to your Gradle `build.gradle` build file.
+
+```groovy
+dependencies {
+    implementation 'org.springframework.ai:spring-ai-huggingface'
+}
+```
+
+> **Tip**: Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+
+Next, create a `HuggingFaceEmbeddingModel` instance and use it to compute embeddings:
+
+```java
+HuggingFaceEmbeddingModel embeddingModel = new HuggingFaceEmbeddingModel(
+        HuggingFaceEmbeddingOptions.builder()
+            .apiKey("your-api-key")
+            .url("your-endpoint-url")
+            .model("sentence-transformers/all-MiniLM-L6-v2")
+            .build());
+
+EmbeddingResponse embeddingResponse = this.embeddingModel
+    .embedForResponse(List.of("Hello World", "World is big and salvation is near"));
+```
+
+> **Note**: When created manually, you must call the `afterPropertiesSet()` after setting the properties and before using the client.
+> It is more convenient (and preferred) to create the HuggingFaceEmbeddingModel as a `@Bean`.
+> Then you don't have to call the `afterPropertiesSet()` manually:
+
+```java
+@Bean
+public EmbeddingModel embeddingModel() {
+    return new HuggingFaceEmbeddingModel(
+        HuggingFaceEmbeddingOptions.builder()
+            .apiKey("your-api-key")
+            .url("your-endpoint-url")
+            .model("sentence-transformers/all-MiniLM-L6-v2")
+            .build());
+}
+``` 

@@ -1,0 +1,183 @@
+---
+title: "Apache Cassandra Vector Database"
+---
+
+Apache Cassandra Vector Database integration in Spring AI provides vector storage and search capabilities using Apache Cassandra's vector features.
+
+## Overview
+
+Apache Cassandra Vector Database enables:
+- Distributed vector storage
+- Linear scalability
+- High availability
+- Fault tolerance
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Distributed Storage" icon="network-wired">
+    Distributed vector storage
+  </Card>
+  <Card title="Scalability" icon="arrows-up-down-left-right">
+    Linear scaling
+  </Card>
+  <Card title="Availability" icon="server">
+    High availability
+  </Card>
+  <Card title="Fault Tolerance" icon="shield">
+    Fault tolerance
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-cassandra-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Apache Cassandra Vector Database Configuration
+spring.ai.cassandra.vectordb.enabled=true
+spring.ai.cassandra.vectordb.contact-points=localhost
+spring.ai.cassandra.vectordb.port=9042
+spring.ai.cassandra.vectordb.keyspace=vectordb
+spring.ai.cassandra.vectordb.table=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class CassandraVectorService {
+    private final CassandraVectorClient vectorClient;
+
+    public CassandraVectorService(CassandraVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector) {
+        vectorClient.store(id, vector);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class CassandraVectorStorageConfig {
+    @Bean
+    public VectorStorage cassandraVectorStorage(CassandraVectorProperties properties) {
+        return new CassandraVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class CassandraSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch cassandraSimilaritySearch(CassandraVectorProperties properties) {
+        return new CassandraSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Batch Operations
+
+```java
+@Service
+public class BatchVectorService {
+    private final CassandraVectorClient vectorClient;
+
+    public void batchStore(List<VectorDocument> documents) {
+        vectorClient.batchStore(documents);
+    }
+
+    public List<List<SearchResult>> batchSearch(List<float[]> queryVectors, int k) {
+        return vectorClient.batchSearch(queryVectors, k);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Replication Strategy
+
+```java
+@Configuration
+public class ReplicationStrategyConfig {
+    @Bean
+    public ReplicationStrategy replicationStrategy() {
+        return SimpleStrategy.builder()
+            .replicationFactor(3)
+            .build();
+    }
+}
+```
+
+### Consistency Level Configuration
+
+```java
+@Configuration
+public class ConsistencyLevelConfig {
+    @Bean
+    public ConsistencyLevel consistencyLevel() {
+        return ConsistencyLevel.LOCAL_QUORUM;
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=cassandra-vectordb
+management.endpoint.cassandra-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Apache Cassandra Vector Database, consider these best practices:
+</Note>
+
+- **Data Modeling**: Design efficient data models
+- **Replication**: Configure appropriate replication
+- **Consistency**: Choose suitable consistency levels
+- **Compaction**: Optimize compaction strategies
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify contact points
+   - Check network connectivity
+   - Review authentication
+
+2. **Performance Issues**
+   - Optimize data model
+   - Adjust consistency levels
+   - Review compaction strategy
+
+3. **Storage Issues**
+   - Monitor disk usage
+   - Implement cleanup
+   - Review retention policy 

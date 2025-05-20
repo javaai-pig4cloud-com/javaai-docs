@@ -1,0 +1,263 @@
+---
+title: "DeepSeek Chat"
+---
+
+[DeepSeek](https://platform.deepseek.com/) provides various AI language models that you can use to create multilingual conversational assistants. Spring AI integrates with DeepSeek's models to provide a seamless experience for building AI-powered applications.
+
+<Frame caption="Spring AI DeepSeek Integration">
+  <img src="/images/spring-ai-deepseek-integration.jpg" width="800" />
+</Frame>
+
+## Prerequisites
+
+To get started with DeepSeek in Spring AI, you'll need to:
+
+1. Create an account at [DeepSeek registration page](https://platform.deepseek.com/sign_up)
+2. Generate an API key on the [API Keys page](https://platform.deepseek.com/api_keys)
+3. Configure the API key in your Spring AI project
+
+You can set the API key configuration in your `application.properties` file:
+
+```properties
+spring.ai.deepseek.api-key=<your-deepseek-api-key>
+```
+
+For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference custom environment variables:
+
+<Tabs>
+  <Tab title="application.yml">
+    ```yaml
+    spring:
+      ai:
+        deepseek:
+          api-key: ${DEEPSEEK_API_KEY}
+    ```
+  </Tab>
+  <Tab title=".env">
+    ```bash
+    export DEEPSEEK_API_KEY=<your-deepseek-api-key>
+    ```
+  </Tab>
+</Tabs>
+
+You can also set this configuration programmatically in your application code:
+
+```java
+// Retrieve API key from a secure source or environment variable
+String apiKey = System.getenv("DEEPSEEK_API_KEY");
+```
+
+### Add Repositories and BOM
+
+Spring AI artifacts are published in the Spring Milestone and Snapshot repositories.
+Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+
+To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout your entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+
+## Auto-configuration
+
+Spring AI provides Spring Boot auto-configuration for the DeepSeek Chat Model.
+To enable it, add the following dependency to your project's build file:
+
+<Tabs>
+  <Tab title="Maven">
+    ```xml
+    <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-starter-model-deepseek</artifactId>
+    </dependency>
+    ```
+  </Tab>
+  <Tab title="Gradle">
+    ```gradle
+    dependencies {
+        implementation 'org.springframework.ai:spring-ai-starter-model-deepseek'
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Tip>
+Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+</Tip>
+
+### Chat Properties
+
+#### Retry Properties
+
+The prefix `spring.ai.retry` is used as the property prefix that lets you configure the retry mechanism for the DeepSeek Chat model.
+
+| Property | Description | Default |
+| :------- | :---------- | :------ |
+| spring.ai.retry.max-attempts | Maximum number of retry attempts. | 10 |
+| spring.ai.retry.backoff.initial-interval | Initial sleep duration for the exponential backoff policy. | 2 sec. |
+| spring.ai.retry.backoff.multiplier | Backoff interval multiplier. | 5 |
+| spring.ai.retry.backoff.max-interval | Maximum backoff duration. | 3 min. |
+| spring.ai.retry.on-client-errors | If false, throws a NonTransientAiException, and does not attempt a retry for `4xx` client error codes | false |
+| spring.ai.retry.exclude-on-http-codes | List of HTTP status codes that should not trigger a retry (e.g. to throw NonTransientAiException). | empty |
+| spring.ai.retry.on-http-codes | List of HTTP status codes that should trigger a retry (e.g. to throw TransientAiException). | empty |
+
+#### Connection Properties
+
+The prefix `spring.ai.deepseek` is used as the property prefix that lets you connect to DeepSeek.
+
+| Property | Description | Default |
+| :------- | :---------- | :------ |
+| spring.ai.deepseek.base-url | The URL to connect to | https://api.deepseek.com |
+| spring.ai.deepseek.api-key | The API Key | - |
+
+#### Configuration Properties
+
+The prefix `spring.ai.deepseek.chat` is the property prefix that lets you configure the chat model implementation for DeepSeek.
+
+| Property | Description | Default |
+| :------- | :---------- | :------ |
+| spring.ai.deepseek.chat.enabled | Enables the DeepSeek chat model. | true |
+| spring.ai.deepseek.chat.base-url | Optionally overrides the spring.ai.deepseek.base-url to provide a chat-specific URL | https://api.deepseek.com/ |
+| spring.ai.deepseek.chat.api-key | Optionally overrides the spring.ai.deepseek.api-key to provide a chat-specific API key | - |
+| spring.ai.deepseek.chat.completions-path | The path to the chat completions endpoint | /chat/completions |
+| spring.ai.deepseek.chat.beta-prefix-path | The prefix path to the beta feature endpoint | /beta/chat/completions |
+| spring.ai.deepseek.chat.options.model | ID of the model to use. You can use either deepseek-coder or deepseek-chat. | deepseek-chat |
+| spring.ai.deepseek.chat.options.frequencyPenalty | Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far. | 0.0f |
+| spring.ai.deepseek.chat.options.maxTokens | The maximum number of tokens to generate in the chat completion. | - |
+| spring.ai.deepseek.chat.options.presencePenalty | Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far. | 0.0f |
+| spring.ai.deepseek.chat.options.stop | Up to 4 sequences where the API will stop generating further tokens. | - |
+| spring.ai.deepseek.chat.options.temperature | Sampling temperature between 0 and 2. Higher values like 0.8 make output more random. | 1.0F |
+| spring.ai.deepseek.chat.options.topP | Alternative to temperature for nucleus sampling. Value between 0 and 1. | 1.0F |
+| spring.ai.deepseek.chat.options.logprobs | Whether to return log probabilities of the output tokens. | - |
+| spring.ai.deepseek.chat.options.topLogprobs | Number of most likely tokens (0-20) to return with log probabilities. | - |
+
+<Note>
+You can override the common `spring.ai.deepseek.base-url` and `spring.ai.deepseek.api-key` for the `ChatModel` implementations.
+The `spring.ai.deepseek.chat.base-url` and `spring.ai.deepseek.chat.api-key` properties, if set, take precedence over the common properties.
+This is useful if you want to use different DeepSeek accounts for different models and different model endpoints.
+</Note>
+
+<Tip>
+All properties prefixed with `spring.ai.deepseek.chat.options` can be overridden at runtime by adding a request-specific Runtime Options to the `Prompt` call.
+</Tip>
+
+## Runtime Options
+
+The [DeepSeekChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-deepseek/src/main/java/org/springframework/ai/deepseek/DeepSeekChatOptions.java) provides model configurations, such as the model to use, the temperature, the frequency penalty, etc.
+
+On startup, the default options can be configured with the `DeepSeekChatModel(api, options)` constructor or the `spring.ai.deepseek.chat.options.*` properties.
+
+At runtime, you can override the default options by adding new, request-specific options to the `Prompt` call.
+For example, to override the default model and temperature for a specific request:
+
+```java
+ChatResponse response = chatModel.call(
+    new Prompt(
+        "Generate the names of 5 famous pirates. Please provide the JSON response without any code block markers such as ```json```.",
+        DeepSeekChatOptions.builder()
+            .withModel(DeepSeekApi.ChatModel.DEEPSEEK_CHAT.getValue())
+            .withTemperature(0.8f)
+        .build()
+    ));
+```
+
+<Tip>
+In addition to the model-specific [DeepSeekChatOptions](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-deepseek/src/main/java/org/springframework/ai/deepseek/DeepSeekChatOptions.java), you can use a portable [ChatOptions](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-core/src/main/java/org/springframework/ai/chat/ChatOptions.java) instance, created with the [ChatOptionsBuilder#builder()](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-core/src/main/java/org/springframework/ai/chat/ChatOptionsBuilder.java).
+</Tip>
+
+## Sample Controller
+
+[Create](https://start.spring.io/) a new Spring Boot project and add the `spring-ai-starter-model-deepseek` to your pom (or gradle) dependencies.
+
+Add an `application.properties` file under the `src/main/resources` directory to enable and configure the DeepSeek Chat model:
+
+```properties
+spring.ai.deepseek.api-key=YOUR_API_KEY
+spring.ai.deepseek.chat.options.model=deepseek-chat
+spring.ai.deepseek.chat.options.temperature=0.8
+```
+
+<Tip>
+Replace the `api-key` with your DeepSeek credentials.
+</Tip>
+
+This will create a `DeepSeekChatModel` implementation that you can inject into your class.
+Here is an example of a simple `@Controller` class that uses the chat model for text generation:
+
+```java
+@RestController
+public class ChatController {
+
+    private final DeepSeekChatModel chatModel;
+
+    @Autowired
+    public ChatController(DeepSeekChatModel chatModel) {
+        this.chatModel = chatModel;
+    }
+
+    @GetMapping("/ai/generate")
+    public Map generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+        return Map.of("generation", chatModel.call(message));
+    }
+
+    @GetMapping("/ai/generateStream")
+    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+        var prompt = new Prompt(new UserMessage(message));
+        return chatModel.stream(prompt);
+    }
+}
+```
+
+## Chat Prefix Completion
+
+The chat prefix completion follows the Chat Completion API, where users provide an assistant's prefix message for the model to complete the rest of the message.
+
+<Note>
+When using prefix completion, the user must ensure that the last message in the messages list is a DeepSeekAssistantMessage.
+</Note>
+
+Below is a complete Java code example for chat prefix completion. In this example, we set the prefix message of the assistant to "```python\n" to force the model to output Python code, and set the stop parameter to ['```'] to prevent additional explanations from the model:
+
+```java
+@RestController
+public class CodeGenerateController {
+
+    private final DeepSeekChatModel chatModel;
+
+    @Autowired
+    public ChatController(DeepSeekChatModel chatModel) {
+        this.chatModel = chatModel;
+    }
+
+    @GetMapping("/ai/generatePythonCode")
+    public String generate(@RequestParam(value = "message", defaultValue = "Please write quick sort code") String message) {
+        UserMessage userMessage = new UserMessage(message);
+        Message assistantMessage = DeepSeekAssistantMessage.prefixAssistantMessage("```python\\n");
+        Prompt prompt = new Prompt(List.of(userMessage, assistantMessage), 
+            ChatOptions.builder().stopSequences(List.of("```")).build());
+        ChatResponse response = chatModel.call(prompt);
+        return response.getResult().getOutput().getText();
+    }
+}
+```
+
+## Reasoning Model (deepseek-reasoner)
+
+The `deepseek-reasoner` is a reasoning model developed by DeepSeek. Before delivering the final answer, the model first generates a Chain of Thought (CoT) to enhance the accuracy of its responses.
+
+<Tip>
+Our API provides users with access to the CoT content generated by `deepseek-reasoner`, enabling them to view, display, and distill it.
+</Tip>
+
+You can use the `DeepSeekAssistantMessage` to get the CoT content generated by `deepseek-reasoner`:
+
+```java
+public void deepSeekReasonerExample() {
+    DeepSeekChatOptions promptOptions = DeepSeekChatOptions.builder()
+            .model(DeepSeekApi.ChatModel.DEEPSEEK_REASONER.getValue())
+            .build();
+    Prompt prompt = new Prompt("9.11 and 9.8, which is greater?", promptOptions);
+    ChatResponse response = chatModel.call(prompt);
+
+    // Get the CoT content generated by deepseek-reasoner
+    DeepSeekAssistantMessage deepSeekAssistantMessage = 
+        (DeepSeekAssistantMessage) response.getResult().getOutput();
+    String reasoningContent = deepSeekAssistantMessage.getReasoningContent();
+}
+``` 

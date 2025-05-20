@@ -1,0 +1,190 @@
+---
+title: "Tool Calling"
+---
+
+Tool Calling in Spring AI enables AI models to interact with external tools and services, enhancing their capabilities.
+
+## Overview
+
+Tool Calling allows AI models to:
+- Execute external functions
+- Access external services
+- Perform complex operations
+- Integrate with existing systems
+
+## Tool Types
+
+<CardGroup cols={2}>
+  <Card title="Function Tools" icon="function">
+    Execute custom functions and methods
+  </Card>
+  <Card title="API Tools" icon="api">
+    Interact with external APIs and services
+  </Card>
+  <Card title="Database Tools" icon="database">
+    Perform database operations
+  </Card>
+  <Card title="Custom Tools" icon="code">
+    Implement custom tool functionality
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Tool Definition
+
+```java
+@Tool
+public class CalculatorTool {
+    @ToolMethod
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    @ToolMethod
+    public double subtract(double a, double b) {
+        return a - b;
+    }
+}
+```
+
+### Tool Registration
+
+```java
+@Configuration
+public class ToolConfig {
+    @Bean
+    public ToolRegistry toolRegistry() {
+        return new ToolRegistry()
+            .register(new CalculatorTool())
+            .register(new WeatherTool())
+            .register(new DatabaseTool());
+    }
+}
+```
+
+### Using Tools in Chat
+
+```java
+@Service
+public class ChatService {
+    private final ChatClient chatClient;
+    private final ToolRegistry toolRegistry;
+
+    public ChatService(ChatClient chatClient, ToolRegistry toolRegistry) {
+        this.chatClient = chatClient;
+        this.toolRegistry = toolRegistry;
+    }
+
+    public String chat(String message) {
+        return chatClient.generate(message, toolRegistry);
+    }
+}
+```
+
+## Tool Categories
+
+### 1. Function Tools
+
+```java
+@Tool
+public class MathTool {
+    @ToolMethod
+    public double calculate(String expression) {
+        // Implementation
+    }
+}
+```
+
+### 2. API Tools
+
+```java
+@Tool
+public class WeatherTool {
+    @ToolMethod
+    public Weather getWeather(String location) {
+        // API call implementation
+    }
+}
+```
+
+### 3. Database Tools
+
+```java
+@Tool
+public class DatabaseTool {
+    @ToolMethod
+    public List<Record> query(String sql) {
+        // Database query implementation
+    }
+}
+```
+
+## Configuration Properties
+
+```properties
+spring.ai.tools.enabled=true
+spring.ai.tools.timeout=5000
+spring.ai.tools.max-retries=3
+spring.ai.tools.cache-enabled=true
+```
+
+## Best Practices
+
+<Note>
+When implementing tool calling, consider these best practices:
+</Note>
+
+- **Error Handling**: Implement robust error handling
+- **Security**: Validate inputs and restrict access
+- **Performance**: Optimize tool execution
+- **Monitoring**: Track tool usage and performance
+- **Documentation**: Document tool capabilities and usage
+
+## Advanced Features
+
+### Custom Tool Implementation
+
+```java
+@Component
+public class CustomTool implements Tool {
+    @Override
+    public String getName() {
+        return "custom-tool";
+    }
+
+    @Override
+    public Object execute(Map<String, Object> parameters) {
+        // Custom implementation
+        return result;
+    }
+}
+```
+
+### Tool Monitoring
+
+Monitor tool usage and performance:
+
+```properties
+management.endpoints.web.exposure.include=tools
+management.endpoint.tools.enabled=true
+```
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Tool Execution Errors**
+   - Implement proper error handling
+   - Add retry mechanisms
+   - Log detailed error information
+
+2. **Performance Issues**
+   - Optimize tool implementation
+   - Implement caching
+   - Use async execution
+
+3. **Security Concerns**
+   - Validate inputs
+   - Implement access control
+   - Monitor tool usage 

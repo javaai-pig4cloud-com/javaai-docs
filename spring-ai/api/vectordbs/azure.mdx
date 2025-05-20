@@ -1,0 +1,172 @@
+---
+title: "Azure Vector Database"
+---
+
+Azure Vector Database integration in Spring AI provides vector storage and search capabilities using Azure's vector database services.
+
+## Overview
+
+Azure Vector Database enables:
+- Vector storage and indexing
+- Similarity search
+- Real-time vector operations
+- Scalable vector management
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Vector Storage" icon="database">
+    Efficient vector storage
+  </Card>
+  <Card title="Similarity Search" icon="magnifying-glass">
+    Fast similarity search
+  </Card>
+  <Card title="Scalability" icon="arrows-up-down-left-right">
+    Horizontal scaling
+  </Card>
+  <Card title="Integration" icon="plug">
+    Easy Spring integration
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-azure-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Azure Vector Database Configuration
+spring.ai.azure.vectordb.enabled=true
+spring.ai.azure.vectordb.connection-string=${AZURE_CONNECTION_STRING}
+spring.ai.azure.vectordb.database-name=vectordb
+spring.ai.azure.vectordb.collection-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class VectorService {
+    private final AzureVectorClient vectorClient;
+
+    public VectorService(AzureVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector) {
+        vectorClient.store(id, vector);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class VectorStorageConfig {
+    @Bean
+    public VectorStorage vectorStorage(AzureVectorProperties properties) {
+        return new AzureVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class SimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch similaritySearch(AzureVectorProperties properties) {
+        return new AzureSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Batch Operations
+
+```java
+@Service
+public class BatchVectorService {
+    private final AzureVectorClient vectorClient;
+
+    public void batchStore(List<VectorDocument> documents) {
+        vectorClient.batchStore(documents);
+    }
+
+    public List<List<SearchResult>> batchSearch(List<float[]> queryVectors, int k) {
+        return vectorClient.batchSearch(queryVectors, k);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Index Configuration
+
+```java
+@Configuration
+public class CustomIndexConfig {
+    @Bean
+    public VectorIndex vectorIndex(AzureVectorProperties properties) {
+        return VectorIndex.builder()
+            .properties(properties)
+            .dimension(1536)
+            .metric(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=azure-vectordb
+management.endpoint.azure-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Azure Vector Database, consider these best practices:
+</Note>
+
+- **Connection Management**: Properly manage connections
+- **Index Optimization**: Optimize index configuration
+- **Batch Processing**: Use batch operations when possible
+- **Error Handling**: Implement robust error handling
+- **Monitoring**: Set up proper monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection string
+   - Check network connectivity
+   - Review firewall settings
+
+2. **Performance Issues**
+   - Optimize index configuration
+   - Use batch operations
+   - Implement caching
+
+3. **Storage Issues**
+   - Monitor storage usage
+   - Implement cleanup strategies
+   - Review retention policies 

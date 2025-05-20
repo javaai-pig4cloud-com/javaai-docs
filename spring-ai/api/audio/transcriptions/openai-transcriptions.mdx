@@ -1,0 +1,38 @@
+---
+title: OpenAI Transcriptions
+description: Using OpenAI's Whisper models for speech-to-text
+---
+
+# OpenAI Transcriptions
+
+Spring AI provides integration with OpenAI's Whisper models for speech-to-text capabilities.
+
+## Configuration
+
+Add the following dependency to your project:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+</dependency>
+```
+
+## Properties
+
+```properties
+spring.ai.openai.api-key=YOUR_API_KEY
+spring.ai.openai.audio.model=whisper-1
+```
+
+## Usage
+
+```java
+@Autowired
+private TranscriptionClient transcriptionClient;
+
+// Transcribe audio
+TranscriptionResponse response = transcriptionClient.call(
+    new TranscriptionPrompt(audioFile)
+);
+``` 

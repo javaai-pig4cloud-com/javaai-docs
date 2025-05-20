@@ -1,0 +1,204 @@
+---
+title: "SAP HANA Vector Database"
+---
+
+SAP HANA Vector Database integration in Spring AI provides vector storage and search capabilities using SAP HANA's vector features.
+
+## Overview
+
+SAP HANA Vector Database enables:
+- Enterprise-grade vector storage
+- SQL-based vector operations
+- Real-time analytics
+- High-performance scaling
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Enterprise" icon="building">
+    Enterprise features
+  </Card>
+  <Card title="Analytics" icon="chart-line">
+    Real-time analytics
+  </Card>
+  <Card title="Performance" icon="tachometer-alt">
+    High performance
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    Enterprise scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-hana-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# SAP HANA Vector Database Configuration
+spring.ai.hana.vectordb.enabled=true
+spring.ai.hana.vectordb.url=jdbc:sap://localhost:39015
+spring.ai.hana.vectordb.username=SYSTEM
+spring.ai.hana.vectordb.password=password
+spring.ai.hana.vectordb.schema=VECTORDB
+```
+
+### Usage
+
+```java
+@Service
+public class HanaVectorService {
+    private final HanaVectorClient vectorClient;
+
+    public HanaVectorService(HanaVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class HanaVectorStorageConfig {
+    @Bean
+    public VectorStorage hanaVectorStorage(HanaVectorProperties properties) {
+        return new HanaVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class HanaSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch hanaSimilaritySearch(HanaVectorProperties properties) {
+        return new HanaSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Table Management
+
+```java
+@Service
+public class TableService {
+    private final HanaVectorClient vectorClient;
+
+    public void createTable(String name, int dimension) {
+        vectorClient.createTable(name, dimension);
+    }
+
+    public void dropTable(String name) {
+        vectorClient.dropTable(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Table Configuration
+
+```java
+@Configuration
+public class TableConfig {
+    @Bean
+    public TableConfig tableConfig() {
+        return TableConfig.builder()
+            .name("CUSTOM_VECTORS")
+            .vectorColumn("VECTOR")
+            .metadataColumns(Arrays.asList("TITLE", "CONTENT"))
+            .build();
+    }
+}
+```
+
+### Index Management
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("VECTOR_IDX")
+            .type(IndexType.VECTOR)
+            .dimension(1536)
+            .build();
+    }
+}
+```
+
+### Security Configuration
+
+```java
+@Configuration
+public class SecurityConfig {
+    @Bean
+    public SecurityConfig securityConfig() {
+        return SecurityConfig.builder()
+            .encryptionEnabled(true)
+            .auditEnabled(true)
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=hana-vectordb
+management.endpoint.hana-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using SAP HANA Vector Database, consider these best practices:
+</Note>
+
+- **Table Design**: Design efficient table structure
+- **Index Management**: Optimize index configuration
+- **Security**: Implement proper security measures
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection URL
+   - Check credentials
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize table structure
+   - Configure indexes
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor table size
+   - Implement cleanup
+   - Review retention policy 

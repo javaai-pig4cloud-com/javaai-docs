@@ -1,0 +1,173 @@
+---
+title: "Chat Memory"
+---
+
+Chat Memory in Spring AI provides mechanisms to maintain conversation context and history for AI chat applications.
+
+## Overview
+
+Chat Memory enables AI applications to:
+- Maintain conversation history
+- Provide context-aware responses
+- Implement different memory strategies
+- Manage conversation state
+
+## Memory Types
+
+<CardGroup cols={2}>
+  <Card title="In-Memory" icon="memory">
+    Simple in-memory storage for development and testing
+  </Card>
+  <Card title="Persistent" icon="database">
+    Database-backed storage for production environments
+  </Card>
+  <Card title="Distributed" icon="network-wired">
+    Distributed memory for scalable applications
+  </Card>
+  <Card title="Custom" icon="code">
+    Custom memory implementations for specific needs
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Configuration
+
+```java
+@Configuration
+public class ChatMemoryConfig {
+    @Bean
+    public ChatMemory chatMemory() {
+        return new InMemoryChatMemory();
+    }
+}
+```
+
+### Using Chat Memory
+
+```java
+@Service
+public class ChatService {
+    private final ChatClient chatClient;
+    private final ChatMemory chatMemory;
+
+    public ChatService(ChatClient chatClient, ChatMemory chatMemory) {
+        this.chatClient = chatClient;
+        this.chatMemory = chatMemory;
+    }
+
+    public String chat(String message, String sessionId) {
+        // Add message to memory
+        chatMemory.addMessage(sessionId, message);
+        
+        // Get conversation history
+        List<Message> history = chatMemory.getMessages(sessionId);
+        
+        // Generate response with context
+        String response = chatClient.generate(history);
+        
+        // Store response in memory
+        chatMemory.addMessage(sessionId, response);
+        
+        return response;
+    }
+}
+```
+
+## Memory Strategies
+
+### 1. Fixed Window Memory
+
+```java
+@Bean
+public ChatMemory fixedWindowMemory() {
+    return new FixedWindowChatMemory(10); // Keep last 10 messages
+}
+```
+
+### 2. Token-Based Memory
+
+```java
+@Bean
+public ChatMemory tokenBasedMemory() {
+    return new TokenBasedChatMemory(1000); // Keep messages within token limit
+}
+```
+
+### 3. Summary Memory
+
+```java
+@Bean
+public ChatMemory summaryMemory() {
+    return new SummaryChatMemory(summarizer);
+}
+```
+
+## Configuration Properties
+
+```properties
+spring.ai.chat.memory.type=in-memory
+spring.ai.chat.memory.max-messages=100
+spring.ai.chat.memory.max-tokens=1000
+spring.ai.chat.memory.ttl=3600
+```
+
+## Best Practices
+
+<Note>
+When implementing chat memory, consider these best practices:
+</Note>
+
+- **Memory Size**: Choose appropriate memory size based on your use case
+- **Persistence**: Use persistent storage for production environments
+- **Cleanup**: Implement proper cleanup mechanisms for old conversations
+- **Security**: Ensure proper data protection and privacy measures
+- **Scalability**: Consider distributed memory for high-scale applications
+
+## Advanced Features
+
+### Custom Memory Implementation
+
+```java
+@Component
+public class CustomChatMemory implements ChatMemory {
+    @Override
+    public void addMessage(String sessionId, String message) {
+        // Custom implementation
+    }
+
+    @Override
+    public List<Message> getMessages(String sessionId) {
+        // Custom implementation
+        return messages;
+    }
+}
+```
+
+### Memory Monitoring
+
+Monitor memory usage and performance:
+
+```properties
+management.endpoints.web.exposure.include=chat-memory
+management.endpoint.chat-memory.enabled=true
+```
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Memory Leaks**
+   - Implement proper cleanup
+   - Set appropriate TTL
+   - Monitor memory usage
+
+2. **Performance Issues**
+   - Use appropriate memory type
+   - Implement caching
+   - Optimize storage
+
+3. **Scalability**
+   - Use distributed memory
+   - Implement proper partitioning
+   - Consider caching strategies 

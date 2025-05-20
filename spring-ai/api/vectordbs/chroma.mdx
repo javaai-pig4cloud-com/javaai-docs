@@ -1,0 +1,182 @@
+---
+title: "Chroma Vector Database"
+---
+
+Chroma Vector Database integration in Spring AI provides vector storage and search capabilities using Chroma's vector database features.
+
+## Overview
+
+Chroma Vector Database enables:
+- Local and distributed vector storage
+- Fast similarity search
+- Metadata filtering
+- Easy integration
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Vector Storage" icon="database">
+    Efficient vector storage
+  </Card>
+  <Card title="Similarity Search" icon="magnifying-glass">
+    Fast similarity search
+  </Card>
+  <Card title="Metadata" icon="tags">
+    Rich metadata support
+  </Card>
+  <Card title="Flexibility" icon="sliders">
+    Multiple deployment options
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-chroma-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Chroma Vector Database Configuration
+spring.ai.chroma.vectordb.enabled=true
+spring.ai.chroma.vectordb.host=localhost
+spring.ai.chroma.vectordb.port=8000
+spring.ai.chroma.vectordb.collection-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class ChromaVectorService {
+    private final ChromaVectorClient vectorClient;
+
+    public ChromaVectorService(ChromaVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class ChromaVectorStorageConfig {
+    @Bean
+    public VectorStorage chromaVectorStorage(ChromaVectorProperties properties) {
+        return new ChromaVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class ChromaSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch chromaSimilaritySearch(ChromaVectorProperties properties) {
+        return new ChromaSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Metadata Filtering
+
+```java
+@Service
+public class MetadataFilterService {
+    private final ChromaVectorClient vectorClient;
+
+    public List<SearchResult> searchWithFilter(float[] queryVector, Map<String, Object> filter, int k) {
+        return vectorClient.searchWithFilter(queryVector, filter, k);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Collection Configuration
+
+```java
+@Configuration
+public class CollectionConfig {
+    @Bean
+    public CollectionConfig collectionConfig() {
+        return CollectionConfig.builder()
+            .name("custom-collection")
+            .dimension(1536)
+            .metric(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Persistence Configuration
+
+```java
+@Configuration
+public class PersistenceConfig {
+    @Bean
+    public PersistenceConfig persistenceConfig() {
+        return PersistenceConfig.builder()
+            .directory("/path/to/persist")
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=chroma-vectordb
+management.endpoint.chroma-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Chroma Vector Database, consider these best practices:
+</Note>
+
+- **Collection Management**: Organize collections effectively
+- **Metadata Usage**: Leverage metadata for filtering
+- **Persistence**: Configure appropriate persistence
+- **Performance**: Optimize search parameters
+- **Monitoring**: Set up proper monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify host and port
+   - Check network connectivity
+   - Review server status
+
+2. **Performance Issues**
+   - Optimize collection settings
+   - Use appropriate metrics
+   - Implement caching
+
+3. **Storage Issues**
+   - Monitor disk usage
+   - Configure persistence
+   - Implement cleanup 

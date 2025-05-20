@@ -1,0 +1,166 @@
+---
+title: "OpenAI Moderation"
+---
+
+OpenAI Moderation in Spring AI provides content moderation capabilities using OpenAI's moderation models.
+
+## Overview
+
+OpenAI Moderation enables:
+- Content safety checks
+- Harmful content detection
+- Policy compliance verification
+- Automated content filtering
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Content Safety" icon="shield">
+    Detect harmful or inappropriate content
+  </Card>
+  <Card title="Policy Compliance" icon="check">
+    Verify content against policies
+  </Card>
+  <Card title="Multi-category" icon="list">
+    Check multiple content categories
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time content moderation
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-openai-moderation</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# OpenAI Moderation Configuration
+spring.ai.openai.moderation.enabled=true
+spring.ai.openai.moderation.api-key=${OPENAI_API_KEY}
+spring.ai.openai.moderation.model=text-moderation-latest
+```
+
+### Usage
+
+```java
+@Service
+public class ContentModerationService {
+    private final OpenAIModerationClient moderationClient;
+
+    public ContentModerationService(OpenAIModerationClient moderationClient) {
+        this.moderationClient = moderationClient;
+    }
+
+    public ModerationResult moderateContent(String content) {
+        return moderationClient.moderate(content);
+    }
+}
+```
+
+## Moderation Categories
+
+### 1. Basic Moderation
+
+```java
+@Configuration
+public class ModerationConfig {
+    @Bean
+    public ModerationClient moderationClient(OpenAIModerationProperties properties) {
+        return new OpenAIModerationClient(properties);
+    }
+}
+```
+
+### 2. Custom Categories
+
+```java
+@Configuration
+public class CustomModerationConfig {
+    @Bean
+    public ModerationClient customModerationClient(OpenAIModerationProperties properties) {
+        return ModerationClient.builder()
+            .properties(properties)
+            .categories(Arrays.asList("hate", "harassment", "self-harm"))
+            .build();
+    }
+}
+```
+
+### 3. Threshold-based Moderation
+
+```java
+@Configuration
+public class ThresholdModerationConfig {
+    @Bean
+    public ModerationClient thresholdModerationClient(OpenAIModerationProperties properties) {
+        return ModerationClient.builder()
+            .properties(properties)
+            .threshold(0.7)
+            .build();
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Moderation Rules
+
+```java
+@Component
+public class CustomModerationRules implements ModerationRules {
+    @Override
+    public boolean isAllowed(ModerationResult result) {
+        return result.getHateScore() < 0.5 &&
+               result.getHarassmentScore() < 0.5 &&
+               result.getSelfHarmScore() < 0.5;
+    }
+}
+```
+
+### Moderation Monitoring
+
+```properties
+management.endpoints.web.exposure.include=openai-moderation
+management.endpoint.openai-moderation.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using OpenAI Moderation, consider these best practices:
+</Note>
+
+- **API Key Security**: Secure your API key
+- **Error Handling**: Implement proper error handling
+- **Rate Limiting**: Monitor API usage
+- **Content Filtering**: Define clear content policies
+- **Monitoring**: Track moderation results
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **API Issues**
+   - Check API key
+   - Verify API limits
+   - Review error responses
+
+2. **Performance Issues**
+   - Optimize request frequency
+   - Implement caching
+   - Use batch processing
+
+3. **Content Issues**
+   - Review moderation thresholds
+   - Update content policies
+   - Monitor false positives 

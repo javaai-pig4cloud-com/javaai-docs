@@ -1,0 +1,187 @@
+---
+title: "Qdrant Vector Database"
+---
+
+Qdrant Vector Database integration in Spring AI provides vector storage and search capabilities using Qdrant's vector features.
+
+## Overview
+
+Qdrant Vector Database enables:
+- High-performance vector storage
+- Real-time similarity search
+- Filtered search
+- Scalable architecture
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Performance" icon="tachometer-alt">
+    High-performance storage
+  </Card>
+  <Card title="Filtering" icon="filter">
+    Filtered search
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    Horizontal scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-qdrant-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Qdrant Vector Database Configuration
+spring.ai.qdrant.vectordb.enabled=true
+spring.ai.qdrant.vectordb.host=localhost
+spring.ai.qdrant.vectordb.port=6333
+spring.ai.qdrant.vectordb.collection-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class QdrantVectorService {
+    private final QdrantVectorClient vectorClient;
+
+    public QdrantVectorService(QdrantVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class QdrantVectorStorageConfig {
+    @Bean
+    public VectorStorage qdrantVectorStorage(QdrantVectorProperties properties) {
+        return new QdrantVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class QdrantSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch qdrantSimilaritySearch(QdrantVectorProperties properties) {
+        return new QdrantSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Collection Management
+
+```java
+@Service
+public class CollectionService {
+    private final QdrantVectorClient vectorClient;
+
+    public void createCollection(String name, int dimension) {
+        vectorClient.createCollection(name, dimension);
+    }
+
+    public void deleteCollection(String name) {
+        vectorClient.deleteCollection(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Collection Configuration
+
+```java
+@Configuration
+public class CollectionConfig {
+    @Bean
+    public CollectionConfig collectionConfig() {
+        return CollectionConfig.builder()
+            .name("custom-vectors")
+            .dimension(1536)
+            .distanceType(DistanceType.COSINE)
+            .build();
+    }
+}
+```
+
+### Filter Configuration
+
+```java
+@Configuration
+public class FilterConfig {
+    @Bean
+    public FilterConfig filterConfig() {
+        return FilterConfig.builder()
+            .must(Arrays.asList("category", "status"))
+            .should(Arrays.asList("tags"))
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=qdrant-vectordb
+management.endpoint.qdrant-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Qdrant Vector Database, consider these best practices:
+</Note>
+
+- **Collection Design**: Design efficient collection structure
+- **Filter Strategy**: Optimize filter configuration
+- **Distance Metrics**: Choose appropriate distance metrics
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify host and port
+   - Check network connectivity
+   - Review authentication
+
+2. **Performance Issues**
+   - Optimize collection configuration
+   - Adjust filter strategy
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor collection size
+   - Implement cleanup
+   - Review retention policy 

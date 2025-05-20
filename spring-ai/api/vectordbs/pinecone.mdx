@@ -1,0 +1,187 @@
+---
+title: "Pinecone Vector Database"
+---
+
+Pinecone Vector Database integration in Spring AI provides vector storage and search capabilities using Pinecone's cloud-based vector features.
+
+## Overview
+
+Pinecone Vector Database enables:
+- Cloud-based vector storage
+- Real-time similarity search
+- Managed service
+- Scalable architecture
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Cloud" icon="cloud">
+    Cloud-based storage
+  </Card>
+  <Card title="Managed" icon="cogs">
+    Managed service
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time search
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    Auto-scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-pinecone-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Pinecone Vector Database Configuration
+spring.ai.pinecone.vectordb.enabled=true
+spring.ai.pinecone.vectordb.api-key=your-api-key
+spring.ai.pinecone.vectordb.environment=us-west1-gcp
+spring.ai.pinecone.vectordb.index-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class PineconeVectorService {
+    private final PineconeVectorClient vectorClient;
+
+    public PineconeVectorService(PineconeVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class PineconeVectorStorageConfig {
+    @Bean
+    public VectorStorage pineconeVectorStorage(PineconeVectorProperties properties) {
+        return new PineconeVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class PineconeSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch pineconeSimilaritySearch(PineconeVectorProperties properties) {
+        return new PineconeSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Index Management
+
+```java
+@Service
+public class IndexService {
+    private final PineconeVectorClient vectorClient;
+
+    public void createIndex(String name, int dimension) {
+        vectorClient.createIndex(name, dimension);
+    }
+
+    public void deleteIndex(String name) {
+        vectorClient.deleteIndex(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Index Configuration
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("custom-vectors")
+            .dimension(1536)
+            .metricType(MetricType.COSINE)
+            .podType(PodType.P1)
+            .build();
+    }
+}
+```
+
+### Namespace Management
+
+```java
+@Configuration
+public class NamespaceConfig {
+    @Bean
+    public NamespaceConfig namespaceConfig() {
+        return NamespaceConfig.builder()
+            .name("custom-namespace")
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=pinecone-vectordb
+management.endpoint.pinecone-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Pinecone Vector Database, consider these best practices:
+</Note>
+
+- **Index Design**: Design efficient index structure
+- **Namespace Strategy**: Organize data effectively
+- **API Key Management**: Secure API keys
+- **Resource Management**: Choose appropriate pod types
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify API key
+   - Check environment
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize index configuration
+   - Adjust pod type
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor index size
+   - Implement cleanup
+   - Review retention policy 

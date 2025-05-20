@@ -1,0 +1,189 @@
+---
+title: "MongoDB Vector Database"
+---
+
+MongoDB Vector Database integration in Spring AI provides vector storage and search capabilities using MongoDB's vector features.
+
+## Overview
+
+MongoDB Vector Database enables:
+- Document-based vector storage
+- Flexible schema design
+- Real-time vector search
+- Scalable architecture
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Document-based" icon="file-alt">
+    Document vector storage
+  </Card>
+  <Card title="Flexible" icon="sliders-h">
+    Flexible schema design
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time search
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    Horizontal scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-mongodb-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# MongoDB Vector Database Configuration
+spring.ai.mongodb.vectordb.enabled=true
+spring.ai.mongodb.vectordb.uri=mongodb://localhost:27017
+spring.ai.mongodb.vectordb.database=vectordb
+spring.ai.mongodb.vectordb.collection=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class MongoDBVectorService {
+    private final MongoDBVectorClient vectorClient;
+
+    public MongoDBVectorService(MongoDBVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class MongoDBVectorStorageConfig {
+    @Bean
+    public VectorStorage mongoDBVectorStorage(MongoDBVectorProperties properties) {
+        return new MongoDBVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class MongoDBSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch mongoDBSimilaritySearch(MongoDBVectorProperties properties) {
+        return new MongoDBSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Collection Management
+
+```java
+@Service
+public class CollectionService {
+    private final MongoDBVectorClient vectorClient;
+
+    public void createCollection(String name, int dimension) {
+        vectorClient.createCollection(name, dimension);
+    }
+
+    public void dropCollection(String name) {
+        vectorClient.dropCollection(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Collection Configuration
+
+```java
+@Configuration
+public class CollectionConfig {
+    @Bean
+    public CollectionConfig collectionConfig() {
+        return CollectionConfig.builder()
+            .name("custom-vectors")
+            .dimension(1536)
+            .indexType(IndexType.HNSW)
+            .metricType(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Index Management
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("vector_index")
+            .type(IndexType.HNSW)
+            .dimension(1536)
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=mongodb-vectordb
+management.endpoint.mongodb-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using MongoDB Vector Database, consider these best practices:
+</Note>
+
+- **Collection Design**: Design efficient collection structure
+- **Index Management**: Optimize index configuration
+- **Sharding Strategy**: Implement effective sharding
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection URI
+   - Check authentication
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize index configuration
+   - Adjust sharding strategy
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor collection size
+   - Implement cleanup
+   - Review retention policy 

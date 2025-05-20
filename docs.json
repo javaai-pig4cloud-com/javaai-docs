@@ -11,7 +11,6 @@
     "decoration": "grid"
   },
   "banner": {
-
     "content": "🚀 PIG AI 新版来袭：AI能力全面升级! [点击了解一下？](https://mp.weixin.qq.com/s/-X5X_JRNtb1AqOLUQ167Gg)",
     "dismissible": true
   },
@@ -34,11 +33,177 @@
     },
     "tabs": [
       {
-        "tab": "零基础入门Java AI",
+        "tab": "零基础入门Spring AI",
+        "pages": [
+          "spring-ai/overview/overview",
+          "spring-ai/overview/concepts",
+          "spring-ai/getting-started",
+          {
+            "group": "Reference",
+            "pages": [
+              "spring-ai/api/chatclient",
+              "spring-ai/api/advisors",
+              "spring-ai/api/prompt",
+              "spring-ai/api/structured-output-converter",
+              "spring-ai/api/multimodality",
+              {
+                "group": "Models",
+                "pages": [
+                  {
+                    "group": "Chat Models",
+                    "pages": [
+                      "spring-ai/api/chatmodel",
+                      "spring-ai/api/chat/comparison",
+                      "spring-ai/api/chat/bedrock-converse",
+                      "spring-ai/api/chat/anthropic-chat",
+                      "spring-ai/api/chat/azure-openai-chat",
+                      "spring-ai/api/chat/deepseek-chat",
+                      "spring-ai/api/chat/dmr-chat",
+                      {
+                        "group": "Google VertexAI",
+                        "pages": [
+                          "spring-ai/api/chat/google-vertexai",
+                          "spring-ai/api/chat/vertexai-gemini-chat"
+                        ]
+                      },
+                      "spring-ai/api/chat/groq-chat",
+                      "spring-ai/api/chat/mistralai-chat",
+                      "spring-ai/api/chat/minimax-chat",
+                      "spring-ai/api/chat/moonshot-chat",
+                      "spring-ai/api/chat/nvidia-chat",
+                      "spring-ai/api/chat/ollama-chat",
+                      "spring-ai/api/chat/perplexity-chat",
+                      {
+                        "group": "OCI Generative AI",
+                        "pages": [
+                          "spring-ai/api/chat/oci-genai/cohere-chat"
+                        ]
+                      },
+                      "spring-ai/api/chat/openai-chat",
+                      "spring-ai/api/chat/qianfan-chat",
+                      "spring-ai/api/chat/zhipuai-chat"
+                    ]
+                  },
+                  {
+                    "group": "Embedding Models",
+                    "pages": [
+                      "spring-ai/api/embeddings",
+                      "spring-ai/api/embeddings/azure-openai-embeddings",
+                      "spring-ai/api/embeddings/mistralai-embeddings",
+                      "spring-ai/api/embeddings/oci-genai-embeddings",
+                      "spring-ai/api/embeddings/ollama-embeddings",
+                      "spring-ai/api/embeddings/onnx-embeddings",
+                      "spring-ai/api/embeddings/openai-embeddings",
+                      "spring-ai/api/embeddings/postgresml-embeddings",
+                      {
+                        "group": "VertexAI",
+                        "pages": [
+                          "spring-ai/api/embeddings/vertexai-embeddings-text",
+                          "spring-ai/api/embeddings/vertexai-embeddings-multimodal"
+                        ]
+                      },
+                      "spring-ai/api/embeddings/zhipuai-embeddings"
+                    ]
+                  },
+                  {
+                    "group": "Image Models",
+                    "pages": [
+                      "spring-ai/api/imageclient",
+                      "spring-ai/api/image/azure-openai-image",
+                      "spring-ai/api/image/openai-image",
+                      "spring-ai/api/image/stabilityai-image",
+                      "spring-ai/api/image/zhipuai-image",
+                      "spring-ai/api/image/qianfan-image"
+                    ]
+                  },
+                  {
+                    "group": "Audio Models",
+                    "pages": [
+                      "spring-ai/api/audio",
+                      {
+                        "group": "Transcriptions",
+                        "pages": [
+                          "spring-ai/api/audio/transcriptions",
+                          "spring-ai/api/audio/transcriptions/azure-openai-transcriptions",
+                          "spring-ai/api/audio/transcriptions/openai-transcriptions"
+                        ]
+                      },
+                      {
+                        "group": "Speech",
+                        "pages": [
+                          "spring-ai/api/audio/speech",
+                          "spring-ai/api/audio/speech/openai-speech"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Moderation Models",
+                    "pages": [
+                      "spring-ai/api/moderation",
+                      "spring-ai/api/moderation/openai-moderation",
+                      "spring-ai/api/moderation/mistral-ai-moderation"
+                    ]
+                  }
+                ]
+              },
+              "spring-ai/api/chat-memory",
+              "spring-ai/api/tools",
+              {
+                "group": "Model Context Protocol (MCP)",
+                "pages": [
+                  "spring-ai/api/mcp/mcp-overview",
+                  "spring-ai/api/mcp/mcp-client-boot-starter-docs",
+                  "spring-ai/api/mcp/mcp-server-boot-starter-docs",
+                  "spring-ai/api/mcp/mcp-helpers"
+                ]
+              },
+              {
+                "group": "Retrieval Augmented Generation (RAG)",
+                "pages": [
+                  "spring-ai/api/retrieval-augmented-generation",
+                  "spring-ai/api/etl-pipeline"
+                ]
+              },
+              "spring-ai/api/testing",
+              {
+                "group": "Vectordbs",
+                "pages": [
+                  "spring-ai/api/vectordbs/azure",
+                  "spring-ai/api/vectordbs/azure-cosmos-db",
+                  "spring-ai/api/vectordbs/apache-cassandra",
+                  "spring-ai/api/vectordbs/chroma",
+                  "spring-ai/api/vectordbs/couchbase",
+                  "spring-ai/api/vectordbs/elasticsearch",
+                  "spring-ai/api/vectordbs/gemfire",
+                  "spring-ai/api/vectordbs/mariadb",
+                  "spring-ai/api/vectordbs/milvus",
+                  "spring-ai/api/vectordbs/mongodb",
+                  "spring-ai/api/vectordbs/neo4j",
+                  "spring-ai/api/vectordbs/opensearch",
+                  "spring-ai/api/vectordbs/oracle",
+                  "spring-ai/api/vectordbs/pgvector",
+                  "spring-ai/api/vectordbs/pinecone",
+                  "spring-ai/api/vectordbs/qdrant",
+                  "spring-ai/api/vectordbs/redis",
+                  "spring-ai/api/vectordbs/hana",
+                  "spring-ai/api/vectordbs/typesense",
+                  "spring-ai/api/vectordbs/weaviate"
+                ]
+              },
+              "spring-ai/observability",
+              "spring-ai/api/docker-compose",
+              "spring-ai/api/testcontainers"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "零基础入门LangChain4j",
         "pages": [
           "docs/00-introduction",
           "docs/01-model-selection",
-          "docs/02-langchain4j-introduction", 
+          "docs/02-langchain4j-introduction",
           "docs/03-chat-api",
           "docs/04-chat-common-configuration",
           "docs/05-chat-stream",
@@ -67,7 +232,7 @@
         ]
       },
       {
-        "tab": "deepseek4j教程",
+        "tab": "Deepseek4j教程",
         "pages": [
           "deepseek",
           "deepseek/quickstart",
@@ -110,10 +275,9 @@
       }
     ],
     "primary": {
-      "type" : "github",
+      "type": "github",
       "href": "https://github.com/pig-mesh/deepseek4j"
     }
-    
   },
   "footer": {
     "socials": {

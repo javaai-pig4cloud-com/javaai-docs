@@ -1,0 +1,38 @@
+---
+title: Stability AI Image Generation
+description: Using Stability AI's models for image generation
+---
+
+# Stability AI Image Generation
+
+Spring AI provides integration with Stability AI's models for image generation capabilities.
+
+## Configuration
+
+Add the following dependency to your project:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-stability-ai-spring-boot-starter</artifactId>
+</dependency>
+```
+
+## Properties
+
+```properties
+spring.ai.stability.api-key=YOUR_API_KEY
+spring.ai.stability.image.model=stable-diffusion-xl-1024-v1-0
+```
+
+## Usage
+
+```java
+@Autowired
+private ImageClient imageClient;
+
+// Generate an image
+ImageResponse response = imageClient.call(
+    new ImagePrompt("A magical forest with glowing mushrooms")
+);
+``` 

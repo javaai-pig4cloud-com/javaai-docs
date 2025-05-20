@@ -1,0 +1,109 @@
+---
+title: Building Effective Agents
+description: Guide to building effective AI agents with Spring AI
+---
+
+# Building Effective Agents
+
+This guide covers best practices for building effective AI agents using Spring AI.
+
+## Overview
+
+AI agents are autonomous systems that can perform tasks using AI models and tools.
+
+## Key Components
+
+### 1. Planning
+
+```java
+@Bean
+public Agent planner() {
+    return Agent.builder()
+        .withName("TaskPlanner")
+        .withDescription("Plans and breaks down complex tasks")
+        .withTools(Arrays.asList(
+            new TaskBreakdownTool(),
+            new PriorityTool()
+        ))
+        .build();
+}
+```
+
+### 2. Execution
+
+```java
+@Bean
+public Agent executor() {
+    return Agent.builder()
+        .withName("TaskExecutor")
+        .withDescription("Executes planned tasks")
+        .withTools(Arrays.asList(
+            new CodeExecutionTool(),
+            new FileSystemTool()
+        ))
+        .build();
+}
+```
+
+### 3. Memory
+
+```java
+@Bean
+public ChatMemory chatMemory() {
+    return new PersistentChatMemory();
+}
+```
+
+## Best Practices
+
+1. Clear Task Definition
+   - Define specific goals
+   - Set clear boundaries
+   - Establish success criteria
+
+2. Tool Selection
+   - Choose appropriate tools
+   - Ensure tool reliability
+   - Handle tool failures gracefully
+
+3. Error Handling
+   - Implement retry mechanisms
+   - Log errors appropriately
+   - Provide fallback options
+
+4. Monitoring
+   - Track agent performance
+   - Monitor resource usage
+   - Log important events
+
+## Example Implementation
+
+```java
+@Service
+public class TaskAgent {
+    
+    private final Agent planner;
+    private final Agent executor;
+    private final ChatMemory memory;
+    
+    public TaskResult executeTask(String task) {
+        // 1. Plan the task
+        Plan plan = planner.plan(task);
+        
+        // 2. Execute the plan
+        TaskResult result = executor.execute(plan);
+        
+        // 3. Store in memory
+        memory.store(task, result);
+        
+        return result;
+    }
+}
+```
+
+## Testing
+
+- Unit test individual components
+- Integration test the complete agent
+- Performance test under load
+- Security test for vulnerabilities 

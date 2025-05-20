@@ -1,0 +1,157 @@
+---
+title: "Getting Started"
+---
+
+This section offers jumping off points for how to get started using Spring AI.
+
+You should follow the steps in each of the following sections according to your needs.
+
+<Note>Spring AI supports Spring Boot 3.4.x. When Spring Boot 3.5.x is released, we will support that as well.</Note>
+
+## Spring Initializr
+
+Head on over to [start.spring.io](https://start.spring.io/) and select the AI Models and Vector Stores that you want to use in your new applications.
+
+## Artifact Repositories
+
+### Milestones - Use Maven Central
+
+As of 1.0.0-M6, releases are available in Maven Central.
+No changes to your build file are required.
+
+### Snapshots - Add Snapshot Repositories
+
+To use the Snapshot (and pre 1.0.0-M6 milestone) versions, you need to add the following snapshot repositories in your build file.
+
+Add the following repository definitions to your Maven or Gradle build file:
+
+<Tabs>
+  <Tab title="Maven">
+```xml
+<repositories>
+  <repository>
+    <id>spring-snapshots</id>
+    <name>Spring Snapshots</name>
+    <url>https://repo.spring.io/snapshot</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+  </repository>
+  <repository>
+    <name>Central Portal Snapshots</name>
+    <id>central-portal-snapshots</id>
+    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+```
+  </Tab>
+  <Tab title="Gradle">
+```groovy
+repositories {
+  mavenCentral()
+  maven { url 'https://repo.spring.io/milestone' }
+  maven { url 'https://repo.spring.io/snapshot' }
+  maven {
+    name = 'Central Portal Snapshots'
+    url = 'https://central.sonatype.com/repository/maven-snapshots/'
+  }  
+}
+```
+  </Tab>
+</Tabs>
+
+<Warning>
+When using Maven with Spring AI snapshots, pay attention to your Maven mirror configuration. If you have configured a mirror in your `settings.xml` like this:
+
+```xml
+<mirror>
+    <id>my-mirror</id>
+    <mirrorOf>*</mirrorOf>
+    <url>https://my-company-repository.com/maven</url>
+</mirror>
+```
+
+The wildcard `*` will redirect all repository requests to your mirror, preventing access to Spring snapshot repositories. To fix this, modify the `mirrorOf` configuration to exclude Spring repositories:
+
+```xml
+<mirror>
+    <id>my-mirror</id>
+    <mirrorOf>*,!spring-snapshots,!central-portal-snapshots</mirrorOf>
+    <url>https://my-company-repository.com/maven</url>
+</mirror>
+```
+
+This configuration allows Maven to access Spring snapshot repositories directly while still using your mirror for other dependencies.
+</Warning>
+
+## Dependency Management
+
+The Spring AI Bill of Materials (BOM) declares the recommended versions of all the dependencies used by a given release of Spring AI.
+This is a BOM-only version and it just contains dependency management and no plugin declarations or direct references to Spring or Spring Boot.
+You can use the Spring Boot parent POM, or use the BOM from Spring Boot (`spring-boot-dependencies`) to manage Spring Boot versions.
+
+Add the BOM to your project:
+
+<Tabs>
+  <Tab title="Maven">
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-bom</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+  </Tab>
+  <Tab title="Gradle">
+```groovy
+dependencies {
+  implementation platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT")
+  // Replace the following with the starter dependencies of specific modules you wish to use
+  implementation 'org.springframework.ai:spring-ai-openai'
+}
+```
+
+Gradle users can also use the Spring AI BOM by leveraging Gradle (5.0+) native support for declaring dependency constraints using a Maven BOM. This is implemented by adding a 'platform' dependency handler method to the dependencies section of your Gradle build script.
+  </Tab>
+</Tabs>
+
+## Add dependencies for specific components
+
+Each of the following sections in the documentation shows which dependencies you need to add to your project build system.
+
+<CardGroup cols={2}>
+  <Card title="Chat Models" icon="comments" href="/spring4ai/api/chatmodel">
+    Models that can generate conversational text responses
+  </Card>
+  <Card title="Embeddings Models" icon="vector-square" href="/spring4ai/api/embeddings">
+    Models that convert text to vector representations
+  </Card>
+  <Card title="Image Generation Models" icon="image" href="/spring4ai/api/imageclient">
+    Models that can generate images from text prompts
+  </Card>
+  <Card title="Transcription Models" icon="microphone" href="/spring4ai/api/audio/transcriptions">
+    Models that convert audio to text
+  </Card>
+  <Card title="Text-To-Speech Models" icon="volume-high" href="/spring4ai/api/audio/speech">
+    Models that convert text to speech
+  </Card>
+  <Card title="Vector Databases" icon="database" href="/spring4ai/api/vectordbs/index">
+    Databases optimized for storing and searching vector embeddings
+  </Card>
+</CardGroup>
+
+## Spring AI samples
+
+Please refer to [this page](https://github.com/danvega/awesome-spring-ai) for more resources and samples related to Spring AI. 

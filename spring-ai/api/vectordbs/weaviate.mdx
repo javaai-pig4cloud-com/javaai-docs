@@ -1,0 +1,192 @@
+---
+title: "Weaviate Vector Database"
+---
+
+Weaviate Vector Database integration in Spring AI provides vector storage and search capabilities using Weaviate's vector features.
+
+## Overview
+
+Weaviate Vector Database enables:
+- Graph-based vector storage
+- Semantic search
+- Real-time operations
+- Scalable architecture
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Graph" icon="project-diagram">
+    Graph-based storage
+  </Card>
+  <Card title="Semantic" icon="brain">
+    Semantic search
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    Horizontal scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-weaviate-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Weaviate Vector Database Configuration
+spring.ai.weaviate.vectordb.enabled=true
+spring.ai.weaviate.vectordb.url=http://localhost:8080
+spring.ai.weaviate.vectordb.api-key=your-api-key
+spring.ai.weaviate.vectordb.class-name=Document
+```
+
+### Usage
+
+```java
+@Service
+public class WeaviateVectorService {
+    private final WeaviateVectorClient vectorClient;
+
+    public WeaviateVectorService(WeaviateVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class WeaviateVectorStorageConfig {
+    @Bean
+    public VectorStorage weaviateVectorStorage(WeaviateVectorProperties properties) {
+        return new WeaviateVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class WeaviateSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch weaviateSimilaritySearch(WeaviateVectorProperties properties) {
+        return new WeaviateSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Schema Management
+
+```java
+@Service
+public class SchemaService {
+    private final WeaviateVectorClient vectorClient;
+
+    public void createClass(String name, int dimension) {
+        vectorClient.createClass(name, dimension);
+    }
+
+    public void deleteClass(String name) {
+        vectorClient.deleteClass(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Schema Configuration
+
+```java
+@Configuration
+public class SchemaConfig {
+    @Bean
+    public SchemaConfig schemaConfig() {
+        return SchemaConfig.builder()
+            .className("Document")
+            .properties(Arrays.asList(
+                new Property("content", PropertyType.TEXT),
+                new Property("vector", PropertyType.VECTOR)
+            ))
+            .build();
+    }
+}
+```
+
+### Graph Configuration
+
+```java
+@Configuration
+public class GraphConfig {
+    @Bean
+    public GraphConfig graphConfig() {
+        return GraphConfig.builder()
+            .className("Document")
+            .references(Arrays.asList(
+                new Reference("hasAuthor", "Author"),
+                new Reference("hasCategory", "Category")
+            ))
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=weaviate-vectordb
+management.endpoint.weaviate-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Weaviate Vector Database, consider these best practices:
+</Note>
+
+- **Schema Design**: Design efficient schema structure
+- **Graph Strategy**: Implement effective graph relationships
+- **Search Configuration**: Optimize search settings
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection URL
+   - Check API key
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize schema structure
+   - Adjust graph configuration
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor class size
+   - Implement cleanup
+   - Review retention policy 

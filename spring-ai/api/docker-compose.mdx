@@ -1,0 +1,233 @@
+---
+title: Development-time Services
+description: Docker Compose services for Spring AI development
+---
+
+# Development-time Services
+
+Spring AI provides Docker Compose configurations for local development and testing.
+
+## Overview
+
+This section describes the Docker Compose services available for Spring AI development, including:
+
+- Vector databases
+- AI model servers
+- Testing utilities
+
+## Available Services
+
+### Vector Databases
+
+- PostgreSQL with pgvector
+- Milvus
+- Qdrant
+- Weaviate
+- Chroma
+
+### AI Model Servers
+
+- Ollama
+- LocalAI
+- Hugging Face Inference Server
+
+### Testing Utilities
+
+- Testcontainers configurations
+- Mock AI services
+
+## Usage
+
+To use these services, you can run:
+
+```bash
+docker-compose up -d
+```
+
+This will start all the necessary services for local development.
+
+## Configuration
+
+Each service can be configured through environment variables or Docker Compose overrides.
+
+## Implementation
+
+### Basic Docker Compose Setup
+
+```yaml
+version: '3.8'
+
+services:
+  # Vector Store
+  pgvector:
+    image: pgvector/pgvector:latest
+    environment:
+      POSTGRES_DB: vectordb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  # AI Model Server
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  # Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+volumes:
+  ollama_data:
+```
+
+### Service Configuration
+
+```yaml
+# Vector Store Configuration
+spring.ai.vectorstore.pgvector.url=jdbc:postgresql://localhost:5432/vectordb
+spring.ai.vectorstore.pgvector.username=postgres
+spring.ai.vectorstore.pgvector.password=postgres
+
+# AI Model Configuration
+spring.ai.ollama.base-url=http://localhost:11434
+spring.ai.ollama.model=llama2
+```
+
+## Service Categories
+
+### 1. Vector Stores
+
+```yaml
+# PostgreSQL with pgvector
+pgvector:
+  image: pgvector/pgvector:latest
+  environment:
+    POSTGRES_DB: vectordb
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+  ports:
+    - "5432:5432"
+
+# Milvus
+milvus:
+  image: milvusdb/milvus:latest
+  ports:
+    - "19530:19530"
+    - "9091:9091"
+```
+
+### 2. AI Model Servers
+
+```yaml
+# Ollama
+ollama:
+  image: ollama/ollama:latest
+  ports:
+    - "11434:11434"
+  volumes:
+    - ollama_data:/root/.ollama
+
+# LocalAI
+localai:
+  image: localai/localai:latest
+  ports:
+    - "8080:8080"
+  volumes:
+    - ./models:/models
+```
+
+### 3. Monitoring Services
+
+```yaml
+# Prometheus
+prometheus:
+  image: prom/prometheus:latest
+  ports:
+    - "9090:9090"
+  volumes:
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+# Grafana
+grafana:
+  image: grafana/grafana:latest
+  ports:
+    - "3000:3000"
+  volumes:
+    - grafana_data:/var/lib/grafana
+```
+
+## Configuration Properties
+
+```properties
+spring.ai.development.services.enabled=true
+spring.ai.development.services.auto-start=true
+spring.ai.development.services.port-range=8000-9000
+```
+
+## Best Practices
+
+<Note>
+When using development-time services, consider these best practices:
+</Note>
+
+- **Resource Management**: Monitor resource usage
+- **Data Persistence**: Use volumes for data persistence
+- **Security**: Secure development environments
+- **Networking**: Configure proper network isolation
+- **Documentation**: Document service configurations
+
+## Advanced Features
+
+### Custom Service Configuration
+
+```yaml
+# Custom service configuration
+services:
+  custom-service:
+    build:
+      context: ./custom-service
+      dockerfile: Dockerfile
+    environment:
+      CUSTOM_VAR: value
+    ports:
+      - "8080:8080"
+```
+
+### Service Health Checks
+
+```yaml
+services:
+  pgvector:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+```
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Service Startup Issues**
+   - Check port conflicts
+   - Verify resource availability
+   - Review service logs
+
+2. **Connection Problems**
+   - Check network configuration
+   - Verify service health
+   - Test connectivity
+
+3. **Resource Issues**
+   - Monitor resource usage
+   - Adjust resource limits
+   - Clean up unused resources 

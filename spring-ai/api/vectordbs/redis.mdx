@@ -1,0 +1,187 @@
+---
+title: "Redis Vector Database"
+---
+
+Redis Vector Database integration in Spring AI provides vector storage and search capabilities using Redis's vector features.
+
+## Overview
+
+Redis Vector Database enables:
+- In-memory vector storage
+- Real-time similarity search
+- High-performance operations
+- Scalable architecture
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="In-memory" icon="memory">
+    In-memory storage
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time search
+  </Card>
+  <Card title="Performance" icon="tachometer-alt">
+    High performance
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    Horizontal scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-redis-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Redis Vector Database Configuration
+spring.ai.redis.vectordb.enabled=true
+spring.ai.redis.vectordb.host=localhost
+spring.ai.redis.vectordb.port=6379
+spring.ai.redis.vectordb.index-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class RedisVectorService {
+    private final RedisVectorClient vectorClient;
+
+    public RedisVectorService(RedisVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class RedisVectorStorageConfig {
+    @Bean
+    public VectorStorage redisVectorStorage(RedisVectorProperties properties) {
+        return new RedisVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class RedisSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch redisSimilaritySearch(RedisVectorProperties properties) {
+        return new RedisSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Index Management
+
+```java
+@Service
+public class IndexService {
+    private final RedisVectorClient vectorClient;
+
+    public void createIndex(String name, int dimension) {
+        vectorClient.createIndex(name, dimension);
+    }
+
+    public void dropIndex(String name) {
+        vectorClient.dropIndex(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Index Configuration
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("custom-vectors")
+            .dimension(1536)
+            .algorithm(Algorithm.HNSW)
+            .metricType(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Cluster Configuration
+
+```java
+@Configuration
+public class ClusterConfig {
+    @Bean
+    public ClusterConfig clusterConfig() {
+        return ClusterConfig.builder()
+            .nodes(Arrays.asList("redis-1:6379", "redis-2:6379"))
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=redis-vectordb
+management.endpoint.redis-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Redis Vector Database, consider these best practices:
+</Note>
+
+- **Memory Management**: Configure appropriate memory settings
+- **Index Design**: Design efficient index structure
+- **Cluster Strategy**: Implement effective clustering
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify host and port
+   - Check network connectivity
+   - Review authentication
+
+2. **Performance Issues**
+   - Optimize memory settings
+   - Adjust index configuration
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor memory usage
+   - Implement cleanup
+   - Review retention policy 

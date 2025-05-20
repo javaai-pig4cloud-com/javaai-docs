@@ -1,0 +1,135 @@
+---
+title: "ETL Pipeline"
+---
+
+The ETL (Extract, Transform, Load) Pipeline is a crucial component in building effective RAG (Retrieval Augmented Generation) systems.
+
+## Overview
+
+ETL pipelines in Spring AI help prepare and process data for use in RAG systems by:
+
+- Extracting data from various sources
+- Transforming it into a suitable format
+- Loading it into vector stores for efficient retrieval
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Data Extraction" icon="download">
+    Extract data from various sources including documents, databases, and APIs
+  </Card>
+  <Card title="Data Transformation" icon="arrows-rotate">
+    Transform raw data into vector embeddings and metadata
+  </Card>
+  <Card title="Data Loading" icon="upload">
+    Load processed data into vector stores for efficient retrieval
+  </Card>
+  <Card title="Pipeline Management" icon="gear">
+    Manage and monitor the entire ETL process
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Pipeline Structure
+
+```java
+@Configuration
+public class ETLPipelineConfig {
+    @Bean
+    public ETLPipeline etlPipeline(
+            DocumentLoader documentLoader,
+            EmbeddingModel embeddingModel,
+            VectorStore vectorStore) {
+        return ETLPipeline.builder()
+                .documentLoader(documentLoader)
+                .embeddingModel(embeddingModel)
+                .vectorStore(vectorStore)
+                .build();
+    }
+}
+```
+
+### Pipeline Components
+
+1. **Document Loaders**
+   - PDF documents
+   - Text files
+   - Web pages
+   - Database records
+
+2. **Transformers**
+   - Text chunking
+   - Embedding generation
+   - Metadata extraction
+
+3. **Vector Stores**
+   - Integration with various vector databases
+   - Efficient storage and retrieval
+   - Index management
+
+## Best Practices
+
+<Note>
+When implementing ETL pipelines, consider the following best practices:
+</Note>
+
+- **Chunking Strategy**: Choose appropriate chunk sizes based on your use case
+- **Metadata**: Include relevant metadata for better context
+- **Error Handling**: Implement robust error handling and retry mechanisms
+- **Monitoring**: Set up monitoring for pipeline performance and data quality
+- **Versioning**: Maintain version control for your data and models
+
+## Configuration Properties
+
+```properties
+spring.ai.etl.pipeline.enabled=true
+spring.ai.etl.pipeline.chunk-size=1000
+spring.ai.etl.pipeline.chunk-overlap=200
+spring.ai.etl.pipeline.batch-size=100
+```
+
+## Advanced Features
+
+### Custom Transformers
+
+You can implement custom transformers for specific data processing needs:
+
+```java
+@Component
+public class CustomTransformer implements DocumentTransformer {
+    @Override
+    public Document transform(Document document) {
+        // Custom transformation logic
+        return transformedDocument;
+    }
+}
+```
+
+### Pipeline Monitoring
+
+Monitor your ETL pipeline using Spring Boot Actuator:
+
+```properties
+management.endpoints.web.exposure.include=etl-pipeline
+management.endpoint.etl-pipeline.enabled=true
+```
+
+## Troubleshooting
+
+Common issues and their solutions:
+
+1. **Memory Issues**
+   - Adjust batch sizes
+   - Implement streaming processing
+   - Use appropriate chunk sizes
+
+2. **Performance Bottlenecks**
+   - Optimize embedding generation
+   - Use parallel processing
+   - Implement caching
+
+3. **Data Quality**
+   - Implement validation steps
+   - Add data cleaning transformers
+   - Monitor embedding quality 

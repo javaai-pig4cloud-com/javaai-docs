@@ -1,0 +1,184 @@
+---
+title: "Couchbase Vector Database"
+---
+
+Couchbase Vector Database integration in Spring AI provides vector storage and search capabilities using Couchbase's vector features.
+
+## Overview
+
+Couchbase Vector Database enables:
+- Distributed vector storage
+- Full-text search integration
+- Real-time vector operations
+- Multi-dimensional scaling
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Distributed Storage" icon="network-wired">
+    Distributed vector storage
+  </Card>
+  <Card title="Search Integration" icon="magnifying-glass">
+    Full-text search
+  </Card>
+  <Card title="Scalability" icon="arrows-up-down-left-right">
+    Multi-dimensional scaling
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-couchbase-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# Couchbase Vector Database Configuration
+spring.ai.couchbase.vectordb.enabled=true
+spring.ai.couchbase.vectordb.connection-string=couchbase://localhost
+spring.ai.couchbase.vectordb.bucket-name=vectordb
+spring.ai.couchbase.vectordb.scope-name=vectors
+spring.ai.couchbase.vectordb.collection-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class CouchbaseVectorService {
+    private final CouchbaseVectorClient vectorClient;
+
+    public CouchbaseVectorService(CouchbaseVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class CouchbaseVectorStorageConfig {
+    @Bean
+    public VectorStorage couchbaseVectorStorage(CouchbaseVectorProperties properties) {
+        return new CouchbaseVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class CouchbaseSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch couchbaseSimilaritySearch(CouchbaseVectorProperties properties) {
+        return new CouchbaseSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Full-text Search Integration
+
+```java
+@Service
+public class FullTextSearchService {
+    private final CouchbaseVectorClient vectorClient;
+
+    public List<SearchResult> searchWithText(String text, float[] queryVector, int k) {
+        return vectorClient.searchWithText(text, queryVector, k);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Index Configuration
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("vector-index")
+            .dimension(1536)
+            .metric(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Bucket Configuration
+
+```java
+@Configuration
+public class BucketConfig {
+    @Bean
+    public BucketConfig bucketConfig() {
+        return BucketConfig.builder()
+            .name("vectordb")
+            .memoryQuota(1024)
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=couchbase-vectordb
+management.endpoint.couchbase-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using Couchbase Vector Database, consider these best practices:
+</Note>
+
+- **Cluster Design**: Design efficient cluster topology
+- **Index Management**: Optimize index configuration
+- **Memory Management**: Configure appropriate memory quotas
+- **Replication**: Set up proper replication
+- **Monitoring**: Implement comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection string
+   - Check cluster status
+   - Review authentication
+
+2. **Performance Issues**
+   - Optimize index configuration
+   - Adjust memory quotas
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor bucket usage
+   - Configure cleanup
+   - Review retention policy 

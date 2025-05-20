@@ -1,0 +1,189 @@
+---
+title: "OpenSearch Vector Database"
+---
+
+OpenSearch Vector Database integration in Spring AI provides vector storage and search capabilities using OpenSearch's vector features.
+
+## Overview
+
+OpenSearch Vector Database enables:
+- Distributed vector storage
+- Full-text search integration
+- Real-time vector operations
+- Scalable architecture
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Distributed" icon="network-wired">
+    Distributed architecture
+  </Card>
+  <Card title="Search" icon="search">
+    Full-text search
+  </Card>
+  <Card title="Real-time" icon="clock">
+    Real-time operations
+  </Card>
+  <Card title="Scalable" icon="arrows-up-down-left-right">
+    Horizontal scaling
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-opensearch-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# OpenSearch Vector Database Configuration
+spring.ai.opensearch.vectordb.enabled=true
+spring.ai.opensearch.vectordb.uri=http://localhost:9200
+spring.ai.opensearch.vectordb.username=admin
+spring.ai.opensearch.vectordb.password=admin
+spring.ai.opensearch.vectordb.index-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class OpenSearchVectorService {
+    private final OpenSearchVectorClient vectorClient;
+
+    public OpenSearchVectorService(OpenSearchVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class OpenSearchVectorStorageConfig {
+    @Bean
+    public VectorStorage openSearchVectorStorage(OpenSearchVectorProperties properties) {
+        return new OpenSearchVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class OpenSearchSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch openSearchSimilaritySearch(OpenSearchVectorProperties properties) {
+        return new OpenSearchSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Index Management
+
+```java
+@Service
+public class IndexService {
+    private final OpenSearchVectorClient vectorClient;
+
+    public void createIndex(String name, int dimension) {
+        vectorClient.createIndex(name, dimension);
+    }
+
+    public void deleteIndex(String name) {
+        vectorClient.deleteIndex(name);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Index Configuration
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("custom-vectors")
+            .dimension(1536)
+            .indexType(IndexType.HNSW)
+            .metricType(MetricType.COSINE)
+            .build();
+    }
+}
+```
+
+### Mapping Configuration
+
+```java
+@Configuration
+public class MappingConfig {
+    @Bean
+    public MappingConfig mappingConfig() {
+        return MappingConfig.builder()
+            .vectorField("vector")
+            .metadataFields(Arrays.asList("title", "content"))
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=opensearch-vectordb
+management.endpoint.opensearch-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using OpenSearch Vector Database, consider these best practices:
+</Note>
+
+- **Index Design**: Design efficient index structure
+- **Mapping Strategy**: Optimize field mappings
+- **Sharding Strategy**: Implement effective sharding
+- **Resource Management**: Configure resource allocation
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify connection URI
+   - Check authentication
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize index configuration
+   - Adjust sharding strategy
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor index size
+   - Implement cleanup
+   - Review retention policy 

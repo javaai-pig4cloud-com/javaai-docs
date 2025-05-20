@@ -1,0 +1,186 @@
+---
+title: "MariaDB Vector Database"
+---
+
+MariaDB Vector Database integration in Spring AI provides vector storage and search capabilities using MariaDB's vector features.
+
+## Overview
+
+MariaDB Vector Database enables:
+- Relational vector storage
+- SQL-based vector operations
+- Full-text search integration
+- Transaction support
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Relational" icon="database">
+    Relational vector storage
+  </Card>
+  <Card title="SQL Support" icon="code">
+    SQL-based operations
+  </Card>
+  <Card title="Transactions" icon="exchange-alt">
+    Transaction support
+  </Card>
+  <Card title="Integration" icon="plug">
+    Full-text search integration
+  </Card>
+</CardGroup>
+
+## Implementation
+
+### Basic Setup
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-mariadb-vectordb</artifactId>
+    <version>${spring-ai.version}</version>
+</dependency>
+```
+
+### Configuration
+
+```properties
+# MariaDB Vector Database Configuration
+spring.ai.mariadb.vectordb.enabled=true
+spring.ai.mariadb.vectordb.url=jdbc:mariadb://localhost:3306/vectordb
+spring.ai.mariadb.vectordb.username=root
+spring.ai.mariadb.vectordb.password=password
+spring.ai.mariadb.vectordb.table-name=vectors
+```
+
+### Usage
+
+```java
+@Service
+public class MariaDBVectorService {
+    private final MariaDBVectorClient vectorClient;
+
+    public MariaDBVectorService(MariaDBVectorClient vectorClient) {
+        this.vectorClient = vectorClient;
+    }
+
+    public void storeVector(String id, float[] vector, Map<String, Object> metadata) {
+        vectorClient.store(id, vector, metadata);
+    }
+
+    public List<SearchResult> searchSimilar(float[] queryVector, int k) {
+        return vectorClient.search(queryVector, k);
+    }
+}
+```
+
+## Vector Operations
+
+### 1. Vector Storage
+
+```java
+@Configuration
+public class MariaDBVectorStorageConfig {
+    @Bean
+    public VectorStorage mariaDBVectorStorage(MariaDBVectorProperties properties) {
+        return new MariaDBVectorStorage(properties);
+    }
+}
+```
+
+### 2. Similarity Search
+
+```java
+@Configuration
+public class MariaDBSimilaritySearchConfig {
+    @Bean
+    public SimilaritySearch mariaDBSimilaritySearch(MariaDBVectorProperties properties) {
+        return new MariaDBSimilaritySearch(properties);
+    }
+}
+```
+
+### 3. Transaction Management
+
+```java
+@Service
+@Transactional
+public class TransactionalVectorService {
+    private final MariaDBVectorClient vectorClient;
+
+    public void storeVectorWithTransaction(String id, float[] vector) {
+        vectorClient.store(id, vector);
+    }
+}
+```
+
+## Advanced Features
+
+### Custom Table Configuration
+
+```java
+@Configuration
+public class TableConfig {
+    @Bean
+    public TableConfig tableConfig() {
+        return TableConfig.builder()
+            .name("vector_table")
+            .vectorColumn("vector")
+            .metadataColumns(Arrays.asList("title", "content"))
+            .build();
+    }
+}
+```
+
+### Index Configuration
+
+```java
+@Configuration
+public class IndexConfig {
+    @Bean
+    public IndexConfig indexConfig() {
+        return IndexConfig.builder()
+            .name("vector_index")
+            .type(IndexType.VECTOR)
+            .dimension(1536)
+            .build();
+    }
+}
+```
+
+### Monitoring
+
+```properties
+management.endpoints.web.exposure.include=mariadb-vectordb
+management.endpoint.mariadb-vectordb.enabled=true
+```
+
+## Best Practices
+
+<Note>
+When using MariaDB Vector Database, consider these best practices:
+</Note>
+
+- **Table Design**: Design efficient table structure
+- **Index Management**: Optimize index configuration
+- **Transaction Management**: Use appropriate transaction levels
+- **Connection Pooling**: Configure connection pools
+- **Monitoring**: Set up comprehensive monitoring
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Connection Issues**
+   - Verify database connection
+   - Check credentials
+   - Review network settings
+
+2. **Performance Issues**
+   - Optimize table structure
+   - Configure indexes
+   - Review query patterns
+
+3. **Storage Issues**
+   - Monitor table size
+   - Implement cleanup
+   - Review retention policy 

@@ -1,0 +1,66 @@
+---
+title: Testcontainers
+description: Using Testcontainers with Spring AI
+---
+
+# Testcontainers
+
+Spring AI provides Testcontainers support for testing your AI applications.
+
+## Overview
+
+Testcontainers allows you to run tests against real services in Docker containers, providing a more realistic testing environment.
+
+## Features
+
+- Pre-configured containers for AI models
+- Vector database containers
+- Easy integration with Spring Boot tests
+- Automatic container lifecycle management
+
+## Getting Started
+
+Add the following dependency to your project:
+
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-testcontainers</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+## Usage
+
+```java
+@SpringBootTest
+class MyAITest {
+
+    @Container
+    static OllamaContainer ollama = new OllamaContainer();
+
+    @Test
+    void testWithOllama() {
+        // Your test code here
+    }
+}
+```
+
+## Available Containers
+
+- OllamaContainer
+- MilvusContainer
+- QdrantContainer
+- WeaviateContainer
+- ChromaContainer
+
+## Configuration
+
+Containers can be configured through properties or programmatically:
+
+```java
+@Container
+static OllamaContainer ollama = new OllamaContainer()
+    .withModel("llama2")
+    .withPort(11434);
+``` 
