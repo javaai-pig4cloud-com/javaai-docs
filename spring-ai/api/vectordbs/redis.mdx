@@ -1,37 +1,37 @@
 ---
-title: "Redis Vector Database"
+title: "Redis 向量数据库"
 ---
 
-Redis Vector Database integration in Spring AI provides vector storage and search capabilities using Redis's vector features.
+Spring AI 中的 Redis 向量数据库集成了 Redis 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-Redis Vector Database enables:
-- In-memory vector storage
-- Real-time similarity search
-- High-performance operations
-- Scalable architecture
+Redis 向量数据库支持：
+- 内存向量存储
+- 实时相似性搜索
+- 高性能操作
+- 可扩展架构
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="In-memory" icon="memory">
-    In-memory storage
+  <Card title="内存" icon="memory">
+    内存存储
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time search
+  <Card title="实时" icon="clock">
+    实时搜索
   </Card>
-  <Card title="Performance" icon="tachometer-alt">
-    High performance
+  <Card title="性能" icon="tachometer-alt">
+    高性能
   </Card>
-  <Card title="Scalable" icon="arrows-up-down-left-right">
-    Horizontal scaling
+  <Card title="可扩展" icon="arrows-up-down-left-right">
+    水平扩展
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,17 +41,17 @@ Redis Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Redis Vector Database Configuration
+# Redis 向量数据库配置
 spring.ai.redis.vectordb.enabled=true
 spring.ai.redis.vectordb.host=localhost
 spring.ai.redis.vectordb.port=6379
 spring.ai.redis.vectordb.index-name=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -72,9 +72,9 @@ public class RedisVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -86,7 +86,7 @@ public class RedisVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -98,7 +98,7 @@ public class RedisSimilaritySearchConfig {
 }
 ```
 
-### 3. Index Management
+### 3. 索引管理
 
 ```java
 @Service
@@ -115,9 +115,9 @@ public class IndexService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Index Configuration
+### 自定义索引配置
 
 ```java
 @Configuration
@@ -134,7 +134,7 @@ public class IndexConfig {
 }
 ```
 
-### Cluster Configuration
+### 集群配置
 
 ```java
 @Configuration
@@ -148,40 +148,40 @@ public class ClusterConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=redis-vectordb
 management.endpoint.redis-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Redis Vector Database, consider these best practices:
+使用 Redis 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Memory Management**: Configure appropriate memory settings
-- **Index Design**: Design efficient index structure
-- **Cluster Strategy**: Implement effective clustering
-- **Resource Management**: Configure resource allocation
-- **Monitoring**: Set up comprehensive monitoring
+- **内存管理**：配置适当的内存设置
+- **索引设计**：设计高效的索引结构
+- **集群策略**：实施有效的集群
+- **资源管理**：配置资源分配
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify host and port
-   - Check network connectivity
-   - Review authentication
+1. **连接问题**
+   - 验证主机和端口
+   - 检查网络连接性
+   - 查看身份验证
 
-2. **Performance Issues**
-   - Optimize memory settings
-   - Adjust index configuration
-   - Review query patterns
+2. **性能问题**
+   - 优化内存设置
+   - 调整索引配置
+   - 查看查询模式
 
-3. **Storage Issues**
-   - Monitor memory usage
-   - Implement cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控内存使用情况
+   - 执行清理
+   - 查看保留策略 

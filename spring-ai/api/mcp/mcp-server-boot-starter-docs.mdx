@@ -1,200 +1,172 @@
 ---
-title: "MCP Server Boot Starters"
+title: "MCP 服务器启动器文档"
 ---
 
-MCP Server Boot Starters provide easy setup of Model Context Protocol (MCP) servers in Spring Boot applications.
+# MCP 服务器启动器文档
 
-## Overview
+Spring AI MCP 服务器启动器 (`spring-ai-mcp-server-boot-starter`) 简化了符合模型上下文协议 (MCP) 的服务器应用程序的创建。
 
-MCP Server Boot Starters enable:
-- Quick server setup
-- Automatic configuration
-- Model deployment
-- Request handling
+## 概述
 
-## Features
+MCP 服务器启动器提供了：
 
-<CardGroup cols={2}>
-  <Card title="Server Setup" icon="server">
-    Easy server configuration
-  </Card>
-  <Card title="Model Deployment" icon="robot">
-    Simple model deployment
-  </Card>
-  <Card title="Request Handling" icon="arrows-rotate">
-    Efficient request processing
-  </Card>
-  <Card title="Monitoring" icon="chart-line">
-    Built-in monitoring
-  </Card>
-</CardGroup>
+-   自动配置 MCP 端点。
+-   用于处理 MCP 请求的组件。
+-   与 Spring Boot 应用程序的无缝集成。
 
-## Implementation
+## 入门
 
-### Basic Setup
+要开始使用 MCP 服务器启动器，请将以下依赖项添加到您的 `pom.xml` 文件中：
 
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-mcp-server-starter</artifactId>
-    <version>${spring-ai.version}</version>
+    <artifactId>spring-ai-mcp-server-boot-starter</artifactId>
 </dependency>
 ```
 
-### Configuration
+## 配置
+
+MCP 服务器启动器可以通过 `application.properties` 或 `application.yml` 文件进行配置。以下是一些常见的配置选项：
+
+### 服务器属性
+
+-   `spring.ai.mcp.server.enabled`: 启用或禁用 MCP 服务器 (默认为 `true`)。
+-   `spring.ai.mcp.server.path`: MCP API 端点的基础路径 (默认为 `/mcp`)。
+-   `spring.ai.mcp.server.port`: MCP 服务器监听的端口 (默认为应用程序的服务器端口)。
+
+示例 `application.properties`：
 
 ```properties
-# MCP Server Configuration
-spring.ai.mcp.server.enabled=true
-spring.ai.mcp.server.port=8080
-spring.ai.mcp.server.model-path=/models
-spring.ai.mcp.server.max-requests=1000
+spring.ai.mcp.server.path=/api/mcp
 ```
 
-### Server Usage
+### 模型配置
 
-```java
-@Configuration
-public class MCPServerConfig {
-    @Bean
-    public MCPServer mcpServer(MCPServerProperties properties) {
-        return MCPServer.builder()
-            .properties(properties)
-            .modelRegistry(modelRegistry())
-            .build();
-    }
+您需要配置您的 Spring AI 模型 (例如，ChatModel、EmbeddingModel)。MCP 服务器将使用这些已配置的模型来处理传入的请求。
+确保您已按照各个模型文档中的说明配置了所需的模型 bean。
 
-    @Bean
-    public ModelRegistry modelRegistry() {
-        return new ModelRegistry();
-    }
-}
-```
-
-## Server Types
-
-### 1. Standard Server
-
-```java
-@Configuration
-public class StandardMCPServerConfig {
-    @Bean
-    public MCPServer standardMCPServer(MCPServerProperties properties) {
-        return new StandardMCPServer(properties);
-    }
-}
-```
-
-### 2. Async Server
-
-```java
-@Configuration
-public class AsyncMCPServerConfig {
-    @Bean
-    public AsyncMCPServer asyncMCPServer(MCPServerProperties properties) {
-        return new AsyncMCPServer(properties);
-    }
-}
-```
-
-### 3. Reactive Server
-
-```java
-@Configuration
-public class ReactiveMCPServerConfig {
-    @Bean
-    public ReactiveMCPServer reactiveMCPServer(MCPServerProperties properties) {
-        return new ReactiveMCPServer(properties);
-    }
-}
-```
-
-## Model Deployment
-
-### Basic Model Deployment
-
-```java
-@Service
-public class ModelDeploymentService {
-    private final ModelRegistry modelRegistry;
-
-    public ModelDeploymentService(ModelRegistry modelRegistry) {
-        this.modelRegistry = modelRegistry;
-    }
-
-    public void deployModel(Model model) {
-        modelRegistry.register(model);
-    }
-}
-```
-
-### Model Configuration
-
-```java
-@Configuration
-public class ModelConfig {
-    @Bean
-    public Model model() {
-        return Model.builder()
-            .name("my-model")
-            .version("1.0.0")
-            .type(ModelType.TEXT)
-            .build();
-    }
-}
-```
-
-## Advanced Features
-
-### Custom Server Configuration
-
-```java
-@Configuration
-public class CustomMCPServerConfig {
-    @Bean
-    public MCPServer customMCPServer(MCPServerProperties properties) {
-        return MCPServer.builder()
-            .properties(properties)
-            .interceptor(new CustomInterceptor())
-            .build();
-    }
-}
-```
-
-### Server Monitoring
+例如，要配置 OpenAI 聊天模型：
 
 ```properties
-management.endpoints.web.exposure.include=mcp-server
-management.endpoint.mcp-server.enabled=true
+spring.ai.openai.api-key=YOUR_OPENAI_API_KEY
+spring.ai.openai.chat.options.model=gpt-4o
 ```
 
-## Best Practices
+## 用法
 
-<Note>
-When using MCP Server Boot Starters, consider these best practices:
-</Note>
+一旦配置完成，MCP 服务器启动器将自动暴露处理 MCP 请求所需的端点。
 
-- **Resource Management**: Monitor server resources
-- **Security**: Implement proper security measures
-- **Scalability**: Configure for your scale needs
-- **Monitoring**: Set up comprehensive monitoring
-- **Error Handling**: Implement robust error handling
+### MCP 端点
 
-## Troubleshooting
+默认情况下，MCP 服务器在 `/mcp/v1/chat/completions` (对于聊天模型) 和 `/mcp/v1/embeddings` (对于嵌入模型) 上暴露端点。这些路径可以通过 `spring.ai.mcp.server.path` 属性进行自定义。
 
-Common issues and solutions:
+### 处理程序
 
-1. **Server Startup Issues**
-   - Check port availability
-   - Verify configuration
-   - Review logs
+启动器提供了 `McpChatHandler` 和 `McpEmbeddingHandler` 来处理相应的 MCP 请求。这些处理程序使用已配置的 Spring AI 模型与底层 AI 提供程序进行交互。
 
-2. **Performance Problems**
-   - Optimize server configuration
-   - Implement caching
-   - Use appropriate server type
+您可以自定义这些处理程序的行为，或者通过提供您自己的 `McpChatHandler` 或 `McpEmbeddingHandler` bean 来提供您自己的实现。
 
-3. **Model Deployment Issues**
-   - Verify model compatibility
-   - Check resource availability
-   - Review deployment logs 
+#### 自定义 `McpChatHandler`
+
+```java
+@Bean
+public McpChatHandler customMcpChatHandler(ChatModel chatModel) {
+    // 自定义逻辑
+    return new McpChatHandler(chatModel, new McpChatOptions(), null);
+}
+```
+
+其中 `McpChatOptions` 可以包含特定于聊天的选项，如默认提示模板或后处理器。
+
+### 请求和响应格式
+
+服务器期望请求并以 MCP 指定的格式发送响应。有关详细信息，请参阅 MCP 规范。
+
+## 示例：创建一个简单的 MCP 服务器
+
+1.  **添加依赖项**：如上所述，将 `spring-ai-mcp-server-boot-starter` 和模型特定的启动器 (例如，`spring-ai-openai-spring-boot-starter`) 添加到您的 `pom.xml` 中。
+
+2.  **配置属性**：在 `application.properties` 中配置您的 AI 模型凭证和可选的 MCP 服务器属性。
+
+    ```properties
+    # OpenAI 配置
+    spring.ai.openai.api-key=YOUR_OPENAI_API_KEY
+    spring.ai.openai.chat.options.model=gpt-4o
+
+    # MCP 服务器配置 (可选)
+    # spring.ai.mcp.server.path=/custom-mcp-path
+    ```
+
+3.  **运行应用程序**：启动您的 Spring Boot 应用程序。
+
+MCP 服务器现在应该正在运行并准备好在配置的路径上处理 MCP 请求。
+
+## 安全性
+
+保护您的 MCP 端点非常重要。考虑使用 Spring Security 或其他身份验证/授权机制来保护您的 API。
+
+以下是使用 Spring Security 进行基本身份验证的简单示例：
+
+1.  添加 Spring Security 依赖项：
+
+    ```xml
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    ```
+
+2.  配置安全规则：
+
+    ```java
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+    import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+    import org.springframework.security.core.userdetails.User;
+    import org.springframework.security.core.userdetails.UserDetails;
+    import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+    import org.springframework.security.web.SecurityFilterChain;
+
+    import static org.springframework.security.config.Customizer.withDefaults;
+
+    @Configuration
+    @EnableWebSecurity
+    public class SecurityConfig {
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http
+                .authorizeHttpRequests(authorizeRequests ->
+                    authorizeRequests
+                        .requestMatchers("/mcp/**").authenticated() // 保护 MCP 端点
+                        .anyRequest().permitAll()
+                )
+                .httpBasic(withDefaults());
+            return http.build();
+        }
+
+        @Bean
+        public InMemoryUserDetailsManager userDetailsService() {
+            UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("password")
+                .roles("USER")
+                .build();
+            return new InMemoryUserDetailsManager(user);
+        }
+    }
+    ```
+
+<Warning>
+上述安全配置仅为示例。对于生产环境，请实施更强大的安全措施。
+</Warning>
+
+## 故障排除
+
+-   **404 未找到**：验证 MCP 端点路径是否正确配置，并且您的应用程序是否正在运行。
+-   **身份验证错误**：确保您的 AI 模型凭证正确无误且具有必要的权限。
+-   **依赖项冲突**：检查您的 `pom.xml` 是否存在可能导致问题的冲突依赖项。
+
+有关更多详细信息和高级配置，请参阅 Spring AI MCP [参考文档](https://docs.spring.io/spring-ai/reference/api/mcp.html) 和 [GitHub 仓库](https://github.com/spring-projects/spring-ai/tree/main/spring-ai-spring-boot-starters/spring-ai-mcp-server-spring-boot-starter)。 

@@ -1,15 +1,15 @@
 ---
-title: Azure OpenAI Transcriptions
-description: Using Azure OpenAI's Whisper models for speech-to-text
+title: "Azure OpenAI 转录"
+description: "使用 Azure OpenAI 的 Whisper 模型进行语音转文本"
 ---
 
-# Azure OpenAI Transcriptions
+# Azure OpenAI 转录
 
-Spring AI provides integration with Azure OpenAI's Whisper models for speech-to-text capabilities.
+Spring AI 集成了 Azure OpenAI 的 Whisper 模型，以实现语音转文本功能。
 
-## Configuration
+## 配置
 
-Add the following dependency to your project:
+将以下依赖项添加到您的项目中：
 
 ```xml
 <dependency>
@@ -18,7 +18,7 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-## Properties
+## 属性
 
 ```properties
 spring.ai.azure.openai.api-key=YOUR_API_KEY
@@ -26,13 +26,13 @@ spring.ai.azure.openai.endpoint=YOUR_ENDPOINT
 spring.ai.azure.openai.audio.model=whisper-1
 ```
 
-## Usage
+## 用法
 
 ```java
 @Autowired
 private TranscriptionClient transcriptionClient;
 
-// Transcribe audio
+// 转录音频
 TranscriptionResponse response = transcriptionClient.call(
     new TranscriptionPrompt(audioFile)
 );

@@ -1,15 +1,15 @@
 ---
-title: OpenAI Speech
-description: Using OpenAI's TTS models for text-to-speech
+title: "OpenAI 语音"
+description: "使用 OpenAI 的 TTS 模型进行文本转语音"
 ---
 
-# OpenAI Speech
+# OpenAI 语音
 
-Spring AI provides integration with OpenAI's Text-to-Speech (TTS) models for speech synthesis capabilities.
+Spring AI 集成了 OpenAI 的文本转语音 (TTS) 模型，以实现语音合成功能。
 
-## Configuration
+## 配置
 
-Add the following dependency to your project:
+将以下依赖项添加到您的项目中：
 
 ```xml
 <dependency>
@@ -18,21 +18,21 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-## Properties
+## 属性
 
 ```properties
 spring.ai.openai.api-key=YOUR_API_KEY
 spring.ai.openai.speech.model=tts-1
 ```
 
-## Usage
+## 用法
 
 ```java
 @Autowired
 private SpeechClient speechClient;
 
-// Generate speech
+// 生成语音
 SpeechResponse response = speechClient.call(
-    new SpeechPrompt("Hello, this is a test of the text-to-speech system.")
+    new SpeechPrompt("你好，这是一个文本转语音系统的测试。")
 );
 ``` 

@@ -1,55 +1,55 @@
 ---
-title: "Google VertexAI Multimodal Embeddings"
+title: "Google 多模态 向量模型"
 ---
 
 <Note>
-EXPERIMENTAL. Used for experimental purposes only. Not compatible yet with the `VectorStores`.
+实验性功能。仅用于实验目的。尚不兼容 `VectorStores`。
 </Note>
 
-Vertex AI supports two types of embeddings models, text and multimodal.
-This document describes how to create a multimodal embedding using the Vertex AI [Multimodal embeddings API](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-multimodal-embeddings).
+Vertex AI 支持两种类型的嵌入模型：文本和多模态。
+本文档介绍如何使用 Vertex AI [多模态嵌入 API](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-multimodal-embeddings) 创建多模态嵌入。
 
-The multimodal embeddings model generates 1408-dimension vectors based on the input you provide, which can include a combination of image, text, and video data. 
-The embedding vectors can then be used for subsequent tasks like image classification or video content moderation.
+多模态嵌入模型会根据您提供的输入（可以包括图像、文本和视频数据的组合）生成 1408 维向量。
+然后，嵌入向量可用于后续任务，例如图像分类或视频内容审核。
 
-The image embedding vector and text embedding vector are in the same semantic space with the same dimensionality. 
-Consequently, these vectors can be used interchangeably for use cases like searching image by text, or searching video by image.
+图像嵌入向量和文本嵌入向量位于同一语义空间中，具有相同的维度。
+因此，这些向量可以互换使用于诸如通过文本搜索图像或通过图像搜索视频之类的用例。
 
 <Note>
-The VertexAI Multimodal API imposes the [following limits](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-multimodal-embeddings#api-limits).
+VertexAI 多模态 API 强制执行[以下限制](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-multimodal-embeddings#api-limits)。
 </Note>
 
 <Tip>
-For text-only embedding use cases, we recommend using the [Vertex AI text-embeddings model](/spring4ai/api/embeddings/vertexai-embeddings-text) instead.
+对于纯文本嵌入用例，我们建议改用 [Vertex AI 文本嵌入模型](/spring4ai/api/embeddings/vertexai-embeddings-text)。
 </Tip>
 
-## Prerequisites
+## 先决条件
 
-- Install the [gcloud](https://cloud.google.com/sdk/docs/install) CLI, appropriate for you OS.
-- Authenticate by running the following command. 
-Replace `PROJECT_ID` with your Google Cloud project ID and `ACCOUNT` with your Google Cloud username.
+- 安装适用于您操作系统的 [gcloud](https://cloud.google.com/sdk/docs/install) CLI。
+- 通过运行以下命令进行身份验证。
+将 `PROJECT_ID` 替换为您的 Google Cloud 项目 ID，并将 `ACCOUNT` 替换为您的 Google Cloud 用户名。
 
 ```bash
-gcloud config set project <PROJECT_ID> &&
+gcloud config set project <PROJECT_ID> && \
 gcloud auth application-default login <ACCOUNT>
 ```
 
-### Add Repositories and BOM
+### 添加存储库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 工件发布在 Maven Central 和 Spring Snapshot 存储库中。
+请参阅[工件存储库](/spring4ai/getting-started#artifact-repositories)部分，将这些存储库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (物料清单) 以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the VertexAI Embedding Model.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI 为 VertexAI Embedding 模型提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -58,7 +58,7 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -67,46 +67,46 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-### Embedding Properties
+### Embedding 属性
 
-The prefix `spring.ai.vertex.ai.embedding` is used as the property prefix that lets you connect to VertexAI Embedding API.
+前缀 `spring.ai.vertex.ai.embedding` 用作属性前缀，可让您连接到 VertexAI Embedding API。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.vertex.ai.embedding.project-id | Google Cloud Platform project ID | - |
-| spring.ai.vertex.ai.embedding.location | Region | - |
-| spring.ai.vertex.ai.embedding.apiEndpoint | Vertex AI Embedding API endpoint. | - |
+| 属性                                      | 描述                             | 默认值 |
+| :---------------------------------------- | :------------------------------- | :----- |
+| spring.ai.vertex.ai.embedding.project-id  | Google Cloud Platform 项目 ID   | -      |
+| spring.ai.vertex.ai.embedding.location    | 区域                             | -      |
+| spring.ai.vertex.ai.embedding.apiEndpoint | Vertex AI Embedding API 端点。 | -      |
 
 <Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 
-To enable, spring.ai.model.embedding.multimodal=vertexai (It is enabled by default)
+要启用，请设置 spring.ai.model.embedding.multimodal=vertexai (默认情况下启用)
 
-To disable, spring.ai.model.embedding.multimodal=none (or any value which doesn't match vertexai)
+要禁用，请设置 spring.ai.model.embedding.multimodal=none (或任何与 vertexai 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.vertex.ai.embedding.multimodal` is the property prefix that lets you configure the embedding model implementation for VertexAI Multimodal Embedding.
+前缀 `spring.ai.vertex.ai.embedding.multimodal` 是配置 VertexAI 多模态嵌入的嵌入模型实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.vertex.ai.embedding.multimodal.enabled (Removed and no longer valid) | Enable Vertex AI Embedding API model. | true |
-| spring.ai.model.embedding.multimodal=vertexai | Enable Vertex AI Embedding API model. | vertexai |
-| spring.ai.vertex.ai.embedding.multimodal.options.model | You can get multimodal embeddings by using the following model: | multimodalembedding@001 |
-| spring.ai.vertex.ai.embedding.multimodal.options.dimensions | Specify lower-dimension embeddings. By default, an embedding request returns a 1408 float vector for a data type. You can also specify lower-dimension embeddings (128, 256, or 512 float vectors) for text and image data. | 1408 |
-| spring.ai.vertex.ai.embedding.multimodal.options.video-start-offset-sec | The start offset of the video segment in seconds. If not specified, it's calculated with max(0, endOffsetSec - 120). | - |
-| spring.ai.vertex.ai.embedding.multimodal.options.video-end-offset-sec | The end offset of the video segment in seconds. If not specified, it's calculated with min(video length, startOffSec + 120). If both startOffSec and endOffSec are specified, endOffsetSec is adjusted to min(startOffsetSec+120, endOffsetSec). | - |
-| spring.ai.vertex.ai.embedding.multimodal.options.video-interval-sec | The interval of the video the embedding will be generated. The minimum value for interval_sec is 4. If the interval is less than 4, an InvalidArgumentError is returned. There are no limitations on the maximum value of the interval. However, if the interval is larger than min(video length, 120s), it impacts the quality of the generated embeddings. Default value: 16. | - |
+| 属性                                                                              | 描述                                                                                                                                                            | 默认值                    |
+| :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------ |
+| spring.ai.vertex.ai.embedding.multimodal.enabled (已删除且不再有效)                 | 启用 Vertex AI Embedding API 模型。                                                                                                                               | true                      |
+| spring.ai.model.embedding.multimodal=vertexai                                     | 启用 Vertex AI Embedding API 模型。                                                                                                                               | vertexai                  |
+| spring.ai.vertex.ai.embedding.multimodal.options.model                            | 您可以使用以下模型获取多模态嵌入：                                                                                                                                        | multimodalembedding@001   |
+| spring.ai.vertex.ai.embedding.multimodal.options.dimensions                       | 指定较低维度的嵌入。默认情况下，嵌入请求为数据类型返回一个 1408 浮点向量。您还可以为文本和图像数据指定较低维度的嵌入（128、256 或 512 浮点向量）。                                                                                                                               | 1408                      |
+| spring.ai.vertex.ai.embedding.multimodal.options.video-start-offset-sec         | 视频片段的开始偏移量（以秒为单位）。如果未指定，则计算为 max(0, endOffsetSec - 120)。                                                                                               | -                         |
+| spring.ai.vertex.ai.embedding.multimodal.options.video-end-offset-sec           | 视频片段的结束偏移量（以秒为单位）。如果未指定，则计算为 min(video length, startOffSec + 120)。如果同时指定了 startOffSec 和 endOffSec，则将 endOffsetSec 调整为 min(startOffsetSec+120, endOffsetSec)。 | -                         |
+| spring.ai.vertex.ai.embedding.multimodal.options.video-interval-sec             | 将生成嵌入的视频间隔。interval_sec 的最小值为 4。如果间隔小于 4，则返回 InvalidArgumentError。间隔的最大值没有限制。但是，如果间隔大于 min(video length, 120s)，则会影响生成的嵌入的质量。默认值：16。                                                      | -                         |
 
-## Manual Configuration
+## 手动配置
 
-The [VertexAiMultimodalEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-vertex-ai-embedding/src/main/java/org/springframework/ai/vertexai/embedding/VertexAiMultimodalEmbeddingModel.java) implements the `DocumentEmbeddingModel`.
+[VertexAiMultimodalEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-vertex-ai-embedding/src/main/java/org/springframework/ai/vertexai/embedding/VertexAiMultimodalEmbeddingModel.java) 实现了 `DocumentEmbeddingModel`。
 
-Add the `spring-ai-vertex-ai-embedding` dependency to your project's Maven `pom.xml` file:
+将 `spring-ai-vertex-ai-embedding` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -115,7 +115,7 @@ Add the `spring-ai-vertex-ai-embedding` dependency to your project's Maven `pom.
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -124,10 +124,10 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-Next, create a `VertexAiMultimodalEmbeddingModel` and use it for embeddings generations:
+接下来，创建一个 `VertexAiMultimodalEmbeddingModel` 并将其用于嵌入生成：
 
 ```java
 VertexAiEmbeddingConnectionDetails connectionDetails = 

@@ -1,37 +1,37 @@
 ---
-title: "ETL Pipeline"
+title: "ETL 清洗"
 ---
 
-The ETL (Extract, Transform, Load) Pipeline is a crucial component in building effective RAG (Retrieval Augmented Generation) systems.
+ETL（提取、转换、加载）管道是构建有效的 RAG（检索增强生成）系统的关键组件。
 
-## Overview
+## 概述
 
-ETL pipelines in Spring AI help prepare and process data for use in RAG systems by:
+Spring AI 中的 ETL 管道通过以下方式帮助准备和处理数据以供 RAG 系统使用：
 
-- Extracting data from various sources
-- Transforming it into a suitable format
-- Loading it into vector stores for efficient retrieval
+- 从各种来源提取数据
+- 将其转换为合适的格式
+- 将其加载到向量存储中以实现高效检索
 
-## Key Features
+## 主要特性
 
 <CardGroup cols={2}>
-  <Card title="Data Extraction" icon="download">
-    Extract data from various sources including documents, databases, and APIs
+  <Card title="数据提取" icon="download">
+    从各种来源提取数据，包括文档、数据库和 API
   </Card>
-  <Card title="Data Transformation" icon="arrows-rotate">
-    Transform raw data into vector embeddings and metadata
+  <Card title="数据转换" icon="arrows-rotate">
+    将原始数据转换为向量嵌入和元数据
   </Card>
-  <Card title="Data Loading" icon="upload">
-    Load processed data into vector stores for efficient retrieval
+  <Card title="数据加载" icon="upload">
+    将处理后的数据加载到向量存储中以实现高效检索
   </Card>
-  <Card title="Pipeline Management" icon="gear">
-    Manage and monitor the entire ETL process
+  <Card title="管道管理" icon="gear">
+    管理和监控整个 ETL 流程
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Pipeline Structure
+### 基本管道结构
 
 ```java
 @Configuration
@@ -50,37 +50,37 @@ public class ETLPipelineConfig {
 }
 ```
 
-### Pipeline Components
+### 管道组件
 
-1. **Document Loaders**
-   - PDF documents
-   - Text files
-   - Web pages
-   - Database records
+1. **文档加载器**
+   - PDF 文档
+   - 文本文件
+   - 网页
+   - 数据库记录
 
-2. **Transformers**
-   - Text chunking
-   - Embedding generation
-   - Metadata extraction
+2. **转换器**
+   - 文本分块
+   - 嵌入生成
+   - 元数据提取
 
-3. **Vector Stores**
-   - Integration with various vector databases
-   - Efficient storage and retrieval
-   - Index management
+3. **向量存储**
+   - 与各种向量数据库集成
+   - 高效存储和检索
+   - 索引管理
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When implementing ETL pipelines, consider the following best practices:
+在实现 ETL 管道时，请考虑以下最佳实践：
 </Note>
 
-- **Chunking Strategy**: Choose appropriate chunk sizes based on your use case
-- **Metadata**: Include relevant metadata for better context
-- **Error Handling**: Implement robust error handling and retry mechanisms
-- **Monitoring**: Set up monitoring for pipeline performance and data quality
-- **Versioning**: Maintain version control for your data and models
+- **分块策略**：根据您的用例选择适当的分块大小
+- **元数据**：包含相关元数据以提供更好的上下文
+- **错误处理**：实现强大的错误处理和重试机制
+- **监控**：设置管道性能和数据质量监控
+- **版本控制**：维护数据和模型的版本控制
 
-## Configuration Properties
+## 配置属性
 
 ```properties
 spring.ai.etl.pipeline.enabled=true
@@ -89,47 +89,47 @@ spring.ai.etl.pipeline.chunk-overlap=200
 spring.ai.etl.pipeline.batch-size=100
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Transformers
+### 自定义转换器
 
-You can implement custom transformers for specific data processing needs:
+您可以为特定的数据处理需求实现自定义转换器：
 
 ```java
 @Component
 public class CustomTransformer implements DocumentTransformer {
     @Override
     public Document transform(Document document) {
-        // Custom transformation logic
+        // 自定义转换逻辑
         return transformedDocument;
     }
 }
 ```
 
-### Pipeline Monitoring
+### 管道监控
 
-Monitor your ETL pipeline using Spring Boot Actuator:
+使用 Spring Boot Actuator 监控您的 ETL 管道：
 
 ```properties
 management.endpoints.web.exposure.include=etl-pipeline
 management.endpoint.etl-pipeline.enabled=true
 ```
 
-## Troubleshooting
+## 故障排除
 
-Common issues and their solutions:
+常见问题及其解决方案：
 
-1. **Memory Issues**
-   - Adjust batch sizes
-   - Implement streaming processing
-   - Use appropriate chunk sizes
+1. **内存问题**
+   - 调整批处理大小
+   - 实现流式处理
+   - 使用适当的分块大小
 
-2. **Performance Bottlenecks**
-   - Optimize embedding generation
-   - Use parallel processing
-   - Implement caching
+2. **性能瓶颈**
+   - 优化嵌入生成
+   - 使用并行处理
+   - 实现缓存
 
-3. **Data Quality**
-   - Implement validation steps
-   - Add data cleaning transformers
-   - Monitor embedding quality 
+3. **数据质量**
+   - 实现验证步骤
+   - 添加数据清理转换器
+   - 监控嵌入质量 

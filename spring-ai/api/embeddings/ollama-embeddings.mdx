@@ -1,45 +1,45 @@
 ---
-title: "Ollama Embeddings"
+title: "Ollama 向量模型"
 ---
 
-With [Ollama](https://ollama.ai/) you can run various [AI Models](https://ollama.com/search?c=embedding) locally and generate embeddings from them.
-An embedding is a vector (list) of floating point numbers.
-The distance between two vectors measures their relatedness.
-Small distances suggest high relatedness and large distances suggest low relatedness.
+通过 [Ollama](https://ollama.ai/)，您可以在本地运行各种[AI 模型](https://ollama.com/search?c=embedding)并从中生成嵌入。
+嵌入是一个浮点数向量（列表）。
+两个向量之间的距离衡量它们的相关性。
+小距离表示高相关性，大距离表示低相关性。
 
-The `OllamaEmbeddingModel` implementation leverages the Ollama [Embeddings API](https://github.com/ollama/ollama/blob/main/docs/api.md#generate-embeddings) endpoint.
+`OllamaEmbeddingModel` 实现利用了 Ollama [Embeddings API](https://github.com/ollama/ollama/blob/main/docs/api.md#generate-embeddings) 端点。
 
-## Prerequisites
+## 先决条件
 
-You first need access to an Ollama instance. There are a few options, including the following:
+您首先需要访问 Ollama 实例。有几种选择，包括：
 
-* [Download and install Ollama](https://ollama.com/download) on your local machine.
-* Configure and [run Ollama via Testcontainers](/spring4ai/api/testcontainers).
-* Bind to an Ollama instance via [Kubernetes Service Bindings](/spring4ai/api/cloud-bindings).
+* 在本地计算机上[下载并安装 Ollama](https://ollama.com/download)。
+* 通过 [Testcontainers](/spring4ai/api/testcontainers) 配置并运行 Ollama。
+* 通过 [Kubernetes 服务绑定](/spring4ai/api/cloud-bindings)绑定到 Ollama 实例。
 
-You can pull the models you want to use in your application from the [Ollama model library](https://ollama.com/search?c=embedding):
-
-```bash
-ollama pull <model-name>
-```
-
-You can also pull any of the thousands, free, [GGUF Hugging Face Models](https://huggingface.co/models?library=gguf&sort=trending):
+您可以从 [Ollama 模型库](https://ollama.com/search?c=embedding)中拉取要在应用程序中使用的模型：
 
 ```bash
-ollama pull hf.co/<username>/<model-repository>
+ollama pull <模型名称>
 ```
 
-Alternatively, you can enable the option to download automatically any needed model: [Auto-pulling Models](#auto-pulling-models).
+您还可以拉取数千个免费的 [GGUF Hugging Face 模型](https://huggingface.co/models?library=gguf&sort=trending)中的任何一个：
 
-## Auto-configuration
+```bash
+ollama pull hf.co/<用户名>/<模型存储库>
+```
+
+或者，您可以启用自动下载任何所需模型的选项：[自动拉取模型](#auto-pulling-models)。
+
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置、启动器模块的工件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the Ollama Embedding Model.
-To enable it add the following dependency to your Maven `pom.xml` or Gradle `build.gradle` build files:
+Spring AI 为 Ollama Embedding 模型提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到您的 Maven `pom.xml` 或 Gradle `build.gradle` 构建文件中：
 
 ```xml
 <dependency>
@@ -55,102 +55,102 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-### Base Properties
+### 基本属性
 
-The prefix `spring.ai.ollama` is the property prefix to configure the connection to Ollama.
+前缀 `spring.ai.ollama` 是用于配置与 Ollama 连接的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.ollama.base-url | Base URL where Ollama API server is running. | http://localhost:11434 |
+| 属性                      | 描述                                 | 默认值                   |
+| :------------------------ | :----------------------------------- | :----------------------- |
+| spring.ai.ollama.base-url | Ollama API 服务器运行的基本 URL。 | http://localhost:11434 |
 
-Here are the properties for initializing the Ollama integration and [auto-pulling models](#auto-pulling-models).
+以下是初始化 Ollama 集成和[自动拉取模型](#auto-pulling-models)的属性。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.ollama.init.pull-model-strategy | Whether to pull models at startup-time and how. | never |
-| spring.ai.ollama.init.timeout | How long to wait for a model to be pulled. | 5m |
-| spring.ai.ollama.init.max-retries | Maximum number of retries for the model pull operation. | 0 |
-| spring.ai.ollama.init.embedding.include | Include this type of models in the initialization task. | true |
-| spring.ai.ollama.init.embedding.additional-models | Additional models to initialize besides the ones configured via default properties. | [] |
+| 属性                                              | 描述                                                         | 默认值    |
+| :------------------------------------------------ | :----------------------------------------------------------- | :-------- |
+| spring.ai.ollama.init.pull-model-strategy         | 是否在启动时拉取模型以及如何拉取。                                       | never     |
+| spring.ai.ollama.init.timeout                     | 等待模型拉取的时间。                                                 | 5m        |
+| spring.ai.ollama.init.max-retries                 | 模型拉取操作的最大重试次数。                                         | 0         |
+| spring.ai.ollama.init.embedding.include           | 在初始化任务中包含此类型的模型。                                       | true      |
+| spring.ai.ollama.init.embedding.additional-models | 除通过默认属性配置的模型外，要初始化的其他模型。                         | []        |
 
-### Embedding Properties
+### Embedding 属性
 
 <Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+Embedding 自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 
-To enable, spring.ai.model.embedding=ollama (It is enabled by default)
+要启用，请设置 spring.ai.model.embedding=ollama (默认启用)
 
-To disable, spring.ai.model.embedding=none (or any value which doesn't match ollama)
+要禁用，请设置 spring.ai.model.embedding=none (或任何与 ollama 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.ollama.embedding.options` is the property prefix that configures the Ollama embedding model.
-It includes the Ollama request (advanced) parameters such as the `model`, `keep-alive`, and `truncate` as well as the Ollama model `options` properties.
+前缀 `spring.ai.ollama.embedding.options` 是配置 Ollama 嵌入模型的属性前缀。
+它包括 Ollama 请求（高级）参数，例如 `model`、`keep-alive` 和 `truncate`，以及 Ollama 模型 `options` 属性。
 
-Here are the advanced request parameter for the Ollama embedding model:
+以下是 Ollama 嵌入模型的高级请求参数：
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.ollama.embedding.enabled (Removed and no longer valid) | Enables the Ollama embedding model auto-configuration. | true |
-| spring.ai.model.embedding | Enables the Ollama embedding model auto-configuration. | ollama |
-| spring.ai.ollama.embedding.options.model | The name of the [supported model](https://github.com/ollama/ollama?tab=readme-ov-file#model-library) to use. You can use dedicated [Embedding Model](https://ollama.com/search?c=embedding) types | mistral |
-| spring.ai.ollama.embedding.options.keep_alive | Controls how long the model will stay loaded into memory following the request | 5m |
-| spring.ai.ollama.embedding.options.truncate | Truncates the end of each input to fit within context length. Returns error if false and context length is exceeded. | true |
+| 属性                                                             | 描述                                                                                                                         | 默认值    |
+| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------- | :-------- |
+| spring.ai.ollama.embedding.enabled (已移除且不再有效)              | 启用 Ollama 嵌入模型自动配置。                                                                                               | true      |
+| spring.ai.model.embedding                                        | 启用 Ollama 嵌入模型自动配置。                                                                                               | ollama    |
+| spring.ai.ollama.embedding.options.model                         | 要使用的[支持的模型](https://github.com/ollama/ollama?tab=readme-ov-file#model-library)的名称。您可以使用专用的[嵌入模型](https://ollama.com/search?c=embedding)类型 | mistral   |
+| spring.ai.ollama.embedding.options.keep_alive                    | 控制模型在请求后将保持加载到内存中的时间。                                                                                           | 5m        |
+| spring.ai.ollama.embedding.options.truncate                      | 截断每个输入的末尾以适应上下文长度。如果为 false 且超出上下文长度，则返回错误。                                                                               | true      |
 
-The remaining `options` properties are based on the [Ollama Valid Parameters and Values](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values) and [Ollama Types](https://github.com/ollama/ollama/blob/main/api/types.go). The default values are based on: [Ollama type defaults](https://github.com/ollama/ollama/blob/b538dc3858014f94b099730a592751a5454cab0a/api/types.go#L364).
+其余 `options` 属性基于 [Ollama 有效参数和值](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values) 和 [Ollama 类型](https://github.com/ollama/ollama/blob/main/api/types.go)。默认值基于：[Ollama 类型默认值](https://github.com/ollama/ollama/blob/b538dc3858014f94b099730a592751a5454cab0a/api/types.go#L364)。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.ollama.embedding.options.numa | Whether to use NUMA. | false |
-| spring.ai.ollama.embedding.options.num-ctx | Sets the size of the context window used to generate the next token. | 2048 |
-| spring.ai.ollama.embedding.options.num-batch | Prompt processing maximum batch size. | 512 |
-| spring.ai.ollama.embedding.options.num-gpu | The number of layers to send to the GPU(s). On macOS it defaults to 1 to enable metal support, 0 to disable. 1 here indicates that NumGPU should be set dynamically | -1 |
-| spring.ai.ollama.embedding.options.main-gpu | When using multiple GPUs this option controls which GPU is used for small tensors for which the overhead of splitting the computation across all GPUs is not worthwhile. The GPU in question will use slightly more VRAM to store a scratch buffer for temporary results. | 0 |
-| spring.ai.ollama.embedding.options.low-vram | - | false |
-| spring.ai.ollama.embedding.options.f16-kv | - | true |
-| spring.ai.ollama.embedding.options.logits-all | Return logits for all the tokens, not just the last one. To enable completions to return logprobs, this must be true. | - |
-| spring.ai.ollama.embedding.options.vocab-only | Load only the vocabulary, not the weights. | - |
-| spring.ai.ollama.embedding.options.use-mmap | By default, models are mapped into memory, which allows the system to load only the necessary parts of the model as needed. However, if the model is larger than your total amount of RAM or if your system is low on available memory, using mmap might increase the risk of pageouts, negatively impacting performance. Disabling mmap results in slower load times but may reduce pageouts if you're not using mlock. Note that if the model is larger than the total amount of RAM, turning off mmap would prevent the model from loading at all. | null |
-| spring.ai.ollama.embedding.options.use-mlock | Lock the model in memory, preventing it from being swapped out when memory-mapped. This can improve performance but trades away some of the advantages of memory-mapping by requiring more RAM to run and potentially slowing down load times as the model loads into RAM. | false |
-| spring.ai.ollama.embedding.options.num-thread | Sets the number of threads to use during computation. By default, Ollama will detect this for optimal performance. It is recommended to set this value to the number of physical CPU cores your system has (as opposed to the logical number of cores). 0 = let the runtime decide | 0 |
-| spring.ai.ollama.embedding.options.num-keep | - | 4 |
-| spring.ai.ollama.embedding.options.seed | Sets the random number seed to use for generation. Setting this to a specific number will make the model generate the same text for the same prompt. | -1 |
-| spring.ai.ollama.embedding.options.num-predict | Maximum number of tokens to predict when generating text. (-1 = infinite generation, -2 = fill context) | -1 |
-| spring.ai.ollama.embedding.options.top-k | Reduces the probability of generating nonsense. A higher value (e.g., 100) will give more diverse answers, while a lower value (e.g., 10) will be more conservative. | 40 |
-| spring.ai.ollama.embedding.options.top-p | Works together with top-k. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text. | 0.9 |
-| spring.ai.ollama.embedding.options.min-p | Alternative to the top_p, and aims to ensure a balance of quality and variety. The parameter p represents the minimum probability for a token to be considered, relative to the probability of the most likely token. For example, with p=0.05 and the most likely token having a probability of 0.9, logits with a value less than 0.045 are filtered out. | 0.0 |
-| spring.ai.ollama.embedding.options.tfs-z | Tail-free sampling is used to reduce the impact of less probable tokens from the output. A higher value (e.g., 2.0) will reduce the impact more, while a value of 1.0 disables this setting. | 1.0 |
-| spring.ai.ollama.embedding.options.typical-p | - | 1.0 |
-| spring.ai.ollama.embedding.options.repeat-last-n | Sets how far back for the model to look back to prevent repetition. (Default: 64, 0 = disabled, -1 = num_ctx) | 64 |
-| spring.ai.ollama.embedding.options.temperature | The temperature of the model. Increasing the temperature will make the model answer more creatively. | 0.8 |
-| spring.ai.ollama.embedding.options.repeat-penalty | Sets how strongly to penalize repetitions. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 0.9) will be more lenient. | 1.1 |
-| spring.ai.ollama.embedding.options.presence-penalty | - | 0.0 |
-| spring.ai.ollama.embedding.options.frequency-penalty | - | 0.0 |
-| spring.ai.ollama.embedding.options.mirostat | Enable Mirostat sampling for controlling perplexity. (default: 0, 0 = disabled, 1 = Mirostat, 2 = Mirostat 2.0) | 0 |
-| spring.ai.ollama.embedding.options.mirostat-tau | Controls the balance between coherence and diversity of the output. A lower value will result in more focused and coherent text. | 5.0 |
-| spring.ai.ollama.embedding.options.mirostat-eta | Influences how quickly the algorithm responds to feedback from the generated text. A lower learning rate will result in slower adjustments, while a higher learning rate will make the algorithm more responsive. | 0.1 |
-| spring.ai.ollama.embedding.options.penalize-newline | - | true |
-| spring.ai.ollama.embedding.options.stop | Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return. Multiple stop patterns may be set by specifying multiple separate stop parameters in a modelfile. | - |
-| spring.ai.ollama.embedding.options.functions | List of functions, identified by their names, to enable for function calling in a single prompt requests. Functions with those names must exist in the functionCallbacks registry. | - |
+| 属性                                                    | 描述                                                                                                                                                                                                                            | 默认值    |
+| :------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
+| spring.ai.ollama.embedding.options.numa                 | 是否使用 NUMA。                                                                                                                                                                                                                   | false     |
+| spring.ai.ollama.embedding.options.num-ctx              | 设置用于生成下一个令牌的上下文窗口的大小。                                                                                                                                                                                                      | 2048      |
+| spring.ai.ollama.embedding.options.num-batch            | 提示处理最大批处理大小。                                                                                                                                                                                                            | 512       |
+| spring.ai.ollama.embedding.options.num-gpu              | 发送到 GPU 的层数。在 macOS 上，默认为 1 以启用 metal 支持，0 禁用。此处的 1 表示应动态设置 NumGPU。                                                                                                                                                  | -1        |
+| spring.ai.ollama.embedding.options.main-gpu             | 使用多个 GPU 时，此选项控制哪个 GPU 用于小张量，对于这些张量，跨所有 GPU 拆分计算的开销不值得。所讨论的 GPU 将使用稍多的 VRAM 来存储临时结果的暂存缓冲区。                                                                                                                   | 0         |
+| spring.ai.ollama.embedding.options.low-vram             | -                                                                                                                                                                                                                             | false     |
+| spring.ai.ollama.embedding.options.f16-kv               | -                                                                                                                                                                                                                             | true      |
+| spring.ai.ollama.embedding.options.logits-all           | 返回所有令牌的 logits，而不仅仅是最后一个。要启用补全以返回 logprobs，此值必须为 true。                                                                                                                                                           | -         |
+| spring.ai.ollama.embedding.options.vocab-only           | 仅加载词汇表，不加载权重。                                                                                                                                                                                                          | -         |
+| spring.ai.ollama.embedding.options.use-mmap             | 默认情况下，模型映射到内存中，这允许系统仅根据需要加载模型的必要部分。但是，如果模型大于您的总 RAM 量，或者如果您的系统可用内存不足，则使用 mmap 可能会增加页面换出的风险，从而对性能产生负面影响。禁用 mmap 会导致加载时间变慢，但如果您不使用 mlock，则可能会减少页面换出。请注意，如果模型大于总 RAM 量，则关闭 mmap 将阻止模型完全加载。 | null      |
+| spring.ai.ollama.embedding.options.use-mlock            | 将模型锁定在内存中，防止在内存映射时将其换出。这可以提高性能，但会牺牲内存映射的一些优势，因为它需要更多 RAM 才能运行，并且随着模型加载到 RAM 中，加载时间可能会变慢。                                                                                                           | false     |
+| spring.ai.ollama.embedding.options.num-thread           | 设置计算期间要使用的线程数。默认情况下，Ollama 将检测此值以获得最佳性能。建议将此值设置为系统具有的物理 CPU 内核数（而不是逻辑内核数）。0 = 让运行时决定。                                                                                                               | 0         |
+| spring.ai.ollama.embedding.options.num-keep             | -                                                                                                                                                                                                                             | 4         |
+| spring.ai.ollama.embedding.options.seed                 | 设置用于生成的随机数种子。将此值设置为特定数字将使模型为同一提示生成相同的文本。                                                                                                                                                                 | -1        |
+| spring.ai.ollama.embedding.options.num-predict          | 生成文本时要预测的最大令牌数。（-1 = 无限生成，-2 = 填充上下文）                                                                                                                                                                                 | -1        |
+| spring.ai.ollama.embedding.options.top-k                | 降低生成无意义内容的概率。较高的值（例如 100）将提供更多样化的答案，而较低的值（例如 10）将更加保守。                                                                                                                                                           | 40        |
+| spring.ai.ollama.embedding.options.top-p                | 与 top-k 一起工作。较高的值（例如 0.95）将导致更多样化的文本，而较低的值（例如 0.5）将生成更集中和保守的文本。                                                                                                                                                         | 0.9       |
+| spring.ai.ollama.embedding.options.min-p                | top_p 的替代方案，旨在确保质量和多样性的平衡。参数 p 表示要考虑的令牌的最小概率，相对于最可能令牌的概率。例如，当 p=0.05 且最可能令牌的概率为 0.9 时，值小于 0.045 的 logits 将被过滤掉。                                                                                                 | 0.0       |
+| spring.ai.ollama.embedding.options.tfs-z                | 无尾采样用于减少输出中不太可能的令牌的影响。较高的值（例如 2.0）将更多地减少影响，而值 1.0 将禁用此设置。                                                                                                                                                             | 1.0       |
+| spring.ai.ollama.embedding.options.typical-p            | -                                                                                                                                                                                                                             | 1.0       |
+| spring.ai.ollama.embedding.options.repeat-last-n        | 设置模型向后看多远以防止重复。（默认值：64，0 = 禁用，-1 = num_ctx）                                                                                                                                                                              | 64        |
+| spring.ai.ollama.embedding.options.temperature          | 模型的温度。增加温度会使模型回答更具创造性。                                                                                                                                                                                                   | 0.8       |
+| spring.ai.ollama.embedding.options.repeat-penalty       | 设置惩罚重复的强度。较高的值（例如 1.5）将更强烈地惩罚重复，而较低的值（例如 0.9）将更宽松。                                                                                                                                                               | 1.1       |
+| spring.ai.ollama.embedding.options.presence-penalty     | -                                                                                                                                                                                                                             | 0.0       |
+| spring.ai.ollama.embedding.options.frequency-penalty    | -                                                                                                                                                                                                                             | 0.0       |
+| spring.ai.ollama.embedding.options.mirostat             | 启用 Mirostat 采样以控制困惑度。（默认值：0，0 = 禁用，1 = Mirostat，2 = Mirostat 2.0）                                                                                                                                                                | 0         |
+| spring.ai.ollama.embedding.options.mirostat-tau         | 控制输出的连贯性和多样性之间的平衡。较低的值将导致更集中和连贯的文本。                                                                                                                                                                            | 5.0       |
+| spring.ai.ollama.embedding.options.mirostat-eta         | 影响算法响应生成文本反馈的速度。较低的学习率将导致较慢的调整，而较高的学习率将使算法更具响应性。                                                                                                                                                               | 0.1       |
+| spring.ai.ollama.embedding.options.penalize-newline     | -                                                                                                                                                                                                                             | true      |
+| spring.ai.ollama.embedding.options.stop                 | 设置要使用的停止序列。遇到此模式时，LLM 将停止生成文本并返回。可以通过在模型文件中指定多个单独的停止参数来设置多个停止模式。                                                                                                                                                 | -         |
+| spring.ai.ollama.embedding.options.functions            | 函数列表，由其名称标识，用于在单个提示请求中启用函数调用。具有这些名称的函数必须存在于 functionCallbacks 注册表中。                                                                                                                                                   | -         |
 
 <Tip>
-All properties prefixed with `spring.ai.ollama.embedding.options` can be overridden at runtime by adding a request specific [embedding options](#embedding-options) to the `EmbeddingRequest` call.
+所有以 `spring.ai.ollama.embedding.options` 为前缀的属性都可以在运行时通过向 `EmbeddingRequest` 调用添加特定于请求的[嵌入选项](#embedding-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The [OllamaOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-ollama/src/main/java/org/springframework/ai/ollama/api/OllamaOptions.java) provides the Ollama configurations, such as the model to use, the low level GPU and CPU tuning, etc.
+[OllamaOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-ollama/src/main/java/org/springframework/ai/ollama/api/OllamaOptions.java) 提供了 Ollama 配置，例如要使用的模型、低级 GPU 和 CPU 调整等。
 
-The default options can be configured using the `spring.ai.ollama.embedding.options` properties as well.
+默认选项也可以使用 `spring.ai.ollama.embedding.options` 属性进行配置。
 
-At start-time use the `OllamaEmbeddingModel(OllamaApi ollamaApi, OllamaOptions defaultOptions)` to configure the default options used for all embedding requests.
-At run-time you can override the default options, using a `OllamaOptions` instance as part of your `EmbeddingRequest`.
+在启动时，使用 `OllamaEmbeddingModel(OllamaApi ollamaApi, OllamaOptions defaultOptions)` 配置用于所有嵌入请求的默认选项。
+在运行时，您可以通过在 `EmbeddingRequest` 中使用 `OllamaOptions` 实例来覆盖默认选项。
 
-For example to override the default model name for a specific request:
+例如，要覆盖特定请求的默认模型名称：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -161,27 +161,27 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
             .build());
 ```
 
-## Auto-pulling Models
+## 自动拉取模型
 
-Spring AI Ollama can automatically pull models when they are not available in your Ollama instance.
-This feature is particularly useful for development and testing as well as for deploying your applications to new environments.
+当 Ollama 实例中没有可用模型时，Spring AI Ollama 可以自动拉取模型。
+此功能对于开发和测试以及将应用程序部署到新环境特别有用。
 
 <Tip>
-You can also pull, by name, any of the thousands, free, [GGUF Hugging Face Models](https://huggingface.co/models?library=gguf&sort=trending).
+您还可以按名称拉取数千个免费的 [GGUF Hugging Face 模型](https://huggingface.co/models?library=gguf&sort=trending)中的任何一个。
 </Tip>
 
-There are three strategies for pulling models:
+有三种拉取模型的策略：
 
-* `always` (defined in `PullModelStrategy.ALWAYS`): Always pull the model, even if it's already available. Useful to ensure you're using the latest version of the model.
-* `when_missing` (defined in `PullModelStrategy.WHEN_MISSING`): Only pull the model if it's not already available. This may result in using an older version of the model.
-* `never` (defined in `PullModelStrategy.NEVER`): Never pull the model automatically.
+* `always` (在 `PullModelStrategy.ALWAYS` 中定义): 始终拉取模型，即使它已经可用。有助于确保您使用的是最新版本的模型。
+* `when_missing` (在 `PullModelStrategy.WHEN_MISSING` 中定义): 仅当模型尚不可用时才拉取模型。这可能会导致使用较旧版本的模型。
+* `never` (在 `PullModelStrategy.NEVER` 中定义): 从不自动拉取模型。
 
 <Caution>
-Due to potential delays while downloading models, automatic pulling is not recommended for production environments. Instead, consider assessing and pre-downloading the necessary models in advance.
+由于下载模型时可能会出现延迟，因此不建议在生产环境中使用自动拉取。相反，请考虑提前评估和预下载必要的模型。
 </Caution>
 
-All models defined via configuration properties and default options can be automatically pulled at startup time.
-You can configure the pull strategy, timeout, and maximum number of retries using configuration properties:
+通过配置属性和默认选项定义的所有模型都可以在启动时自动拉取。
+您可以使用配置属性配置拉取策略、超时和最大重试次数：
 
 ```yaml
 spring:
@@ -194,10 +194,10 @@ spring:
 ```
 
 <Caution>
-The application will not complete its initialization until all specified models are available in Ollama. Depending on the model size and internet connection speed, this may significantly slow down your application's startup time.
+在 Ollama 中所有指定的模型都可用之前，应用程序不会完成其初始化。根据模型大小和互联网连接速度，这可能会显著减慢应用程序的启动时间。
 </Caution>
 
-You can initialize additional models at startup, which is useful for models used dynamically at runtime:
+您可以在启动时初始化其他模型，这对于在运行时动态使用的模型很有用：
 
 ```yaml
 spring:
@@ -211,7 +211,7 @@ spring:
             - nomic-embed-text
 ```
 
-If you want to apply the pulling strategy only to specific types of models, you can exclude embedding models from the initialization task:
+如果只想将拉取策略应用于特定类型的模型，则可以从初始化任务中排除嵌入模型：
 
 ```yaml
 spring:
@@ -223,26 +223,26 @@ spring:
           include: false
 ```
 
-This configuration will apply the pulling strategy to all models except embedding models.
+此配置将拉取策略应用于除嵌入模型之外的所有模型。
 
-## HuggingFace Models
+## HuggingFace 模型
 
-Ollama can access, out of the box, all [GGUF Hugging Face](https://huggingface.co/models?library=gguf&sort=trending) Embedding models.
-You can pull any of these models by name: `ollama pull hf.co/<username>/<model-repository>` or configure the auto-pulling strategy: [Auto-pulling Models](#auto-pulling-models):
+Ollama 可以开箱即用地访问所有 [GGUF Hugging Face](https://huggingface.co/models?library=gguf&sort=trending) 嵌入模型。
+您可以按名称拉取这些模型中的任何一个：`ollama pull hf.co/<用户名>/<模型存储库>` 或配置自动拉取策略：[自动拉取模型](#auto-pulling-models)：
 
 ```
 spring.ai.ollama.embedding.options.model=hf.co/mixedbread-ai/mxbai-embed-large-v1
 spring.ai.ollama.init.pull-model-strategy=always
 ```
 
-- `spring.ai.ollama.embedding.options.model`: Specifies the [Hugging Face GGUF model](https://huggingface.co/models?library=gguf&sort=trending) to use. 
-- `spring.ai.ollama.init.pull-model-strategy=always`: (optional) Enables automatic model pulling at startup time. 
-For production, you should pre-download the models to avoid delays: `ollama pull hf.co/mixedbread-ai/mxbai-embed-large-v1`.
+- `spring.ai.ollama.embedding.options.model`: 指定要使用的 [Hugging Face GGUF 模型](https://huggingface.co/models?library=gguf&sort=trending)。
+- `spring.ai.ollama.init.pull-model-strategy=always`: (可选) 启用启动时自动拉取模型。
+对于生产环境，您应该预先下载模型以避免延迟：`ollama pull hf.co/mixedbread-ai/mxbai-embed-large-v1`。
 
-## Sample Controller
+## 示例控制器
 
-This will create a `EmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+这将创建一个 `EmbeddingModel` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用 `EmbeddingModel` 实现。
 
 ```java
 @RestController
@@ -263,10 +263,10 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-If you are not using Spring Boot, you can manually configure the `OllamaEmbeddingModel`.
-For this add the spring-ai-ollama dependency to your project's Maven `pom.xml` file:
+如果您不使用 Spring Boot，则可以手动配置 `OllamaEmbeddingModel`。
+为此，请将 spring-ai-ollama 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -275,7 +275,7 @@ For this add the spring-ai-ollama dependency to your project's Maven `pom.xml` f
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -284,15 +284,15 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
 <Note>
-The `spring-ai-ollama` dependency provides access also to the `OllamaChatModel`.
-For more information about the `OllamaChatModel` refer to the [Ollama Chat Client](/spring4ai/api/chat/ollama-chat) section.
+`spring-ai-ollama` 依赖项还提供对 `OllamaChatModel` 的访问。
+有关 `OllamaChatModel` 的更多信息，请参阅 [Ollama 聊天客户端](/spring4ai/api/chat/ollama-chat)部分。
 </Note>
 
-Next, create an `OllamaEmbeddingModel` instance and use it to compute the embeddings for two input texts using a dedicated `chroma/all-minilm-l6-v2-f32` embedding models:
+接下来，创建一个 `OllamaEmbeddingModel` 实例，并使用它通过专用的 `chroma/all-minilm-l6-v2-f32` 嵌入模型计算两个输入文本的嵌入：
 
 ```java
 var ollamaApi = OllamaApi.builder().build();
@@ -310,4 +310,4 @@ EmbeddingResponse embeddingResponse = this.embeddingModel.call(
             .build());
 ```
 
-The `OllamaOptions` provides the configuration information for all embedding requests. 
+`OllamaOptions` 为所有嵌入请求提供配置信息。 

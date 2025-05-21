@@ -1,37 +1,37 @@
 ---
-title: "Couchbase Vector Database"
+title: "Couchbase 向量数据库"
 ---
 
-Couchbase Vector Database integration in Spring AI provides vector storage and search capabilities using Couchbase's vector features.
+Spring AI 中的 Couchbase 向量数据库集成了 Couchbase 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-Couchbase Vector Database enables:
-- Distributed vector storage
-- Full-text search integration
-- Real-time vector operations
-- Multi-dimensional scaling
+Couchbase 向量数据库支持：
+- 分布式向量存储
+- 全文搜索集成
+- 实时向量操作
+- 多维扩展
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Distributed Storage" icon="network-wired">
-    Distributed vector storage
+  <Card title="分布式存储" icon="network-wired">
+    分布式向量存储
   </Card>
-  <Card title="Search Integration" icon="magnifying-glass">
-    Full-text search
+  <Card title="搜索集成" icon="magnifying-glass">
+    全文搜索
   </Card>
-  <Card title="Scalability" icon="arrows-up-down-left-right">
-    Multi-dimensional scaling
+  <Card title="可扩展性" icon="arrows-up-down-left-right">
+    多维扩展
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time operations
+  <Card title="实时" icon="clock">
+    实时操作
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,10 +41,10 @@ Couchbase Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Couchbase Vector Database Configuration
+# Couchbase 向量数据库配置
 spring.ai.couchbase.vectordb.enabled=true
 spring.ai.couchbase.vectordb.connection-string=couchbase://localhost
 spring.ai.couchbase.vectordb.bucket-name=vectordb
@@ -52,7 +52,7 @@ spring.ai.couchbase.vectordb.scope-name=vectors
 spring.ai.couchbase.vectordb.collection-name=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -73,9 +73,9 @@ public class CouchbaseVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -87,7 +87,7 @@ public class CouchbaseVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -99,7 +99,7 @@ public class CouchbaseSimilaritySearchConfig {
 }
 ```
 
-### 3. Full-text Search Integration
+### 3. 全文搜索集成
 
 ```java
 @Service
@@ -112,9 +112,9 @@ public class FullTextSearchService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Index Configuration
+### 自定义索引配置
 
 ```java
 @Configuration
@@ -130,7 +130,7 @@ public class IndexConfig {
 }
 ```
 
-### Bucket Configuration
+### Bucket 配置
 
 ```java
 @Configuration
@@ -145,40 +145,40 @@ public class BucketConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=couchbase-vectordb
 management.endpoint.couchbase-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Couchbase Vector Database, consider these best practices:
+使用 Couchbase 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Cluster Design**: Design efficient cluster topology
-- **Index Management**: Optimize index configuration
-- **Memory Management**: Configure appropriate memory quotas
-- **Replication**: Set up proper replication
-- **Monitoring**: Implement comprehensive monitoring
+- **集群设计**：设计高效的集群拓扑
+- **索引管理**：优化索引配置
+- **内存管理**：配置适当的内存配额
+- **复制**：设置适当的复制
+- **监控**：实施全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify connection string
-   - Check cluster status
-   - Review authentication
+1. **连接问题**
+   - 验证连接字符串
+   - 检查集群状态
+   - 查看身份验证
 
-2. **Performance Issues**
-   - Optimize index configuration
-   - Adjust memory quotas
-   - Review query patterns
+2. **性能问题**
+   - 优化索引配置
+   - 调整内存配额
+   - 查看查询模式
 
-3. **Storage Issues**
-   - Monitor bucket usage
-   - Configure cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控存储桶使用情况
+   - 配置清理
+   - 查看保留策略 

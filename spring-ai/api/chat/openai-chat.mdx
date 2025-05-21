@@ -1,27 +1,27 @@
 ---
-title: "OpenAI Chat"
+title: "OpenAI 聊天"
 ---
 
-Spring AI supports the various AI language models from OpenAI, the company behind ChatGPT, which has been instrumental in sparking interest in AI-driven text generation thanks to its creation of industry-leading text generation models and embeddings.
+Spring AI 支持 OpenAI 提供的各种 AI 语言模型。OpenAI 是 ChatGPT 背后的公司，凭借其创建的行业领先的文本生成模型和嵌入，在激发人们对 AI 驱动的文本生成的兴趣方面发挥了重要作用。
 
-## Prerequisites
+## 前提条件
 
-You will need to create an API with OpenAI to access ChatGPT models.
+你需要使用 OpenAI 创建一个 API 才能访问 ChatGPT 模型。
 
-Create an account at [OpenAI signup page](https://platform.openai.com/signup) and generate the token on the [API Keys page](https://platform.openai.com/account/api-keys).
+在 [OpenAI 注册页面](https://platform.openai.com/signup) 创建一个帐户，并在 [API 密钥页面](https://platform.openai.com/account/api-keys) 生成令牌。
 
-The Spring AI project defines a configuration property named `spring.ai.openai.api-key` that you should set to the value of the `API Key` obtained from openai.com.
+Spring AI 项目定义了一个名为 `spring.ai.openai.api-key` 的配置属性，你应该将其设置为从 openai.com 获取的 `API 密钥` 的值。
 
-You can set this configuration property in your `application.properties` file:
+你可以在 `application.properties` 文件中设置此配置属性：
 
 ```properties
-spring.ai.openai.api-key=<your-openai-api-key>
+spring.ai.openai.api-key=<你的-openai-api-密钥>
 ```
 
-For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference a custom environment variable:
+为了在处理 API 密钥等敏感信息时增强安全性，你可以使用 Spring 表达式语言 (SpEL) 来引用自定义环境变量：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     openai:
@@ -29,33 +29,33 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
-export OPENAI_API_KEY=<your-openai-api-key>
+# 在你的环境或 .env 文件中
+export OPENAI_API_KEY=<你的-openai-api-密钥>
 ```
 
-You can also set this configuration programmatically in your application code:
+你也可以在应用程序代码中以编程方式设置此配置：
 
 ```java
-// Retrieve API key from a secure source or environment variable
+// 从安全来源或环境变量中检索 API 密钥
 String apiKey = System.getenv("OPENAI_API_KEY");
 ```
 
-### Add Repositories and BOM
+### 添加仓库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 的构件发布在 Maven Central 和 Spring Snapshot 仓库中。
+请参阅[构件仓库](/spring4ai/getting-started#artifact-repositories)部分，将这些仓库添加到你的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (bill of materials)，以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置、启动器模块的构件名称发生了重大变化。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the OpenAI Chat Client.
-To enable it add the following dependency to your project's build file:
+Spring AI 为 OpenAI 聊天客户端提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的构建文件中：
 
 <Tabs>
   <Tab title="Maven">
@@ -76,100 +76,100 @@ To enable it add the following dependency to your project's build file:
 </Tabs>
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
-## Configuration Properties
+## 配置属性
 
 :::note
-Enabling and disabling of the chat auto-configurations are now configured via top level properties with the prefix `spring.ai.model.chat`.
+聊天自动配置的启用和禁用现在通过前缀为 `spring.ai.model.chat` 的顶级属性进行配置。
 
-To enable, spring.ai.model.chat=openai (It is enabled by default)
+要启用，spring.ai.model.chat=openai (默认启用)
 
-To disable, spring.ai.model.chat=none (or any value which doesn't match openai)
+要禁用，spring.ai.model.chat=none (或任何与 openai 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 :::
 
-### Connection Properties
+### 连接属性
 
-The prefix `spring.ai.openai` is used as the property prefix that lets you connect to OpenAI.
+前缀 `spring.ai.openai` 用作属性前缀，允许你连接到 OpenAI。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 |----------|-------------|---------|
-| spring.ai.openai.base-url | The URL to connect to | https://api.openai.com |
-| spring.ai.openai.api-key | The API Key | - |
-| spring.ai.openai.organization-id | Optionally, you can specify which organization to use for an API request. | - |
-| spring.ai.openai.project-id | Optionally, you can specify which project to use for an API request. | - |
+| spring.ai.openai.base-url | 要连接的 URL | https://api.openai.com |
+| spring.ai.openai.api-key | API 密钥 | - |
+| spring.ai.openai.organization-id | 可选地，你可以指定用于 API 请求的组织。 | - |
+| spring.ai.openai.project-id | 可选地，你可以指定用于 API 请求的项目。 | - |
 
 :::tip
-For users that belong to multiple organizations (or are accessing their projects through their legacy user API key), you can optionally specify which organization and project is used for an API request.
-Usage from these API requests will count as usage for the specified organization and project.
+对于属于多个组织的用户（或通过其旧版用户 API 密钥访问其项目的用户），你可以选择指定用于 API 请求的组织和项目。
+来自这些 API 请求的使用量将计为指定组织和项目的使用量。
 :::
 
-### Chat Properties
+### 聊天属性
 
-The prefix `spring.ai.openai.chat` is the property prefix that lets you configure the chat model implementation for OpenAI.
+前缀 `spring.ai.openai.chat` 是属性前缀，允许你配置 OpenAI 的聊天模型实现。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 |----------|-------------|---------|
-| spring.ai.model.chat | Enable OpenAI chat model. | openai |
-| spring.ai.openai.chat.base-url | Optional override for the `spring.ai.openai.base-url` property to provide a chat-specific URL. | - |
-| spring.ai.openai.chat.completions-path | The path to append to the base URL. | `/v1/chat/completions` |
-| spring.ai.openai.chat.api-key | Optional override for the `spring.ai.openai.api-key` to provide a chat-specific API Key. | - |
-| spring.ai.openai.chat.organization-id | Optionally, you can specify which organization to use for an API request. | - |
-| spring.ai.openai.chat.project-id | Optionally, you can specify which project to use for an API request. | - |
-| spring.ai.openai.chat.options.model | Name of the OpenAI chat model to use. You can select between models such as: `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`, `gpt-3.5-turbo`, and more. See the [models](https://platform.openai.com/docs/models) page for more information. | `gpt-4o-mini` |
-| spring.ai.openai.chat.options.temperature | The sampling temperature to use that controls the apparent creativity of generated completions. Higher values will make output more random while lower values will make results more focused and deterministic. It is not recommended to modify `temperature` and `top_p` for the same completions request as the interaction of these two settings is difficult to predict. | 0.8 |
-| spring.ai.openai.chat.options.frequencyPenalty | Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. | 0.0f |
-| spring.ai.openai.chat.options.logitBias | Modify the likelihood of specified tokens appearing in the completion. | - |
-| spring.ai.openai.chat.options.maxTokens | (Deprecated in favour of `maxCompletionTokens`) The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model's context length. | - |
-| spring.ai.openai.chat.options.maxCompletionTokens | An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and reasoning tokens. | - |
-| spring.ai.openai.chat.options.n | How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as 1 to minimize costs. | 1 |
-| spring.ai.openai.chat.options.store | Whether to store the output of this chat completion request for use in our model | false |
-| spring.ai.openai.chat.options.metadata | Developer-defined tags and values used for filtering completions in the chat completion dashboard | empty map |
-| spring.ai.openai.chat.options.output-modalities | Output types that you would like the model to generate for this request. Most models are capable of generating text, which is the default. The `gpt-4o-audio-preview` model can also be used to generate audio. To request that this model generate both text and audio responses, you can use: `text`, `audio`. Not supported for streaming. | - |
-| spring.ai.openai.chat.options.output-audio | Audio parameters for the audio generation. Required when audio output is requested with `output-modalities`: `audio`. Requires the `gpt-4o-audio-preview` model and is is not supported for streaming completions. | - |
-| spring.ai.openai.chat.options.presencePenalty | Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics. | - |
-| spring.ai.openai.chat.options.responseFormat.type | Compatible with `GPT-4o`, `GPT-4o mini`, `GPT-4 Turbo` and all `GPT-3.5 Turbo` models newer than `gpt-3.5-turbo-1106`. The `JSON_OBJECT` type enables JSON mode, which guarantees the message the model generates is valid JSON. The `JSON_SCHEMA` type enables [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs) which guarantees the model will match your supplied JSON schema. The JSON_SCHEMA type requires setting the `responseFormat.schema` property as well. | - |
-| spring.ai.openai.chat.options.responseFormat.name | Response format schema name. Applicable only for `responseFormat.type=JSON_SCHEMA` | custom_schema |
-| spring.ai.openai.chat.options.responseFormat.schema | Response format JSON schema. Applicable only for `responseFormat.type=JSON_SCHEMA` | - |
-| spring.ai.openai.chat.options.responseFormat.strict | Response format JSON schema adherence strictness. Applicable only for `responseFormat.type=JSON_SCHEMA` | - |
-| spring.ai.openai.chat.options.seed | This feature is in Beta. If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result. | - |
-| spring.ai.openai.chat.options.stop | Up to 4 sequences where the API will stop generating further tokens. | - |
-| spring.ai.openai.chat.options.topP | An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with `top_p` probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered. We generally recommend altering this or `temperature` but not both. | - |
-| spring.ai.openai.chat.options.tools | A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. | - |
-| spring.ai.openai.chat.options.toolChoice | Controls which (if any) function is called by the model. `none` means the model will not call a function and instead generates a message. `auto` means the model can pick between generating a message or calling a function. Specifying a particular function via `{"type: "function", "function": {"name": "my_function"}}` forces the model to call that function. `none` is the default when no functions are present. `auto` is the default if functions are present. | - |
-| spring.ai.openai.chat.options.user | A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. | - |
-| spring.ai.openai.chat.options.functions | List of functions, identified by their names, to enable for function calling in a single prompt requests. Functions with those names must exist in the `functionCallbacks` registry. | - |
-| spring.ai.openai.chat.options.stream-usage | (For streaming only) Set to add an additional chunk with token usage statistics for the entire request. The `choices` field for this chunk is an empty array and all other chunks will also include a usage field, but with a null value. | false |
-| spring.ai.openai.chat.options.parallel-tool-calls | Whether to enable [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling) during tool use. | true |
-| spring.ai.openai.chat.options.http-headers | Optional HTTP headers to be added to the chat completion request. To override the `api-key` you need to use an `Authorization` header key, and you have to prefix the key value with the `Bearer` prefix. | - |
-| spring.ai.openai.chat.options.proxy-tool-calls | If true, the Spring AI will not handle the function calls internally, but will proxy them to the client. Then is the client's responsibility to handle the function calls, dispatch them to the appropriate function, and return the results. If false (the default), the Spring AI will handle the function calls internally. Applicable only for chat models with function calling support | false |
+| spring.ai.model.chat | 启用 OpenAI 聊天模型。 | openai |
+| spring.ai.openai.chat.base-url | 可选地覆盖 `spring.ai.openai.base-url` 属性以提供特定于聊天的 URL。 | - |
+| spring.ai.openai.chat.completions-path | 要附加到基本 URL 的路径。 | `/v1/chat/completions` |
+| spring.ai.openai.chat.api-key | 可选地覆盖 `spring.ai.openai.api-key` 以提供特定于聊天的 API 密钥。 | - |
+| spring.ai.openai.chat.organization-id | 可选地，你可以指定用于 API 请求的组织。 | - |
+| spring.ai.openai.chat.project-id | 可选地，你可以指定用于 API 请求的项目。 | - |
+| spring.ai.openai.chat.options.model | 要使用的 OpenAI 聊天模型的名称。你可以在诸如 `gpt-4o`、`gpt-4o-mini`、`gpt-4-turbo`、`gpt-3.5-turbo` 等模型之间进行选择。有关更多信息，请参阅[模型](https://platform.openai.com/docs/models)页面。 | `gpt-4o-mini` |
+| spring.ai.openai.chat.options.temperature | 用于控制生成补全的明显创造性的采样温度。较高的值会使输出更随机，而较低的值会使结果更集中和确定。不建议为同一补全请求修改 `temperature` 和 `top_p`，因为这两个设置的相互作用很难预测。 | 0.8 |
+| spring.ai.openai.chat.options.frequencyPenalty | -2.0 到 2.0 之间的数字。正值会根据新标记在文本中已有的频率对其进行惩罚，从而降低模型逐字重复同一行的可能性。 | 0.0f |
+| spring.ai.openai.chat.options.logitBias | 修改指定标记在补全中出现的可能性。 | - |
+| spring.ai.openai.chat.options.maxTokens | (已弃用，建议使用 `maxCompletionTokens`) 在聊天补全中生成的最大标记数。输入标记和生成标记的总长度受模型上下文长度的限制。 | - |
+| spring.ai.openai.chat.options.maxCompletionTokens | 可为补全生成的标记数的上限，包括可见输出标记和推理标记。 | - |
+| spring.ai.openai.chat.options.n | 为每个输入消息生成多少个聊天补全选项。请注意，你将根据所有选项中生成的标记数付费。将 `n` 保持为 1 以最大程度地降低成本。 | 1 |
+| spring.ai.openai.chat.options.store | 是否存储此聊天补全请求的输出以用于我们的模型 | false |
+| spring.ai.openai.chat.options.metadata | 用于在聊天补全仪表板中筛选补全的开发人员定义的标签和值 | 空映射 |
+| spring.ai.openai.chat.options.output-modalities | 你希望模型为此请求生成的输出类型。大多数模型都能够生成文本，这是默认设置。`gpt-4o-audio-preview` 模型也可用于生成音频。要请求此模型同时生成文本和音频响应，你可以使用：`text`、`audio`。不支持流式传输。 | - |
+| spring.ai.openai.chat.options.output-audio | 音频生成的音频参数。当使用 `output-modalities` 请求音频输出时是必需的：`audio`。需要 `gpt-4o-audio-preview` 模型，并且不支持流式补全。 | - |
+| spring.ai.openai.chat.options.presencePenalty | -2.0 到 2.0 之间的数字。正值会根据新标记是否已出现在文本中对其进行惩罚，从而增加模型谈论新主题的可能性。 | - |
+| spring.ai.openai.chat.options.responseFormat.type | 与 `GPT-4o`、`GPT-4o mini`、`GPT-4 Turbo` 以及所有比 `gpt-3.5-turbo-1106` 新的 `GPT-3.5 Turbo` 模型兼容。`JSON_OBJECT` 类型启用 JSON 模式，可确保模型生成的消息是有效的 JSON。`JSON_SCHEMA` 类型启用[结构化输出](https://platform.openai.com/docs/guides/structured-outputs)，可确保模型与你提供的 JSON 模式匹配。`JSON_SCHEMA` 类型还需要设置 `responseFormat.schema` 属性。 | - |
+| spring.ai.openai.chat.options.responseFormat.name | 响应格式模式名称。仅适用于 `responseFormat.type=JSON_SCHEMA` | custom_schema |
+| spring.ai.openai.chat.options.responseFormat.schema | 响应格式 JSON 模式。仅适用于 `responseFormat.type=JSON_SCHEMA` | - |
+| spring.ai.openai.chat.options.responseFormat.strict | 响应格式 JSON 模式遵循严格性。仅适用于 `responseFormat.type=JSON_SCHEMA` | - |
+| spring.ai.openai.chat.options.seed | 此功能处于测试阶段。如果指定，我们的系统将尽最大努力进行确定性采样，以便具有相同种子和参数的重复请求应返回相同的结果。 | - |
+| spring.ai.openai.chat.options.stop | API 将停止生成更多标记的最多 4 个序列。 | - |
+| spring.ai.openai.chat.options.topP | 温度采样的替代方法，称为核采样，其中模型考虑具有 `top_p` 概率质量的标记的结果。因此 0.1 表示仅考虑构成前 10% 概率质量的标记。我们通常建议更改此项或 `temperature`，但不能同时更改两者。 | - |
+| spring.ai.openai.chat.options.tools | 模型可能调用的工具列表。目前，仅支持函数作为工具。使用此选项可提供模型可能为其生成 JSON 输入的函数列表。 | - |
+| spring.ai.openai.chat.options.toolChoice | 控制模型调用哪个（如果有）函数。`none` 表示模型不会调用函数，而是生成一条消息。`auto` 表示模型可以在生成消息或调用函数之间进行选择。通过 `{"type: "function", "function": {"name": "my_function"}}` 指定特定函数会强制模型调用该函数。当不存在函数时，`none` 是默认值。如果存在函数，则 `auto` 是默认值。 | - |
+| spring.ai.openai.chat.options.user | 代表你的最终用户的唯一标识符，可以帮助 OpenAI 监控和检测滥用行为。 | - |
+| spring.ai.openai.chat.options.functions | 在单个提示请求中启用函数调用的函数列表（按其名称标识）。具有这些名称的函数必须存在于 `functionCallbacks` 注册表中。 | - |
+| spring.ai.openai.chat.options.stream-usage | （仅限流式传输）设置为添加一个包含整个请求的标记使用情况统计信息的附加块。此块的 `choices` 字段是一个空数组，所有其他块也将包含一个 usage 字段，但其值为 null。 | false |
+| spring.ai.openai.chat.options.parallel-tool-calls | 在工具使用期间是否启用[并行函数调用](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)。 | true |
+| spring.ai.openai.chat.options.http-headers | 要添加到聊天补全请求的可选 HTTP 标头。要覆盖 `api-key`，你需要使用 `Authorization` 标头键，并且必须在键值前加上 `Bearer` 前缀。 | - |
+| spring.ai.openai.chat.options.proxy-tool-calls | 如果为 true，Spring AI 将不会在内部处理函数调用，而是将它们代理到客户端。然后由客户端负责处理函数调用，将它们分派到适当的函数，并返回结果。如果为 false（默认值），Spring AI 将在内部处理函数调用。仅适用于具有函数调用支持的聊天模型 | false |
 
 :::note
-You can override the common `spring.ai.openai.base-url` and `spring.ai.openai.api-key` for the `ChatModel` and `EmbeddingModel` implementations.
-The `spring.ai.openai.chat.base-url` and `spring.ai.openai.chat.api-key` properties, if set, take precedence over the common properties.
-This is useful if you want to use different OpenAI accounts for different models and different model endpoints.
+你可以为 `ChatModel` 和 `EmbeddingModel` 实现覆盖通用的 `spring.ai.openai.base-url` 和 `spring.ai.openai.api-key`。
+如果设置了 `spring.ai.openai.chat.base-url` 和 `spring.ai.openai.chat.api-key` 属性，则它们优先于通用属性。
+如果你想为不同的模型和不同的模型端点使用不同的 OpenAI 帐户，这将非常有用。
 :::
 
 :::tip
-All properties prefixed with `spring.ai.openai.chat.options` can be overridden at runtime by adding request-specific [chat options](#runtime-options) to the `Prompt` call.
+所有以 `spring.ai.openai.chat.options` 为前缀的属性都可以在运行时通过向 `Prompt` 调用添加特定于请求的[聊天选项](#runtime-options)来覆盖。
 :::
 
-## Runtime Options
+## 运行时选项
 
-The [OpenAiChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-openai/src/main/java/org/springframework/ai/openai/OpenAiChatOptions.java) class provides model configurations such as the model to use, the temperature, the frequency penalty, etc.
+[OpenAiChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-openai/src/main/java/org/springframework/ai/openai/OpenAiChatOptions.java) 类提供模型配置，例如要使用的模型、温度、频率惩罚等。
 
-On start-up, the default options can be configured with the `OpenAiChatModel(api, options)` constructor or the `spring.ai.openai.chat.options.*` properties.
+在启动时，可以使用 `OpenAiChatModel(api, options)` 构造函数或 `spring.ai.openai.chat.options.*` 属性配置默认选项。
 
-At run-time, you can override the default options by adding new, request-specific options to the `Prompt` call.
-For example, to override the default model and temperature for a specific request:
+在运行时，你可以通过向 `Prompt` 调用添加新的、特定于请求的选项来覆盖默认选项。
+例如，要为特定请求覆盖默认模型和温度：
 
 ```java
 ChatResponse response = chatModel.call(
     new Prompt(
-        "Generate the names of 5 famous pirates.",
+        "生成 5 个著名海盗的名字。",
         OpenAiChatOptions.builder()
             .model("gpt-4o")
             .temperature(0.4)
@@ -177,15 +177,15 @@ ChatResponse response = chatModel.call(
     ));
 ```
 
-## Low-level OpenAiApi Client
+## 低级 OpenAiApi 客户端
 
-The [OpenAiApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-openai/src/main/java/org/springframework/ai/openai/api/OpenAiApi.java) provides is lightweight Java client for [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat).
+[OpenAiApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-openai/src/main/java/org/springframework/ai/openai/api/OpenAiApi.java) 提供了轻量级的 Java 客户端，用于 [OpenAI 聊天 API](https://platform.openai.com/docs/api-reference/chat)。
 
-Following class diagram illustrates the `OpenAiApi` chat interfaces and building blocks:
+以下类图说明了 `OpenAiApi` 聊天接口和构建块：
 
-![OpenAiApi Chat API Diagram](openai-chat-api.jpg)
+![OpenAiApi 聊天 API 图](openai-chat-api.jpg)
 
-Here is a simple snippet showing how to use the API programmatically:
+以下是一个简单的代码片段，展示了如何以编程方式使用 API：
 
 ```java
 OpenAiApi openAiApi = OpenAiApi.builder()
@@ -193,11 +193,11 @@ OpenAiApi openAiApi = OpenAiApi.builder()
             .build();
 
 ChatCompletionMessage chatCompletionMessage =
-    new ChatCompletionMessage("Hello world", Role.USER);
+    new ChatCompletionMessage("你好世界", Role.USER);
 
-// Sync request
+// 同步请求
 ResponseEntity<ChatCompletion> response = this.openAiApi.chatCompletionEntity(
     new ChatCompletionRequest(List.of(this.chatCompletionMessage), "gpt-3.5-turbo", 0.8, false));
 
-// Streaming request
+// 流式请求
 ``` 

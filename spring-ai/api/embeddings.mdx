@@ -1,42 +1,42 @@
 ---
-title: "Embeddings Model API"
+title: "嵌入模型 API"
 ---
 
-Embeddings are numerical representations of text, images, or videos that capture relationships between inputs. 
+嵌入是文本、图像或视频的数值表示，用于捕获输入之间的关系。
 
-Embeddings work by converting text, image, and video into arrays of floating point numbers, called vectors. 
-These vectors are designed to capture the meaning of the text, images, and videos. 
-The length of the embedding array is called the vector's dimensionality. 
+嵌入通过将文本、图像和视频转换为浮点数数组（称为向量）来工作。
+这些向量旨在捕获文本、图像和视频的含义。
+嵌入数组的长度称为向量的维度。
 
-By calculating the numerical distance between the vector representations of two pieces of text, an application can determine the similarity between the objects used to generate the embedding vectors.
+通过计算两段文本的向量表示之间的数值距离，应用程序可以确定用于生成嵌入向量的对象之间的相似性。
 
-The `EmbeddingModel` interface is designed for straightforward integration with embedding models in AI and machine learning.
-Its primary function is to convert text into numerical vectors, commonly referred to as embeddings.
-These embeddings are crucial for various tasks such as semantic analysis and text classification.
+`EmbeddingModel` 接口设计用于在 AI 和机器学习中直接集成嵌入模型。
+它的主要功能是将文本转换为数值向量，通常称为嵌入。
+这些嵌入对于语义分析和文本分类等各种任务至关重要。
 
-The design of the EmbeddingModel interface centers around two primary goals:
+EmbeddingModel 接口的设计围绕两个主要目标：
 
-* *Portability*: This interface ensures easy adaptability across various embedding models.
-It allows developers to switch between different embedding techniques or models with minimal code changes.
-This design aligns with Spring's philosophy of modularity and interchangeability.
+* *可移植性*：此接口确保在各种嵌入模型之间轻松适应。
+它允许开发者在不同的嵌入技术或模型之间切换，只需最少的代码更改。
+这种设计符合 Spring 的模块化和可互换性理念。
 
-* *Simplicity*: EmbeddingModel simplifies the process of converting text to embeddings.
-By providing straightforward methods like `embed(String text)` and `embed(Document document)`, it takes the complexity out of dealing with raw text data and embedding algorithms. This design choice makes it easier for developers, especially those new to AI, to utilize embeddings in their applications without delving deep into the underlying mechanics.
+* *简单性*：EmbeddingModel 简化了将文本转换为嵌入的过程。
+通过提供像 `embed(String text)` 和 `embed(Document document)` 这样的直接方法，它消除了处理原始文本数据和嵌入算法的复杂性。这种设计选择使开发者，特别是 AI 新手，能够在其应用程序中使用嵌入，而无需深入了解底层机制。
 
-## API Overview
+## API 概述
 
-The Embedding Model API is built on top of the generic [Spring AI Model API](https://github.com/spring-projects/spring-ai/tree/main/spring-ai-model/src/main/java/org/springframework/ai/model), which is a part of the Spring AI library.
-As such, the EmbeddingModel interface extends the `Model` interface, which provides a standard set of methods for interacting with AI models. The `EmbeddingRequest` and `EmbeddingResponse` classes extend from the `ModelRequest` and `ModelResponse` are used to encapsulate the input and output of the embedding models, respectively.
+嵌入模型 API 构建在通用 [Spring AI 模型 API](https://github.com/spring-projects/spring-ai/tree/main/spring-ai-model/src/main/java/org/springframework/ai/model) 之上，这是 Spring AI 库的一部分。
+因此，EmbeddingModel 接口扩展了 `Model` 接口，该接口提供了与 AI 模型交互的标准方法集。`EmbeddingRequest` 和 `EmbeddingResponse` 类从 `ModelRequest` 和 `ModelResponse` 扩展而来，分别用于封装嵌入模型的输入和输出。
 
-The Embedding API in turn is used by higher-level components to implement Embedding Models for specific embedding models, such as OpenAI, Titan, Azure OpenAI, Ollie, and others.
+嵌入 API 又被更高级别的组件用来实现特定嵌入模型的嵌入模型，如 OpenAI、Titan、Azure OpenAI、Ollie 等。
 
-Following diagram illustrates the Embedding API and its relationship with the Spring AI Model API and the Embedding Models:
+以下图说明了嵌入 API 及其与 Spring AI 模型 API 和嵌入模型的关系：
 
-![Embeddings API](embeddings-api.jpg)
+![嵌入 API](embeddings-api.jpg)
 
 ### EmbeddingModel
 
-This section provides a guide to the `EmbeddingModel` interface and associated classes.
+本节提供了 `EmbeddingModel` 接口和相关类的指南。
 
 ```java
 public interface EmbeddingModel extends Model<EmbeddingRequest, EmbeddingResponse> {
@@ -45,16 +45,16 @@ public interface EmbeddingModel extends Model<EmbeddingRequest, EmbeddingRespons
     EmbeddingResponse call(EmbeddingRequest request);
 
     /**
-     * Embeds the given document's content into a vector.
-     * @param document the document to embed.
-     * @return the embedded vector.
+     * 将给定文档的内容嵌入到向量中。
+     * @param document 要嵌入的文档。
+     * @return 嵌入的向量。
      */
     float[] embed(Document document);
 
     /**
-     * Embeds the given text into a vector.
-     * @param text the text to embed.
-     * @return the embedded vector.
+     * 将给定文本嵌入到向量中。
+     * @param text 要嵌入的文本。
+     * @return 嵌入的向量。
      */
     default float[] embed(String text) {
         Assert.notNull(text, "Text must not be null");
@@ -62,9 +62,9 @@ public interface EmbeddingModel extends Model<EmbeddingRequest, EmbeddingRespons
     }
 
     /**
-     * Embeds a batch of texts into vectors.
-     * @param texts list of texts to embed.
-     * @return list of list of embedded vectors.
+     * 将一批文本嵌入到向量中。
+     * @param texts 要嵌入的文本列表。
+     * @return 嵌入向量列表的列表。
      */
     default List<float[]> embed(List<String> texts) {
         Assert.notNull(texts, "Texts must not be null");
@@ -76,9 +76,9 @@ public interface EmbeddingModel extends Model<EmbeddingRequest, EmbeddingRespons
     }
 
     /**
-     * Embeds a batch of texts into vectors and returns the {@link EmbeddingResponse}.
-     * @param texts list of texts to embed.
-     * @return the embedding response.
+     * 将一批文本嵌入到向量中并返回 {@link EmbeddingResponse}。
+     * @param texts 要嵌入的文本列表。
+     * @return 嵌入响应。
      */
     default EmbeddingResponse embedForResponse(List<String> texts) {
         Assert.notNull(texts, "Texts must not be null");
@@ -86,8 +86,7 @@ public interface EmbeddingModel extends Model<EmbeddingRequest, EmbeddingRespons
     }
 
     /**
-     * @return the number of dimensions of the embedded vectors. It is generative
-     * specific.
+     * @return 嵌入向量的维度数。它是生成特定的。
      */
     default int dimensions() {
         return embed("Test String").size();
@@ -95,70 +94,70 @@ public interface EmbeddingModel extends Model<EmbeddingRequest, EmbeddingRespons
 }
 ```
 
-The embed methods offer various options for converting text into embeddings, accommodating single strings, structured `Document` objects, or batches of text.
+嵌入方法提供了各种将文本转换为嵌入的选项，适应单个字符串、结构化 `Document` 对象或文本批次。
 
-Multiple shortcut methods are provided for embedding text, including the `embed(String text)` method, which takes a single string and returns the corresponding embedding vector.
-All shortcuts are implemented around the `call` method, which is the primary method for invoking the embedding model.
+提供了多个嵌入文本的快捷方法，包括 `embed(String text)` 方法，它接受单个字符串并返回相应的嵌入向量。
+所有快捷方法都是围绕 `call` 方法实现的，这是调用嵌入模型的主要方法。
 
-Typically the embedding returns a lists of floats, representing the embeddings in a numerical vector format.
+通常嵌入返回浮点数列表，以数值向量格式表示嵌入。
 
-The `embedForResponse` method provides a more comprehensive output, potentially including additional information about the embeddings.
+`embedForResponse` 方法提供了更全面的输出，可能包括有关嵌入的附加信息。
 
-The dimensions method is a handy tool for developers to quickly ascertain the size of the embedding vectors, which is important for understanding the embedding space and for subsequent processing steps.
+dimensions 方法是开发者快速确定嵌入向量大小的便捷工具，这对于理解嵌入空间和后续处理步骤很重要。
 
 ### EmbeddingRequest
 
-The `EmbeddingRequest` is a `ModelRequest` that takes a list of text objects and optional embedding request options.
-The following listing shows a truncated version of the EmbeddingRequest class, excluding constructors and other utility methods:
+`EmbeddingRequest` 是一个 `ModelRequest`，它接受文本对象列表和可选的嵌入请求选项。
+以下列表显示了 EmbeddingRequest 类的截断版本，不包括构造函数和其他实用方法：
 
 ```java
 public class EmbeddingRequest implements ModelRequest<List<String>> {
     private final List<String> inputs;
     private final EmbeddingOptions options;
-    // other methods omitted
+    // 其他方法省略
 }
 ```
 
 ### EmbeddingResponse
 
-The structure of the `EmbeddingResponse` class is as follows:
+`EmbeddingResponse` 类的结构如下：
 
 ```java
 public class EmbeddingResponse implements ModelResponse<Embedding> {
     private List<Embedding> embeddings;
     private EmbeddingResponseMetadata metadata = new EmbeddingResponseMetadata();
-    // other methods omitted
+    // 其他方法省略
 }
 ```
 
-The `EmbeddingResponse` class holds the AI Model's output, with each `Embedding` instance containing the result vector data from a single text input.
+`EmbeddingResponse` 类保存 AI 模型的输出，每个 `Embedding` 实例包含来自单个文本输入的结果向量数据。
 
-The `EmbeddingResponse` class also carries a `EmbeddingResponseMetadata` metadata about the AI Model's response.
+`EmbeddingResponse` 类还携带有关 AI 模型响应的 `EmbeddingResponseMetadata` 元数据。
 
 ### Embedding
 
-The `Embedding` represents a single embedding vector.
+`Embedding` 表示单个嵌入向量。
 
 ```java
 public class Embedding implements ModelResult<float[]> {
     private float[] embedding;
     private Integer index;
     private EmbeddingResultMetadata metadata;
-    // other methods omitted
+    // 其他方法省略
 }
 ```
 
-## Available Implementations
+## 可用实现
 
-Internally the various `EmbeddingModel` implementations use different low-level libraries and APIs to perform the embedding tasks. The following are some of the available implementations of the `EmbeddingModel` implementations:
+内部各种 `EmbeddingModel` 实现使用不同的低级库和 API 来执行嵌入任务。以下是 `EmbeddingModel` 实现的一些可用实现：
 
-* [Spring AI OpenAI Embeddings](/spring4ai/api/embeddings/openai-embeddings)
-* [Spring AI Azure OpenAI Embeddings](/spring4ai/api/embeddings/azure-openai-embeddings)
-* [Spring AI Ollama Embeddings](/spring4ai/api/embeddings/ollama-embeddings)
-* [Spring AI Transformers (ONNX) Embeddings](/spring4ai/api/embeddings/onnx)
-* [Spring AI PostgresML Embeddings](/spring4ai/api/embeddings/postgresml-embeddings)
-* [Spring AI Bedrock Cohere Embeddings](/spring4ai/api/embeddings/bedrock-cohere-embedding)
-* [Spring AI Bedrock Titan Embeddings](/spring4ai/api/embeddings/bedrock-titan-embedding)
-* [Spring AI VertexAI Embeddings](/spring4ai/api/embeddings/vertexai-embeddings-text)
-* [Spring AI Mistral AI Embeddings](/spring4ai/api/embeddings/mistralai-embeddings)
-* [Spring AI Oracle Cloud Infrastructure GenAI Embeddings](/spring4ai/api/embeddings/oci-genai-embeddings) 
+* [Spring AI OpenAI 嵌入](/spring4ai/api/embeddings/openai-embeddings)
+* [Spring AI Azure OpenAI 嵌入](/spring4ai/api/embeddings/azure-openai-embeddings)
+* [Spring AI Ollama 嵌入](/spring4ai/api/embeddings/ollama-embeddings)
+* [Spring AI Transformers (ONNX) 嵌入](/spring4ai/api/embeddings/onnx)
+* [Spring AI PostgresML 嵌入](/spring4ai/api/embeddings/postgresml-embeddings)
+* [Spring AI Bedrock Cohere 嵌入](/spring4ai/api/embeddings/bedrock-cohere-embedding)
+* [Spring AI Bedrock Titan 嵌入](/spring4ai/api/embeddings/bedrock-titan-embedding)
+* [Spring AI VertexAI 嵌入](/spring4ai/api/embeddings/vertexai-embeddings-text)
+* [Spring AI Mistral AI 嵌入](/spring4ai/api/embeddings/mistralai-embeddings)
+* [Spring AI Oracle Cloud Infrastructure GenAI 嵌入](/spring4ai/api/embeddings/oci-genai-embeddings) 

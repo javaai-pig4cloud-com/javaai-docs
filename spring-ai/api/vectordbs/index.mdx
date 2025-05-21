@@ -1,47 +1,120 @@
 ---
-title: Vector Databases
-description: Overview of vector database integrations in Spring AI
+title: "向量数据库"
 ---
 
-# Vector Databases
+# 向量数据库
 
-Spring AI provides support for various vector databases to store and retrieve vector embeddings efficiently. These databases are essential for implementing Retrieval Augmented Generation (RAG) patterns and other vector-based operations.
+向量数据库专门用于存储、管理和检索向量嵌入，这些向量嵌入是高维空间中数据点（如文本、图像或音频）的数字表示。
+它们在相似性搜索中至关重要，使应用程序能够根据语义相似性而不是精确匹配来查找相似的项目。
 
-## Supported Vector Databases
+Spring AI 提供了 `VectorStore` 抽象，用于与各种向量数据库产品进行交互。
 
-Spring AI supports the following vector databases:
+## `VectorStore` 接口
 
-<CardGroup cols={3}>
-  <Card title="Apache Cassandra" href="/spring4ai/api/vectordbs/apache-cassandra" />
-  <Card title="Azure Cosmos DB" href="/spring4ai/api/vectordbs/azure" />
-  <Card title="Chroma" href="/spring4ai/api/vectordbs/chroma" />
-  <Card title="Couchbase" href="/spring4ai/api/vectordbs/couchbase" />
-  <Card title="Elasticsearch" href="/spring4ai/api/vectordbs/elasticsearch" />
-  <Card title="GemFire" href="/spring4ai/api/vectordbs/gemfire" />
-  <Card title="HANA" href="/spring4ai/api/vectordbs/hana" />
-  <Card title="MariaDB" href="/spring4ai/api/vectordbs/mariadb" />
-  <Card title="Milvus" href="/spring4ai/api/vectordbs/milvus" />
-  <Card title="MongoDB" href="/spring4ai/api/vectordbs/mongodb" />
-  <Card title="Neo4j" href="/spring4ai/api/vectordbs/neo4j" />
-  <Card title="OpenSearch" href="/spring4ai/api/vectordbs/opensearch" />
-  <Card title="Oracle" href="/spring4ai/api/vectordbs/oracle" />
-  <Card title="PGVector (PostgreSQL)" href="/spring4ai/api/vectordbs/pgvector" />
-  <Card title="Pinecone" href="/spring4ai/api/vectordbs/pinecone" />
-  <Card title="Qdrant" href="/spring4ai/api/vectordbs/qdrant" />
-  <Card title="Redis" href="/spring4ai/api/vectordbs/redis" />
-  <Card title="Typesense" href="/spring4ai/api/vectordbs/typesense" />
-  <Card title="Weaviate" href="/spring4ai/api/vectordbs/weaviate" />
-</CardGroup>
+`VectorStore` 接口定义了用于与向量数据库交互的核心操作：
 
-Each integration provides a consistent API while leveraging the unique features of the underlying database. The Spring AI Vector Store API offers a portable interface across all these databases, making it easy to switch between them without changing your application code.
+-   **`void add(List<Document> documents)`**: 将文档列表添加到向量存储中。在添加之前，每个文档的内容都会被转换为向量嵌入。
+-   **`Optional<Boolean> delete(List<String> idList)`**: 从向量存储中删除由其 ID 标识的文档列表。
+-   **`List<Document> similaritySearch(String query)`**: 对给定查询执行相似性搜索，并返回最相似的文档列表。
+-   **`List<Document> similaritySearch(SearchRequest request)`**: 使用更详细的 `SearchRequest`（允许指定 top K、相似性阈值和元数据过滤器）执行相似性搜索。
 
-## Common Features
+## `SearchRequest`
 
-All vector database integrations in Spring AI provide:
+`SearchRequest` 类封装了相似性搜索查询的参数：
 
-- **Vector storage**: Store embeddings generated from your text data
-- **Similarity search**: Find the most similar vectors to a query vector
-- **Metadata filtering**: Filter results based on metadata attributes
-- **RAG integration**: Seamless integration with Spring AI's Retrieval Augmented Generation (RAG) capabilities
+-   **`String query`**: 用于相似性搜索的查询字符串。
+-   **`int topK`**: 要返回的最相似文档的数量 (默认为 4)。
+-   **`double similarityThreshold`**: 相似性得分阈值 (0 到 1)。仅返回得分高于或等于此阈值的文档 (默认为 0.0)。
+-   **`FilterExpression filterExpression`**: 用于在搜索期间根据元数据过滤文档的过滤器表达式。
 
-For detailed information about specific vector database implementations, please visit the respective documentation pages. 
+## 元数据过滤
+
+Spring AI 支持使用 `FilterExpression` 进行元数据过滤。这允许您根据文档元数据中的条件来优化相似性搜索结果。
+
+`FilterExpressionConverter` 将 `FilterExpression` 转换为特定于向量存储的本机过滤器查询格式。
+
+### `FilterExpressionBuilder`
+
+`FilterExpressionBuilder` 实用程序类可帮助以编程方式构建 `FilterExpression` 对象。
+
+它支持以下操作：
+
+-   **`eq(key, value)`**: 等于 (`==`)
+-   **`ne(key, value)`**: 不等于 (`!=`)
+-   **`gt(key, value)`**: 大于 (`>`)
+-   **`gte(key, value)`**: 大于或等于 (`>=`)
+-   **`lt(key, value)`**: 小于 (`<`)
+-   **`lte(key, value)`**: 小于或等于 (`<=`)
+-   **`in(key, values...)`**: 值在提供的列表中 (`IN`)
+-   **`nin(key, values...)`**: 值不在提供的列表中 (`NIN`)
+
+这些条件可以使用逻辑运算符组合：
+
+-   **`and(left, right)`**: 逻辑与 (`AND`)
+-   **`or(left, right)`**: 逻辑或 (`OR`)
+-   **`not(expression)`**: 逻辑非 (`NOT`)
+
+**示例：**
+
+```java
+FilterExpressionBuilder b = new FilterExpressionBuilder();
+
+// (genre == "drama" OR genre == "action") AND year > 2020
+Filter.Expression expr = b.or(
+    b.eq("genre", "drama"),
+    b.eq("genre", "action")
+).and(b.gt("year", 2020)).build();
+
+SearchRequest request = SearchRequest.query("Recent thrilling movies") // 示例查询通常保留英文
+    .withTopK(5)
+    .withFilterExpression(expr);
+
+List<Document> results = vectorStore.similaritySearch(request);
+```
+
+## 支持的向量数据库
+
+Spring AI 支持各种向量数据库实现。请参阅侧边栏中的各个文档页面以获取特定于每个数据库的设置说明和详细信息。
+
+<CardGroup cols={2}>
+  <Card title="Azure AI 搜索" href="./azure">
+  </Card>
+  <Card title="Azure Cosmos DB" href="./azure-cosmos-db">
+  </Card>
+  <Card title="Apache Cassandra" href="./apache-cassandra">
+  </Card>
+  <Card title="Chroma" href="./chroma">
+  </Card>
+  <Card title="Couchbase" href="./couchbase">
+  </Card>
+  <Card title="Elasticsearch" href="./elasticsearch">
+  </Card>
+  <Card title="GemFire" href="./gemfire">
+  </Card>
+  <Card title="HANA" href="./hana">
+  </Card>
+  <Card title="MariaDB" href="./mariadb">
+  </Card>
+  <Card title="Milvus" href="./milvus">
+  </Card>
+  <Card title="MongoDB Atlas" href="./mongodb">
+  </Card>
+  <Card title="Neo4j" href="./neo4j">
+  </Card>
+  <Card title="OpenSearch" href="./opensearch">
+  </Card>
+  <Card title="Oracle" href="./oracle">
+  </Card>
+  <Card title="PGVector" href="./pgvector">
+  </Card>
+  <Card title="Pinecone" href="./pinecone">
+  </Card>
+  <Card title="Qdrant" href="./qdrant">
+  </Card>
+  <Card title="Redis" href="./redis">
+  </Card>
+  <Card title="Typesense" href="./typesense">
+  </Card>
+  <Card title="Weaviate" href="./weaviate">
+  </Card>
+</CardGroup> 

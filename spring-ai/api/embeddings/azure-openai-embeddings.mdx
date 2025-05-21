@@ -1,39 +1,39 @@
 ---
-title: "Azure OpenAI Embeddings"
+title: "Azure OpenAI 向量模型"
 ---
 
-Azure's OpenAI extends the OpenAI capabilities, offering safe text generation and Embeddings computation models for various task:
+Azure OpenAI 扩展了 OpenAI 的功能，为各种任务提供安全的文本生成和 Embeddings 计算模型：
 
-- Similarity embeddings are good at capturing semantic similarity between two or more pieces of text.
-- Text search embeddings help measure whether long documents are relevant to a short query.
-- Code search embeddings are useful for embedding code snippets and embedding natural language search queries.
+- 相似性嵌入擅长捕捉两个或多个文本片段之间的语义相似性。
+- 文本搜索嵌入有助于衡量长文档是否与短查询相关。
+- 代码搜索嵌入可用于嵌入代码片段和嵌入自然语言搜索查询。
 
-The Azure OpenAI embeddings rely on `cosine similarity` to compute similarity between documents and a query.
+Azure OpenAI 嵌入依赖于`余弦相似度`来计算文档和查询之间的相似度。
 
-## Prerequisites
+## 先决条件
 
-The Azure OpenAI client offers three options to connect: using an Azure API key or using an OpenAI API Key, or using Microsoft Entra ID.
+Azure OpenAI 客户端提供三种连接选项：使用 Azure API 密钥、使用 OpenAI API 密钥或使用 Microsoft Entra ID。
 
-### Azure API Key & Endpoint
+### Azure API 密钥和终结点
 
-Obtain your Azure OpenAI `endpoint` and `api-key` from the Azure OpenAI Service section on the [Azure Portal](https://portal.azure.com).
+从 [Azure 门户](https://portal.azure.com)上的 Azure OpenAI 服务部分获取您的 Azure OpenAI `endpoint` 和 `api-key`。
 
-Spring AI defines two configuration properties:
+Spring AI 定义了两个配置属性：
 
-1. `spring.ai.azure.openai.api-key`: Set this to the value of the `API Key` obtained from Azure.
-2. `spring.ai.azure.openai.endpoint`: Set this to the endpoint URL obtained when provisioning your model in Azure.
+1. `spring.ai.azure.openai.api-key`：将其设置为从 Azure 获取的 `API Key` 的值。
+2. `spring.ai.azure.openai.endpoint`：将其设置为在 Azure 中预配模型时获取的终结点 URL。
 
-You can set these configuration properties in your `application.properties` or `application.yml` file:
+您可以在 `application.properties` 或 `application.yml` 文件中设置这些配置属性：
 
 ```properties
-spring.ai.azure.openai.api-key=<your-azure-api-key>
-spring.ai.azure.openai.endpoint=<your-azure-endpoint-url>
+spring.ai.azure.openai.api-key=<您的 Azure API 密钥>
+spring.ai.azure.openai.endpoint=<您的 Azure 终结点 URL>
 ```
 
-If you prefer to use environment variables for sensitive information like API keys, you can use Spring Expression Language (SpEL) in your configuration:
+如果您希望对 API 密钥等敏感信息使用环境变量，可以在配置中使用 Spring 表达式语言 (SpEL)：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     azure:
@@ -43,22 +43,22 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
-export AZURE_OPENAI_API_KEY=<your-azure-openai-api-key>
-export AZURE_OPENAI_ENDPOINT=<your-azure-endpoint-url>
+# 在您的环境或 .env 文件中
+export AZURE_OPENAI_API_KEY=<您的 Azure OpenAI API 密钥>
+export AZURE_OPENAI_ENDPOINT=<您的 Azure 终结点 URL>
 ```
 
-### OpenAI Key
+### OpenAI 密钥
 
-To authenticate with the OpenAI service (not Azure), provide an OpenAI API key.
+要使用 OpenAI 服务（而非 Azure）进行身份验证，请提供 OpenAI API 密钥。
 
-## Auto-configuration
+## 自动配置
 
-> **Note**: There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-> Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+> **注意**：Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+> 有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 
-Spring AI provides Spring Boot auto-configuration for the Azure OpenAI Embedding Model.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI 为 Azure OpenAI Embedding 模型提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -67,7 +67,7 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -75,47 +75,47 @@ dependencies {
 }
 ```
 
-> **Tip**: Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+> **提示**：请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 
-### Embedding Properties
+### Embedding 属性
 
-The prefix `spring.ai.azure.openai` is the property prefix to configure the connection to Azure OpenAI.
+前缀 `spring.ai.azure.openai` 是用于配置与 Azure OpenAI 连接的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.azure.openai.api-key | The Key from Azure AI OpenAI `Keys and Endpoint` section under `Resource Management` | - |
-| spring.ai.azure.openai.endpoint | The endpoint from the Azure AI OpenAI `Keys and Endpoint` section under `Resource Management` | - |
-| spring.ai.azure.openai.openai-api-key | (non Azure) OpenAI API key. Used to authenticate with the OpenAI service, instead of Azure OpenAI. This automatically sets the endpoint to https://api.openai.com/v1. Use either `api-key` or `openai-api-key` property. With this configuration the `spring.ai.azure.openai.embedding.options.deployment-name` is threated as an [OpenAi Model](https://platform.openai.com/docs/models) name. | - |
+| 属性                                        | 描述                                                                                                                                                                                             | 默认值                        |
+| :------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------- |
+| spring.ai.azure.openai.api-key              | Azure AI OpenAI `资源管理`下`密钥和终结点`部分的密钥。                                                                                                                                                 | -                             |
+| spring.ai.azure.openai.endpoint             | Azure AI OpenAI `资源管理`下`密钥和终结点`部分的终结点。                                                                                                                                               | -                             |
+| spring.ai.azure.openai.openai-api-key       | (非 Azure) OpenAI API 密钥。用于向 OpenAI 服务（而非 Azure OpenAI）进行身份验证。这会自动将终结点设置为 https://api.openai.com/v1。使用 `api-key` 或 `openai-api-key` 属性。使用此配置时，`spring.ai.azure.openai.embedding.options.deployment-name` 将被视为 [OpenAI 模型](https://platform.openai.com/docs/models)名称。 | -                             |
 
-> **Note**: Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+> **注意**：嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 >
-> To enable, spring.ai.model.embedding=azure-openai (It is enabled by default)
+> 要启用，请设置 spring.ai.model.embedding=azure-openai (默认情况下启用)
 >
-> To disable, spring.ai.model.embedding=none (or any value which doesn't match azure-openai)
+> 要禁用，请设置 spring.ai.model.embedding=none (或任何与 azure-openai 不匹配的值)
 >
-> This change is done to allow configuration of multiple models.
+> 此更改是为了允许配置多个模型。
 
-The prefix `spring.ai.azure.openai.embedding` is the property prefix that configures the `EmbeddingModel` implementation for Azure OpenAI
+前缀 `spring.ai.azure.openai.embedding` 是配置 Azure OpenAI 的 `EmbeddingModel` 实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.azure.openai.embedding.enabled (Removed and no longer valid) | Enable Azure OpenAI embedding model. | true |
-| spring.ai.model.embedding | Enable Azure OpenAI embedding model. | azure-openai |
-| spring.ai.azure.openai.embedding.metadata-mode | Document content extraction mode | EMBED |
-| spring.ai.azure.openai.embedding.options.deployment-name | This is the value of the 'Deployment Name' as presented in the Azure AI Portal | text-embedding-ada-002 |
-| spring.ai.azure.openai.embedding.options.user | An identifier for the caller or end user of the operation. This may be used for tracking or rate-limiting purposes. | - |
+| 属性                                                                       | 描述                                                                                               | 默认值                   |
+| :------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :----------------------- |
+| spring.ai.azure.openai.embedding.enabled (已删除且不再有效)                    | 启用 Azure OpenAI 嵌入模型。                                                                         | true                     |
+| spring.ai.model.embedding                                                  | 启用 Azure OpenAI 嵌入模型。                                                                         | azure-openai             |
+| spring.ai.azure.openai.embedding.metadata-mode                             | 文档内容提取模式。                                                                                     | EMBED                    |
+| spring.ai.azure.openai.embedding.options.deployment-name                   | 这是 Azure AI 门户中显示的"部署名称"的值。                                                                   | text-embedding-ada-002   |
+| spring.ai.azure.openai.embedding.options.user                              | 操作的调用方或最终用户的标识符。这可用于跟踪或速率限制目的。                                                                 | -                        |
 
-> **Tip**: All properties prefixed with `spring.ai.azure.openai.embedding.options` can be overridden at runtime by adding a request specific [embedding options](#embedding-options) to the `EmbeddingRequest` call.
+> **提示**：所有以 `spring.ai.azure.openai.embedding.options` 为前缀的属性都可以在运行时通过向 `EmbeddingRequest` 调用添加特定于请求的[嵌入选项](#embedding-options)来覆盖。
 
-## Runtime Options
+## 运行时选项
 
-The `AzureOpenAiEmbeddingOptions` provides the configuration information for the embedding requests.
-The `AzureOpenAiEmbeddingOptions` offers a builder to create the options.
+`AzureOpenAiEmbeddingOptions` 提供嵌入请求的配置信息。
+`AzureOpenAiEmbeddingOptions` 提供了一个构建器来创建选项。
 
-At start time use the `AzureOpenAiEmbeddingModel` constructor to set the default options used for all embedding requests.
-At run-time you can override the default options, by passing a `AzureOpenAiEmbeddingOptions` instance with your to the `EmbeddingRequest` request.
+在启动时，使用 `AzureOpenAiEmbeddingModel` 构造函数设置用于所有嵌入请求的默认选项。
+在运行时，您可以通过将 `AzureOpenAiEmbeddingOptions` 实例传递给 `EmbeddingRequest` 请求来覆盖默认选项。
 
-For example to override the default model name for a specific request:
+例如，要覆盖特定请求的默认模型名称：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -125,14 +125,14 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
         .build()));
 ```
 
-## Sample Code
+## 示例代码
 
-This will create a `EmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+这将创建一个 `EmbeddingModel` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用 `EmbeddingModel` 实现。
 
 ```properties
-spring.ai.azure.openai.api-key=YOUR_API_KEY
-spring.ai.azure.openai.endpoint=YOUR_ENDPOINT
+spring.ai.azure.openai.api-key=您的 API 密钥
+spring.ai.azure.openai.endpoint=您的终结点
 spring.ai.azure.openai.embedding.options.model=text-embedding-ada-002
 ```
 
@@ -155,10 +155,10 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-If you prefer not to use the Spring Boot auto-configuration, you can manually configure the `AzureOpenAiEmbeddingModel` in your application.
-For this add the `spring-ai-azure-openai` dependency to your project's Maven `pom.xml` file:
+如果您不想使用 Spring Boot 自动配置，可以在应用程序中手动配置 `AzureOpenAiEmbeddingModel`。
+为此，请将 `spring-ai-azure-openai` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -167,7 +167,7 @@ For this add the `spring-ai-azure-openai` dependency to your project's Maven `po
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -175,11 +175,11 @@ dependencies {
 }
 ```
 
-> **Tip**: Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+> **提示**：请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 
-> **Note**: The `spring-ai-azure-openai` dependency also provide the access to the `AzureOpenAiEmbeddingModel`. For more information about the `AzureOpenAiChatModel` refer to the [Azure OpenAI Embeddings](/spring4ai/api/embeddings/azure-openai-embeddings) section.
+> **注意**：`spring-ai-azure-openai` 依赖项还提供对 `AzureOpenAiEmbeddingModel` 的访问。有关 `AzureOpenAiChatModel` 的更多信息，请参阅 [Azure OpenAI Embeddings](/spring4ai/api/embeddings/azure-openai-embeddings) 部分。
 
-Next, create an `AzureOpenAiEmbeddingModel` instance and use it to compute the similarity between two input texts:
+接下来，创建一个 `AzureOpenAiEmbeddingModel` 实例，并用它来计算两个输入文本之间的相似度：
 
 ```java
 var openAIClient = OpenAIClientBuilder()
@@ -197,4 +197,4 @@ EmbeddingResponse embeddingResponse = this.embeddingModel
     .embedForResponse(List.of("Hello World", "World is big and salvation is near"));
 ```
 
-> **Note**: the `text-embedding-ada-002` is actually the `Deployment Name` as presented in the Azure AI Portal. 
+> **注意**：`text-embedding-ada-002` 实际上是 Azure AI 门户中显示的`部署名称`。 

@@ -1,37 +1,37 @@
 ---
-title: "Mistral AI Moderation"
+title: "Mistral AI 内容审核"
 ---
 
-Mistral AI Moderation in Spring AI provides content moderation capabilities using Mistral AI's moderation models.
+Spring AI 中的 Mistral AI 内容审核功能使用 Mistral AI 的审核模型提供内容审核能力。
 
-## Overview
+## 概述
 
-Mistral AI Moderation enables:
-- Advanced content filtering
-- Multi-language support
-- Custom moderation rules
-- Real-time content analysis
+Mistral AI 内容审核能够：
+- 高级内容过滤
+- 多语言支持
+- 自定义审核规则
+- 实时内容分析
 
-## Features
+## 功能
 
 <CardGroup cols={2}>
-  <Card title="Content Analysis" icon="magnifying-glass">
-    Deep content analysis
+  <Card title="内容分析" icon="magnifying-glass">
+    深度内容分析
   </Card>
-  <Card title="Multi-language" icon="language">
-    Support for multiple languages
+  <Card title="多语言" icon="language">
+    支持多种语言
   </Card>
-  <Card title="Custom Rules" icon="gear">
-    Customizable moderation rules
+  <Card title="自定义规则" icon="gear">
+    可自定义审核规则
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time content moderation
+  <Card title="实时" icon="clock">
+    实时内容审核
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,16 +41,16 @@ Mistral AI Moderation enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Mistral AI Moderation Configuration
+# Mistral AI 内容审核配置
 spring.ai.mistral.moderation.enabled=true
 spring.ai.mistral.moderation.api-key=${MISTRAL_API_KEY}
 spring.ai.mistral.moderation.model=mistral-moderation
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -67,9 +67,9 @@ public class MistralModerationService {
 }
 ```
 
-## Moderation Features
+## 审核功能
 
-### 1. Basic Moderation
+### 1. 基本审核
 
 ```java
 @Configuration
@@ -81,7 +81,7 @@ public class MistralModerationConfig {
 }
 ```
 
-### 2. Language-specific Moderation
+### 2. 特定语言审核
 
 ```java
 @Configuration
@@ -96,7 +96,7 @@ public class LanguageModerationConfig {
 }
 ```
 
-### 3. Custom Moderation Rules
+### 3. 自定义审核规则
 
 ```java
 @Configuration
@@ -119,61 +119,61 @@ public class CustomModerationConfig {
 }
 ```
 
-## Advanced Features
+## 高级功能
 
-### Custom Moderation Logic
+### 自定义审核逻辑
 
 ```java
 @Component
 public class CustomModerationLogic implements ModerationLogic {
     @Override
     public ModerationResult process(String content) {
-        // Custom moderation logic
+        // 自定义审核逻辑
         return result;
     }
 
     @Override
     public boolean isAllowed(ModerationResult result) {
-        // Custom allowance logic
+        // 自定义允许逻辑
         return allowed;
     }
 }
 ```
 
-### Moderation Monitoring
+### 审核监控
 
 ```properties
 management.endpoints.web.exposure.include=mistral-moderation
 management.endpoint.mistral-moderation.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Mistral AI Moderation, consider these best practices:
+使用 Mistral AI 内容审核时，请考虑以下最佳实践：
 </Note>
 
-- **API Security**: Secure your API key
-- **Error Handling**: Implement robust error handling
-- **Rate Limiting**: Monitor API usage
-- **Language Support**: Configure appropriate languages
-- **Rule Management**: Maintain clear moderation rules
+- **API 安全**：保护您的 API 密钥
+- **错误处理**：实现稳健的错误处理
+- **速率限制**：监控 API 使用情况
+- **语言支持**：配置适当的语言
+- **规则管理**：维护清晰的审核规则
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题和解决方案：
 
-1. **API Issues**
-   - Verify API key
-   - Check API limits
-   - Review error messages
+1. **API 问题**
+   - 验证 API 密钥
+   - 检查 API 限制
+   - 查看错误消息
 
-2. **Language Issues**
-   - Verify language support
-   - Check language detection
-   - Review language settings
+2. **语言问题**
+   - 验证语言支持
+   - 检查语言检测
+   - 查看语言设置
 
-3. **Performance Issues**
-   - Optimize request frequency
-   - Implement caching
-   - Use batch processing 
+3. **性能问题**
+   - 优化请求频率
+   - 实现缓存
+   - 使用批处理 

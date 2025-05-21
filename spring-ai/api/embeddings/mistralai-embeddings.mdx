@@ -1,28 +1,28 @@
 ---
-title: "Mistral AI Embeddings"
+title: "Mistral AI 向量模型"
 ---
 
-Spring AI supports the Mistral AI's text embeddings models.
-Embeddings are vectorial representations of text that capture the semantic meaning of paragraphs through their position in a high dimensional vector space. Mistral AI Embeddings API offers cutting-edge, state-of-the-art embeddings for text, which can be used for many NLP tasks.
+Spring AI 支持 Mistral AI 的文本嵌入模型。
+嵌入是文本的向量表示，通过其在高维向量空间中的位置捕获段落的语义含义。Mistral AI Embeddings API 提供最先进的文本嵌入技术，可用于许多 NLP 任务。
 
-## Prerequisites
+## 先决条件
 
-You will need to create an API with MistralAI to access MistralAI embeddings models.
+您需要使用 MistralAI 创建一个 API 才能访问 MistralAI 嵌入模型。
 
-Create an account at [MistralAI registration page](https://auth.mistral.ai/ui/registration) and generate the token on the [API Keys page](https://console.mistral.ai/api-keys/).
+在 [MistralAI 注册页面](https://auth.mistral.ai/ui/registration)创建一个帐户，并在[API 密钥页面](https://console.mistral.ai/api-keys/)生成令牌。
 
-The Spring AI project defines a configuration property named `spring.ai.mistralai.api-key` that you should set to the value of the `API Key` obtained from console.mistral.ai.
+Spring AI 项目定义了一个名为 `spring.ai.mistralai.api-key` 的配置属性，您应该将其设置为从 console.mistral.ai 获取的 `API Key` 的值。
 
-You can set this configuration property in your `application.properties` file:
+您可以在 `application.properties` 文件中设置此配置属性：
 
 ```properties
-spring.ai.mistralai.api-key=<your-mistralai-api-key>
+spring.ai.mistralai.api-key=<您的 MistralAI API 密钥>
 ```
 
-For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference an environment variable:
+为了在处理 API 密钥等敏感信息时增强安全性，您可以使用 Spring 表达式语言 (SpEL) 引用环境变量：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     mistralai:
@@ -30,33 +30,33 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
-export MISTRALAI_API_KEY=<your-mistralai-api-key>
+# 在您的环境或 .env 文件中
+export MISTRALAI_API_KEY=<您的 MistralAI API 密钥>
 ```
 
-You can also set this configuration programmatically in your application code:
+您还可以在应用程序代码中以编程方式设置此配置：
 
 ```java
-// Retrieve API key from a secure source or environment variable
+// 从安全来源或环境变量中检索 API 密钥
 String apiKey = System.getenv("MISTRALAI_API_KEY");
 ```
 
-### Add Repositories and BOM
+### 添加存储库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 工件发布在 Maven Central 和 Spring Snapshot 存储库中。
+请参阅[工件存储库](/spring4ai/getting-started#artifact-repositories)部分，将这些存储库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (物料清单) 以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the MistralAI Embedding Model.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI 为 MistralAI Embedding 模型提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -65,7 +65,7 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -74,79 +74,79 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-### Embedding Properties
+### Embedding 属性
 
-#### Retry Properties
+#### 重试属性
 
-The prefix `spring.ai.retry` is used as the property prefix that lets you configure the retry mechanism for the Mistral AI Embedding model.
+前缀 `spring.ai.retry` 用作属性前缀，可让您配置 Mistral AI Embedding 模型的重试机制。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.retry.max-attempts | Maximum number of retry attempts. | 10 |
-| spring.ai.retry.backoff.initial-interval | Initial sleep duration for the exponential backoff policy. | 2 sec. |
-| spring.ai.retry.backoff.multiplier | Backoff interval multiplier. | 5 |
-| spring.ai.retry.backoff.max-interval | Maximum backoff duration. | 3 min. |
-| spring.ai.retry.on-client-errors | If false, throw a NonTransientAiException, and do not attempt retry for `4xx` client error codes | false |
-| spring.ai.retry.exclude-on-http-codes | List of HTTP status codes that should not trigger a retry (e.g. to throw NonTransientAiException). | empty |
-| spring.ai.retry.on-http-codes | List of HTTP status codes that should trigger a retry (e.g. to throw TransientAiException). | empty |
+| 属性                                  | 描述                                                                                         | 默认值    |
+| :------------------------------------ | :------------------------------------------------------------------------------------------- | :-------- |
+| spring.ai.retry.max-attempts          | 最大重试次数。                                                                                 | 10        |
+| spring.ai.retry.backoff.initial-interval | 指数退避策略的初始休眠持续时间。                                                                 | 2 秒     |
+| spring.ai.retry.backoff.multiplier    | 退避间隔乘数。                                                                                 | 5         |
+| spring.ai.retry.backoff.max-interval  | 最大退避持续时间。                                                                               | 3 分钟   |
+| spring.ai.retry.on-client-errors      | 如果为 false，则抛出 NonTransientAiException，并且不尝试对 `4xx` 客户端错误代码进行重试。                      | false     |
+| spring.ai.retry.exclude-on-http-codes | 不应触发重试的 HTTP 状态代码列表 (例如，抛出 NonTransientAiException)。                                | 空        |
+| spring.ai.retry.on-http-codes         | 应触发重试的 HTTP 状态代码列表 (例如，抛出 TransientAiException)。                                  | 空        |
 
-#### Connection Properties
+#### 连接属性
 
-The prefix `spring.ai.mistralai` is used as the property prefix that lets you connect to MistralAI.
+前缀 `spring.ai.mistralai` 用作属性前缀，可让您连接到 MistralAI。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.mistralai.base-url | The URL to connect to | https://api.mistral.ai |
-| spring.ai.mistralai.api-key | The API Key | - |
+| 属性                         | 描述             | 默认值                   |
+| :--------------------------- | :--------------- | :----------------------- |
+| spring.ai.mistralai.base-url | 要连接的 URL。       | https://api.mistral.ai |
+| spring.ai.mistralai.api-key  | API 密钥。         | -                        |
 
-#### Configuration Properties
+#### 配置属性
 
 <Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 
-To enable, spring.ai.model.embedding=mistral (It is enabled by default)
+要启用，请设置 spring.ai.model.embedding=mistral (默认情况下启用)
 
-To disable, spring.ai.model.embedding=none (or any value which doesn't match mistral)
+要禁用，请设置 spring.ai.model.embedding=none (或任何与 mistral 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.mistralai.embedding` is property prefix that configures the `EmbeddingModel` implementation for MistralAI.
+前缀 `spring.ai.mistralai.embedding` 是配置 MistralAI 的 `EmbeddingModel` 实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.mistralai.embedding.enabled (Removed and no longer valid) | Enable OpenAI embedding model. | true |
-| spring.ai.model.embedding | Enable OpenAI embedding model. | true |
-| spring.ai.mistralai.embedding.base-url | Optional overrides the spring.ai.mistralai.base-url to provide embedding specific url | - |
-| spring.ai.mistralai.embedding.api-key | Optional overrides the spring.ai.mistralai.api-key to provide embedding specific api-key | - |
-| spring.ai.mistralai.embedding.metadata-mode | Document content extraction mode. | EMBED |
-| spring.ai.mistralai.embedding.options.model | The model to use | mistral-embed |
-| spring.ai.mistralai.embedding.options.encodingFormat | The format to return the embeddings in. Can be either float or base64. | - |
+| 属性                                                                 | 描述                                                                                   | 默认值          |
+| :------------------------------------------------------------------- | :------------------------------------------------------------------------------------- | :-------------- |
+| spring.ai.mistralai.embedding.enabled (已删除且不再有效)             | 启用 OpenAI 嵌入模型。                                                                     | true            |
+| spring.ai.model.embedding                                            | 启用 OpenAI 嵌入模型。                                                                     | true            |
+| spring.ai.mistralai.embedding.base-url                               | 可选，覆盖 spring.ai.mistralai.base-url 以提供特定于嵌入的 URL。                                 | -               |
+| spring.ai.mistralai.embedding.api-key                                | 可选，覆盖 spring.ai.mistralai.api-key 以提供特定于嵌入的 API 密钥。                               | -               |
+| spring.ai.mistralai.embedding.metadata-mode                          | 文档内容提取模式。                                                                         | EMBED           |
+| spring.ai.mistralai.embedding.options.model                          | 要使用的模型。                                                                             | mistral-embed   |
+| spring.ai.mistralai.embedding.options.encodingFormat                 | 返回嵌入的格式。可以是 float 或 base64。                                                              | -               |
 
 <Note>
-You can override the common `spring.ai.mistralai.base-url` and `spring.ai.mistralai.api-key` for the `ChatModel` and `EmbeddingModel` implementations.
-The `spring.ai.mistralai.embedding.base-url` and `spring.ai.mistralai.embedding.api-key` properties if set take precedence over the common properties.
-Similarly, the `spring.ai.mistralai.chat.base-url` and `spring.ai.mistralai.chat.api-key` properties if set take precedence over the common properties.
-This is useful if you want to use different MistralAI accounts for different models and different model endpoints.
+您可以为 `ChatModel` 和 `EmbeddingModel` 实现覆盖通用的 `spring.ai.mistralai.base-url` 和 `spring.ai.mistralai.api-key`。
+如果设置了 `spring.ai.mistralai.embedding.base-url` 和 `spring.ai.mistralai.embedding.api-key` 属性，则它们优先于通用属性。
+同样，如果设置了 `spring.ai.mistralai.chat.base-url` 和 `spring.ai.mistralai.chat.api-key` 属性，则它们优先于通用属性。
+如果您想为不同的模型和不同的模型端点使用不同的 MistralAI 帐户，这将非常有用。
 </Note>
 
 <Tip>
-All properties prefixed with `spring.ai.mistralai.embedding.options` can be overridden at runtime by adding a request specific [embedding options](#embedding-options) to the `EmbeddingRequest` call.
+所有以 `spring.ai.mistralai.embedding.options` 为前缀的属性都可以在运行时通过向 `EmbeddingRequest` 调用添加特定于请求的[嵌入选项](#embedding-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The [MistralAiEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-mistral-ai/src/main/java/org/springframework/ai/mistralai/MistralAiEmbeddingOptions.java) provides the MistralAI configurations, such as the model to use and etc.
+[MistralAiEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-mistral-ai/src/main/java/org/springframework/ai/mistralai/MistralAiEmbeddingOptions.java) 提供了 MistralAI 配置，例如要使用的模型等。
 
-The default options can be configured using the `spring.ai.mistralai.embedding.options` properties as well.
+默认选项也可以使用 `spring.ai.mistralai.embedding.options` 属性进行配置。
 
-At start-time use the `MistralAiEmbeddingModel` constructor to set the default options used for all embedding requests.
-At run-time you can override the default options, using a `MistralAiEmbeddingOptions` instance as part of your `EmbeddingRequest`.
+在启动时，使用 `MistralAiEmbeddingModel` 构造函数设置用于所有嵌入请求的默认选项。
+在运行时，您可以通过在 `EmbeddingRequest` 中使用 `MistralAiEmbeddingOptions` 实例来覆盖默认选项。
 
-For example to override the default model name for a specific request:
+例如，要覆盖特定请求的默认模型名称：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -156,13 +156,13 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
         .build()));
 ```
 
-## Sample Controller
+## 示例控制器
 
-This will create a `EmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+这将创建一个 `EmbeddingModel` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用 `EmbeddingModel` 实现。
 
 ```properties
-spring.ai.mistralai.api-key=YOUR_API_KEY
+spring.ai.mistralai.api-key=您的 API 密钥
 spring.ai.mistralai.embedding.options.model=mistral-embed
 ```
 
@@ -185,10 +185,10 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-If you are not using Spring Boot, you can manually configure the OpenAI Embedding Model.
-For this add the `spring-ai-mistral-ai` dependency to your project's Maven `pom.xml` file:
+如果您不使用 Spring Boot，则可以手动配置 OpenAI Embedding 模型。
+为此，请将 `spring-ai-mistral-ai` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -197,7 +197,7 @@ For this add the `spring-ai-mistral-ai` dependency to your project's Maven `pom.
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -206,15 +206,15 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
 <Note>
-The `spring-ai-mistral-ai` dependency provides access also to the `MistralAiChatModel`.
-For more information about the `MistralAiChatModel` refer to the [MistralAI Chat Client](/spring4ai/api/chat/mistralai-chat) section.
+`spring-ai-mistral-ai` 依赖项还提供对 `MistralAiChatModel` 的访问。
+有关 `MistralAiChatModel` 的更多信息，请参阅 [MistralAI 聊天客户端](/spring4ai/api/chat/mistralai-chat)部分。
 </Note>
 
-Next, create an `MistralAiEmbeddingModel` instance and use it to compute the similarity between two input texts:
+接下来，创建一个 `MistralAiEmbeddingModel` 实例，并用它来计算两个输入文本之间的相似度：
 
 ```java
 var mistralAiApi = new MistralAiApi(System.getenv("MISTRAL_AI_API_KEY"));
@@ -229,5 +229,5 @@ EmbeddingResponse embeddingResponse = this.embeddingModel
         .embedForResponse(List.of("Hello World", "World is big and salvation is near"));
 ```
 
-The `MistralAiEmbeddingOptions` provides the configuration information for the embedding requests.
-The options class offers a `builder()` for easy options creation. 
+`MistralAiEmbeddingOptions` 为嵌入请求提供配置信息。
+该选项类提供了一个 `builder()` 以便轻松创建选项。 

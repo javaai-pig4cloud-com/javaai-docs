@@ -1,37 +1,37 @@
 ---
-title: "Oracle Vector Database"
+title: "Oracle 向量数据库"
 ---
 
-Oracle Vector Database integration in Spring AI provides vector storage and search capabilities using Oracle's vector features.
+Spring AI 中的 Oracle 向量数据库集成了 Oracle 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-Oracle Vector Database enables:
-- Relational vector storage
-- SQL-based vector operations
-- Enterprise-grade security
-- High-performance scaling
+Oracle 向量数据库支持：
+- 关系型向量存储
+- 基于 SQL 的向量操作
+- 企业级安全
+- 高性能扩展
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Relational" icon="database">
-    Relational vector storage
+  <Card title="关系型" icon="database">
+    关系型向量存储
   </Card>
-  <Card title="Enterprise" icon="building">
-    Enterprise features
+  <Card title="企业级" icon="building">
+    企业级特性
   </Card>
-  <Card title="Security" icon="shield-alt">
-    Advanced security
+  <Card title="安全" icon="shield-alt">
+    高级安全
   </Card>
-  <Card title="Scalable" icon="arrows-up-down-left-right">
-    High-performance scaling
+  <Card title="可扩展" icon="arrows-up-down-left-right">
+    高性能扩展
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,10 +41,10 @@ Oracle Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Oracle Vector Database Configuration
+# Oracle 向量数据库配置
 spring.ai.oracle.vectordb.enabled=true
 spring.ai.oracle.vectordb.url=jdbc:oracle:thin:@localhost:1521:XE
 spring.ai.oracle.vectordb.username=system
@@ -52,7 +52,7 @@ spring.ai.oracle.vectordb.password=oracle
 spring.ai.oracle.vectordb.table-name=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -73,9 +73,9 @@ public class OracleVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -87,7 +87,7 @@ public class OracleVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -99,7 +99,7 @@ public class OracleSimilaritySearchConfig {
 }
 ```
 
-### 3. Table Management
+### 3. 表管理
 
 ```java
 @Service
@@ -116,9 +116,9 @@ public class TableService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Table Configuration
+### 自定义表配置
 
 ```java
 @Configuration
@@ -134,7 +134,7 @@ public class TableConfig {
 }
 ```
 
-### Index Management
+### 索引管理
 
 ```java
 @Configuration
@@ -150,7 +150,7 @@ public class IndexConfig {
 }
 ```
 
-### Security Configuration
+### 安全配置
 
 ```java
 @Configuration
@@ -165,40 +165,40 @@ public class SecurityConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=oracle-vectordb
 management.endpoint.oracle-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Oracle Vector Database, consider these best practices:
+使用 Oracle 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Table Design**: Design efficient table structure
-- **Index Management**: Optimize index configuration
-- **Security**: Implement proper security measures
-- **Resource Management**: Configure resource allocation
-- **Monitoring**: Set up comprehensive monitoring
+- **表设计**：设计高效的表结构
+- **索引管理**：优化索引配置
+- **安全**：实施适当的安全措施
+- **资源管理**：配置资源分配
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify connection URL
-   - Check credentials
-   - Review network settings
+1. **连接问题**
+   - 验证连接 URL
+   - 检查凭据
+   - 查看网络设置
 
-2. **Performance Issues**
-   - Optimize table structure
-   - Configure indexes
-   - Review query patterns
+2. **性能问题**
+   - 优化表结构
+   - 配置索引
+   - 查看查询模式
 
-3. **Storage Issues**
-   - Monitor table size
-   - Implement cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控表大小
+   - 执行清理
+   - 查看保留策略 

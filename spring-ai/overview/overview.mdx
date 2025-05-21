@@ -1,95 +1,95 @@
 ---
-title: "Overview"
+title: "概述"
 ---
 
-<Frame caption="Spring AI Logo">
+<Frame caption="Spring AI 徽标">
   <img src="/images/spring_ai_logo_with_text.svg" width="300" />
 </Frame>
 
-The `Spring AI` project aims to streamline the development of applications that incorporate artificial intelligence functionality without unnecessary complexity.
+`Spring AI` 项目旨在简化应用程序开发过程中集成人工智能功能的复杂性。
 
-The project draws inspiration from notable Python projects, such as LangChain and LlamaIndex, but Spring AI is not a direct port of those projects.
-The project was founded with the belief that the next wave of Generative AI applications will not be only for Python developers but will be ubiquitous across many programming languages.
+该项目从著名的Python项目如LangChain和LlamaIndex中汲取灵感，但Spring AI并非这些项目的直接移植。
+项目创立基于这样的信念：生成式AI应用的下一波浪潮不会仅限于Python开发者，而将在众多编程语言中普及。
 
-<Note>Spring AI addresses the fundamental challenge of AI integration: **Connecting your enterprise Data and APIs with AI Models**.</Note>
+<Note>Spring AI解决了AI集成的基本挑战：**将企业数据和API与AI模型连接起来**。</Note>
 
-<Frame caption="Spring AI Integration">
+<Frame caption="Spring AI 集成">
   <img src="/images/spring-ai-integration-diagram-3.svg" width="500" />
 </Frame>
 
-Spring AI provides abstractions that serve as the foundation for developing AI applications.
-These abstractions have multiple implementations, enabling easy component swapping with minimal code changes.
+Spring AI提供了作为开发AI应用程序基础的抽象层。
+这些抽象拥有多种实现方式，使得在最少代码更改的情况下轻松切换组件成为可能。
 
-## Features
+## 特性
 
-Spring AI provides the following features:
+Spring AI提供以下特性：
 
 <AccordionGroup>
-  <Accordion title="Model Support" icon="robot">
-    Portable API support across AI providers for Chat, text-to-image, and Embedding models. Both synchronous and streaming API options are supported. Access to model-specific features is also available.
+  <Accordion title="模型支持" icon="robot">
+    为聊天、文本到图像和嵌入模型提供跨AI提供商的可移植API支持。同时支持同步和流式API选项。也可以访问模型特定的功能。
   </Accordion>
   
-  <Accordion title="AI Model Providers" icon="building">
-    Support for all major AI Model providers such as Anthropic, OpenAI, Microsoft, Amazon, Google, and Ollama. Supported model types include:
+  <Accordion title="AI模型提供商" icon="building">
+    支持所有主要的AI模型提供商，如Anthropic、OpenAI、Microsoft、Amazon、Google和Ollama。支持的模型类型包括：
     
-    - [Chat Completion](/spring4ai/api/chatmodel)
-    - [Embedding](/spring4ai/api/embeddings)
-    - [Text to Image](/spring4ai/api/imageclient)
-    - [Audio Transcription](/spring4ai/api/audio/transcriptions)
-    - [Text to Speech](/spring4ai/api/audio/speech)
-    - [Moderation](/spring4ai/api/moderation)
+    - [聊天补全](/spring4ai/api/chatmodel)
+    - [嵌入](/spring4ai/api/embeddings)
+    - [文本生成图像](/spring4ai/api/imageclient)
+    - [音频转录](/spring4ai/api/audio/transcriptions)
+    - [文本转语音](/spring4ai/api/audio/speech)
+    - [内容审核](/spring4ai/api/moderation)
   </Accordion>
   
-  <Accordion title="Structured Outputs" icon="code">
-    [Structured Outputs](/spring4ai/api/structured-output-converter) - Mapping of AI Model output to POJOs.
+  <Accordion title="结构化输出" icon="code">
+    [结构化输出](/spring4ai/api/structured-output-converter) - 将AI模型输出映射到POJO对象。
   </Accordion>
   
-  <Accordion title="Vector Database Support" icon="database">
-    Support for all major Vector Database providers such as Apache Cassandra, Azure Cosmos DB, Azure Vector Search, Chroma, Elasticsearch, GemFire, MariaDB, Milvus, MongoDB Atlas, Neo4j, OpenSearch, Oracle, PostgreSQL/PGVector, PineCone, Qdrant, Redis, SAP Hana, Typesense and Weaviate.
+  <Accordion title="向量数据库支持" icon="database">
+    支持所有主要的向量数据库提供商，如Apache Cassandra、Azure Cosmos DB、Azure Vector Search、Chroma、Elasticsearch、GemFire、MariaDB、Milvus、MongoDB Atlas、Neo4j、OpenSearch、Oracle、PostgreSQL/PGVector、PineCone、Qdrant、Redis、SAP Hana、Typesense和Weaviate。
   </Accordion>
   
-  <Accordion title="Tools & Function Calling" icon="wrench">
-    [Tools/Function Calling](/spring4ai/api/tools) - Permits the model to request the execution of client-side tools and functions, thereby accessing necessary real-time information as required and taking action.
+  <Accordion title="工具与函数调用" icon="wrench">
+    [工具/函数调用](/spring4ai/api/tools) - 允许模型请求执行客户端工具和函数，从而在需要时访问必要的实时信息并采取行动。
   </Accordion>
   
-  <Accordion title="Observability" icon="eye">
-    [Observability](/spring4ai/observability) - Provides insights into AI-related operations.
+  <Accordion title="可观测性" icon="eye">
+    [可观测性](/spring4ai/observability) - 提供AI相关操作的洞察。
   </Accordion>
   
-  <Accordion title="ETL Framework" icon="gears">
-    Document ingestion [ETL framework](/spring4ai/api/etl-pipeline) for Data Engineering.
+  <Accordion title="ETL框架" icon="gears">
+    用于数据工程的文档摄取[ETL框架](/spring4ai/api/etl-pipeline)。
   </Accordion>
   
-  <Accordion title="Model Evaluation" icon="chart-line">
-    [AI Model Evaluation](/spring4ai/api/testing) - Utilities to help evaluate generated content and protect against hallucinated response.
+  <Accordion title="模型评估" icon="chart-line">
+    [AI模型评估](/spring4ai/api/testing) - 帮助评估生成内容并防止幻觉响应的工具。
   </Accordion>
   
-  <Accordion title="Spring Boot Integration" icon="spring">
-    Spring Boot Auto Configuration and Starters for AI Models and Vector Stores.
+  <Accordion title="Spring Boot集成" icon="spring">
+    为AI模型和向量存储提供Spring Boot自动配置和启动器。
   </Accordion>
   
   <Accordion title="ChatClient API" icon="comments">
-    [ChatClient API](/spring4ai/api/chatclient) - Fluent API for communicating with AI Chat Models, idiomatically similar to the WebClient and RestClient APIs.
+    [ChatClient API](/spring4ai/api/chatclient) - 用于与AI聊天模型通信的流畅API，风格类似于WebClient和RestClient API。
   </Accordion>
   
   <Accordion title="Advisors API" icon="user-gear">
-    [Advisors API](/spring4ai/api/advisors) - Encapsulates recurring Generative AI patterns, transforms data sent to and from Language Models (LLMs), and provides portability across various models and use cases.
+    [Advisors API](/spring4ai/api/advisors) - 封装了常见的生成式AI模式，转换发送到语言模型(LLM)和从语言模型接收的数据，并提供跨各种模型和用例的可移植性。
   </Accordion>
   
-  <Accordion title="Memory & RAG" icon="brain">
-    Support for [Chat Conversation Memory](/spring4ai/api/chatclient#chat-memory) and [Retrieval Augmented Generation (RAG)](/spring4ai/api/chatclient#retrieval-augmented-generation).
+  <Accordion title="记忆与RAG" icon="brain">
+    支持[聊天对话记忆](/spring4ai/api/chatclient#chat-memory)和[检索增强生成(RAG)](/spring4ai/api/chatclient#retrieval-augmented-generation)。
   </Accordion>
 </AccordionGroup>
 
-This feature set lets you implement common use cases, such as "Q&A over your documentation" or "Chat with your documentation."
+这些特性集使您能够实现常见用例，例如"基于文档的问答"或"与文档对话"。
 
-## Next Steps
+## 下一步
 
 <CardGroup cols={2}>
-  <Card title="AI Concepts" icon="lightbulb" href="/spring4ai/overview/concepts">
-    Understand high-level AI concepts and their representation in Spring AI
+  <Card title="AI概念" icon="lightbulb" href="/spring4ai/overview/concepts">
+    了解高级AI概念及其在Spring AI中的表示
   </Card>
-  <Card title="Getting Started" icon="rocket" href="/spring4ai/getting-started">
-    Create your first AI application with Spring AI
+  <Card title="快速入门" icon="rocket" href="/spring4ai/getting-started">
+    使用Spring AI创建您的第一个AI应用程序
   </Card>
 </CardGroup> 

@@ -1,17 +1,17 @@
 ---
-title: Deploying to the Cloud
-description: Guide to deploying Spring AI applications to cloud platforms
+title: 部署到云端
+description: 将 Spring AI 应用程序部署到云平台的指南
 ---
 
-# Deploying to the Cloud
+# 部署到云端
 
-This guide covers best practices for deploying Spring AI applications to various cloud platforms.
+本指南涵盖了将 Spring AI 应用程序部署到各种云平台的最佳实践。
 
-## Overview
+## 概述
 
-Spring AI applications can be deployed to various cloud platforms with different configurations and optimizations.
+Spring AI 应用程序可以部署到各种云平台，具有不同的配置和优化选项。
 
-## Cloud Platforms
+## 云平台
 
 ### AWS
 
@@ -48,9 +48,9 @@ spring:
       credentials: ${GOOGLE_APPLICATION_CREDENTIALS}
 ```
 
-## Deployment Strategies
+## 部署策略
 
-### 1. Container Deployment
+### 1. 容器部署
 
 ```dockerfile
 FROM openjdk:17-jdk-slim
@@ -58,7 +58,7 @@ COPY target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 
-### 2. Serverless Deployment
+### 2. 无服务器部署
 
 ```yaml
 # serverless.yml
@@ -75,29 +75,29 @@ functions:
           method: any
 ```
 
-## Best Practices
+## 最佳实践
 
-1. Security
-   - Use environment variables for secrets
-   - Implement proper IAM roles
-   - Enable encryption at rest
+1. 安全性
+   - 使用环境变量存储密钥
+   - 实现适当的 IAM 角色
+   - 启用静态加密
 
-2. Performance
-   - Configure appropriate resources
-   - Enable caching where possible
-   - Monitor and optimize costs
+2. 性能
+   - 配置适当的资源
+   - 在可能的情况下启用缓存
+   - 监控和优化成本
 
-3. Monitoring
-   - Set up cloud monitoring
-   - Configure alerts
-   - Log important events
+3. 监控
+   - 设置云监控
+   - 配置告警
+   - 记录重要事件
 
-4. Scaling
-   - Configure auto-scaling
-   - Use load balancing
-   - Implement circuit breakers
+4. 扩展
+   - 配置自动扩展
+   - 使用负载均衡
+   - 实现断路器
 
-## Example Configuration
+## 示例配置
 
 ```java
 @Configuration
@@ -114,9 +114,9 @@ public class CloudConfig {
 }
 ```
 
-## Troubleshooting
+## 故障排除
 
-- Check cloud provider logs
-- Monitor application metrics
-- Review security configurations
-- Verify network connectivity 
+- 检查云提供商日志
+- 监控应用程序指标
+- 检查安全配置
+- 验证网络连接 

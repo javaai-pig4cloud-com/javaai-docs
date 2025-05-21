@@ -1,19 +1,19 @@
 ---
-title: Building Effective Agents
-description: Guide to building effective AI agents with Spring AI
+title: 构建高效的智能体
+description: 使用 Spring AI 构建高效 AI 智能体的指南
 ---
 
-# Building Effective Agents
+# 构建高效的智能体
 
-This guide covers best practices for building effective AI agents using Spring AI.
+本指南涵盖了使用 Spring AI 构建高效 AI 智能体的最佳实践。
 
-## Overview
+## 概述
 
-AI agents are autonomous systems that can perform tasks using AI models and tools.
+AI 智能体是能够使用 AI 模型和工具执行任务的自主系统。
 
-## Key Components
+## 关键组件
 
-### 1. Planning
+### 1. 规划
 
 ```java
 @Bean
@@ -29,7 +29,7 @@ public Agent planner() {
 }
 ```
 
-### 2. Execution
+### 2. 执行
 
 ```java
 @Bean
@@ -45,7 +45,7 @@ public Agent executor() {
 }
 ```
 
-### 3. Memory
+### 3. 记忆
 
 ```java
 @Bean
@@ -54,29 +54,29 @@ public ChatMemory chatMemory() {
 }
 ```
 
-## Best Practices
+## 最佳实践
 
-1. Clear Task Definition
-   - Define specific goals
-   - Set clear boundaries
-   - Establish success criteria
+1. 明确任务定义
+   - 定义具体目标
+   - 设定明确边界
+   - 建立成功标准
 
-2. Tool Selection
-   - Choose appropriate tools
-   - Ensure tool reliability
-   - Handle tool failures gracefully
+2. 工具选择
+   - 选择合适的工具
+   - 确保工具可靠性
+   - 优雅处理工具故障
 
-3. Error Handling
-   - Implement retry mechanisms
-   - Log errors appropriately
-   - Provide fallback options
+3. 错误处理
+   - 实现重试机制
+   - 适当记录错误
+   - 提供备选方案
 
-4. Monitoring
-   - Track agent performance
-   - Monitor resource usage
-   - Log important events
+4. 监控
+   - 跟踪智能体性能
+   - 监控资源使用
+   - 记录重要事件
 
-## Example Implementation
+## 示例实现
 
 ```java
 @Service
@@ -87,13 +87,13 @@ public class TaskAgent {
     private final ChatMemory memory;
     
     public TaskResult executeTask(String task) {
-        // 1. Plan the task
+        // 1. 规划任务
         Plan plan = planner.plan(task);
         
-        // 2. Execute the plan
+        // 2. 执行计划
         TaskResult result = executor.execute(plan);
         
-        // 3. Store in memory
+        // 3. 存储到记忆
         memory.store(task, result);
         
         return result;
@@ -101,9 +101,9 @@ public class TaskAgent {
 }
 ```
 
-## Testing
+## 测试
 
-- Unit test individual components
-- Integration test the complete agent
-- Performance test under load
-- Security test for vulnerabilities 
+- 单元测试各个组件
+- 集成测试完整智能体
+- 负载下的性能测试
+- 漏洞安全测试 

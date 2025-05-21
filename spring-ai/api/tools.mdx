@@ -1,37 +1,37 @@
 ---
-title: "Tool Calling"
+title: "工具调用"
 ---
 
-Tool Calling in Spring AI enables AI models to interact with external tools and services, enhancing their capabilities.
+Spring AI 中的工具调用使 AI 模型能够与外部工具和服务交互，从而增强其功能。
 
-## Overview
+## 概述
 
-Tool Calling allows AI models to:
-- Execute external functions
-- Access external services
-- Perform complex operations
-- Integrate with existing systems
+工具调用允许 AI 模型：
+- 执行外部函数
+- 访问外部服务
+- 执行复杂操作
+- 与现有系统集成
 
-## Tool Types
+## 工具类型
 
 <CardGroup cols={2}>
-  <Card title="Function Tools" icon="function">
-    Execute custom functions and methods
+  <Card title="函数工具" icon="function">
+    执行自定义函数和方法
   </Card>
-  <Card title="API Tools" icon="api">
-    Interact with external APIs and services
+  <Card title="API 工具" icon="api">
+    与外部 API 和服务交互
   </Card>
-  <Card title="Database Tools" icon="database">
-    Perform database operations
+  <Card title="数据库工具" icon="database">
+    执行数据库操作
   </Card>
-  <Card title="Custom Tools" icon="code">
-    Implement custom tool functionality
+  <Card title="自定义工具" icon="code">
+    实现自定义工具功能
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Tool Definition
+### 基本工具定义
 
 ```java
 @Tool
@@ -48,7 +48,7 @@ public class CalculatorTool {
 }
 ```
 
-### Tool Registration
+### 工具注册
 
 ```java
 @Configuration
@@ -63,7 +63,7 @@ public class ToolConfig {
 }
 ```
 
-### Using Tools in Chat
+### 在聊天中使用工具
 
 ```java
 @Service
@@ -82,45 +82,45 @@ public class ChatService {
 }
 ```
 
-## Tool Categories
+## 工具类别
 
-### 1. Function Tools
+### 1. 函数工具
 
 ```java
 @Tool
 public class MathTool {
     @ToolMethod
     public double calculate(String expression) {
-        // Implementation
+        // 实现
     }
 }
 ```
 
-### 2. API Tools
+### 2. API 工具
 
 ```java
 @Tool
 public class WeatherTool {
     @ToolMethod
     public Weather getWeather(String location) {
-        // API call implementation
+        // API 调用实现
     }
 }
 ```
 
-### 3. Database Tools
+### 3. 数据库工具
 
 ```java
 @Tool
 public class DatabaseTool {
     @ToolMethod
     public List<Record> query(String sql) {
-        // Database query implementation
+        // 数据库查询实现
     }
 }
 ```
 
-## Configuration Properties
+## 配置属性
 
 ```properties
 spring.ai.tools.enabled=true
@@ -129,21 +129,21 @@ spring.ai.tools.max-retries=3
 spring.ai.tools.cache-enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When implementing tool calling, consider these best practices:
+实现工具调用时，请考虑以下最佳实践：
 </Note>
 
-- **Error Handling**: Implement robust error handling
-- **Security**: Validate inputs and restrict access
-- **Performance**: Optimize tool execution
-- **Monitoring**: Track tool usage and performance
-- **Documentation**: Document tool capabilities and usage
+- **错误处理**：实现强大的错误处理
+- **安全性**：验证输入并限制访问
+- **性能**：优化工具执行
+- **监控**：跟踪工具使用情况和性能
+- **文档**：记录工具功能和用法
 
-## Advanced Features
+## 高级特性
 
-### Custom Tool Implementation
+### 自定义工具实现
 
 ```java
 @Component
@@ -155,36 +155,36 @@ public class CustomTool implements Tool {
 
     @Override
     public Object execute(Map<String, Object> parameters) {
-        // Custom implementation
+        // 自定义实现
         return result;
     }
 }
 ```
 
-### Tool Monitoring
+### 工具监控
 
-Monitor tool usage and performance:
+监控工具使用情况和性能：
 
 ```properties
 management.endpoints.web.exposure.include=tools
 management.endpoint.tools.enabled=true
 ```
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题和解决方案：
 
-1. **Tool Execution Errors**
-   - Implement proper error handling
-   - Add retry mechanisms
-   - Log detailed error information
+1. **工具执行错误**
+   - 实现适当的错误处理
+   - 添加重试机制
+   - 记录详细的错误信息
 
-2. **Performance Issues**
-   - Optimize tool implementation
-   - Implement caching
-   - Use async execution
+2. **性能问题**
+   - 优化工具实现
+   - 实现缓存
+   - 使用异步执行
 
-3. **Security Concerns**
-   - Validate inputs
-   - Implement access control
-   - Monitor tool usage 
+3. **安全问题**
+   - 验证输入
+   - 实现访问控制
+   - 监控工具使用情况 

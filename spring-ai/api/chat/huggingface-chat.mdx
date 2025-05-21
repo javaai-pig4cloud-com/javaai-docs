@@ -1,40 +1,40 @@
 ---
-title: "Hugging Face Chat"
+title: "Hugging Face 聊天"
 ---
 
-Hugging Face Text Generation Inference (TGI) is a specialized deployment solution for serving Large Language Models (LLMs) in the cloud, making them accessible via an API. TGI provides optimized performance for text generation tasks through features like continuous batching, token streaming, and efficient memory management.
+Hugging Face 文本生成推理 (TGI) 是一种专门的部署解决方案，用于在云中提供大型语言模型 (LLM)，使其可通过 API 访问。TGI 通过连续批处理、令牌流和高效内存管理等功能为文本生成任务提供优化的性能。
 
 <Note>
-Text Generation Inference requires models to be compatible with its architecture-specific optimizations. While many popular LLMs are supported, not all models on Hugging Face Hub can be deployed using TGI. If you need to deploy other types of models, consider using standard Hugging Face Inference Endpoints instead.
+文本生成推理要求模型与特定于其体系结构的优化兼容。虽然支持许多流行的 LLM，但并非 Hugging Face Hub 上的所有模型都可以使用 TGI 进行部署。如果你需要部署其他类型的模型，请考虑改用标准的 Hugging Face 推理端点。
 </Note>
 
 <Tip>
-For a complete and up-to-date list of supported models and architectures, see the [Text Generation Inference supported models documentation](https://huggingface.co/docs/text-generation-inference/en/supported_models).
+有关支持的模型和体系结构的完整和最新列表，请参阅 [文本生成推理支持的模型文档](https://huggingface.co/docs/text-generation-inference/en/supported_models)。
 </Tip>
 
-## Prerequisites
+## 前提条件
 
-You will need to create an Inference Endpoint on Hugging Face and create an API token to access the endpoint.
-Further details can be found [here](https://huggingface.co/docs/inference-endpoints/index).
+你需要在 Hugging Face 上创建一个推理端点并创建一个 API 令牌以访问该端点。
+有关更多详细信息，请参见[此处](https://huggingface.co/docs/inference-endpoints/index)。
 
-The Spring AI project defines two configuration properties:
+Spring AI 项目定义了两个配置属性：
 
-1. `spring.ai.huggingface.chat.api-key`: Set this to the value of the API token obtained from Hugging Face.
-2. `spring.ai.huggingface.chat.url`: Set this to the inference endpoint URL obtained when provisioning your model in Hugging Face.
+1. `spring.ai.huggingface.chat.api-key`：将其设置为从 Hugging Face 获取的 API 令牌的值。
+2. `spring.ai.huggingface.chat.url`：将其设置为在 Hugging Face 中配置模型时获取的推理端点 URL。
 
-You can find your inference endpoint URL on the Inference Endpoint's UI [here](https://ui.endpoints.huggingface.co/).
+你可以在推理端点的 UI [此处](https://ui.endpoints.huggingface.co/)找到你的推理端点 URL。
 
-You can set these configuration properties in your `application.properties` file:
+你可以在 `application.properties` 文件中设置这些配置属性：
 
 ```properties
-spring.ai.huggingface.chat.api-key=<your-huggingface-api-key>
-spring.ai.huggingface.chat.url=<your-inference-endpoint-url>
+spring.ai.huggingface.chat.api-key=<你的huggingface-api密钥>
+spring.ai.huggingface.chat.url=<你的推理端点url>
 ```
 
-For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference custom environment variables:
+为了在处理 API 密钥等敏感信息时增强安全性，你可以使用 Spring 表达式语言 (SpEL) 来引用自定义环境变量：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     huggingface:
@@ -44,35 +44,35 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
-export HUGGINGFACE_API_KEY=<your-huggingface-api-key>
-export HUGGINGFACE_ENDPOINT_URL=<your-inference-endpoint-url>
+# 在你的环境或 .env 文件中
+export HUGGINGFACE_API_KEY=<你的huggingface-api密钥>
+export HUGGINGFACE_ENDPOINT_URL=<你的推理端点url>
 ```
 
-You can also set these configurations programmatically in your application code:
+你也可以在应用程序代码中以编程方式设置这些配置：
 
 ```java
-// Retrieve API key and endpoint URL from secure sources or environment variables
+// 从安全来源或环境变量中检索 API 密钥和端点 URL
 String apiKey = System.getenv("HUGGINGFACE_API_KEY");
 String endpointUrl = System.getenv("HUGGINGFACE_ENDPOINT_URL");
 ```
 
-### Add Repositories and BOM
+### 添加仓库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 的构件发布在 Maven Central 和 Spring Snapshot 仓库中。
+请参阅[构件仓库](/spring4ai/getting-started#artifact-repositories)部分，将这些仓库添加到你的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (bill of materials)，以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置、启动器模块的构件名称发生了重大变化。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the Hugging Face Chat Client.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI 为 Hugging Face 聊天客户端提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 <Tabs>
   <Tab title="Maven">
@@ -93,47 +93,47 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </Tabs>
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
-### Chat Properties
+### 聊天属性
 
 <Note>
-Enabling and disabling of the chat auto-configurations are now configured via top level properties with the prefix `spring.ai.model.chat`.
+聊天自动配置的启用和禁用现在通过前缀为 `spring.ai.model.chat` 的顶级属性进行配置。
 
-To enable, `spring.ai.model.chat=huggingface` (It is enabled by default)
+要启用，`spring.ai.model.chat=huggingface` (默认启用)
 
-To disable, `spring.ai.model.chat=none` (or any value which doesn't match huggingface)
+要禁用，`spring.ai.model.chat=none` (或任何与 huggingface 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.huggingface` is the property prefix that lets you configure the chat model implementation for Hugging Face.
+前缀 `spring.ai.huggingface` 是属性前缀，允许你配置 Hugging Face 的聊天模型实现。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 | :------- | :---------- | :------ |
-| spring.ai.huggingface.chat.api-key | API Key to authenticate with the Inference Endpoint. | - |
-| spring.ai.huggingface.chat.url | URL of the Inference Endpoint to connect to | - |
-| spring.ai.huggingface.chat.enabled (Removed and no longer valid) | Enable Hugging Face chat model. | true |
-| spring.ai.model.chat (Removed and no longer valid) | Enable Hugging Face chat model. | huggingface |
+| spring.ai.huggingface.chat.api-key | 用于向推理端点进行身份验证的 API 密钥。 | - |
+| spring.ai.huggingface.chat.url | 要连接的推理端点的 URL | - |
+| spring.ai.huggingface.chat.enabled (已移除且不再有效) | 启用 Hugging Face 聊天模型。 | true |
+| spring.ai.model.chat (已移除且不再有效) | 启用 Hugging Face 聊天模型。 | huggingface |
 
-## Sample Controller (Auto-configuration)
+## 示例控制器（自动配置）
 
-[Create](https://start.spring.io/) a new Spring Boot project and add the `spring-ai-starter-model-huggingface` to your pom (or gradle) dependencies.
+[创建](https://start.spring.io/)一个新的 Spring Boot 项目，并将 `spring-ai-starter-model-huggingface` 添加到你的 pom (或 gradle) 依赖项中。
 
-Add an `application.properties` file, under the `src/main/resources` directory, to enable and configure the Hugging Face chat model:
+在 `src/main/resources` 目录下添加一个 `application.properties` 文件，以启用和配置 Hugging Face 聊天模型：
 
 ```properties
-spring.ai.huggingface.chat.api-key=YOUR_API_KEY
-spring.ai.huggingface.chat.url=YOUR_INFERENCE_ENDPOINT_URL
+spring.ai.huggingface.chat.api-key=你的API密钥
+spring.ai.huggingface.chat.url=你的推理端点URL
 ```
 
 <Tip>
-Replace the `api-key` and `url` with your Hugging Face values.
+将 `api-key` 和 `url` 替换为你的 Hugging Face 值。
 </Tip>
 
-This will create a `HuggingfaceChatModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the chat model for text generations.
+这将创建一个 `HuggingfaceChatModel` 实现，你可以将其注入到你的类中。
+以下是一个简单的 `@Controller` 类的示例，该类使用聊天模型进行文本生成。
 
 ```java
 @RestController
@@ -147,17 +147,17 @@ public class ChatController {
     }
 
     @GetMapping("/ai/generate")
-    public Map generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+    public Map generate(@RequestParam(value = "message", defaultValue = "给我讲个笑话") String message) {
         return Map.of("generation", this.chatModel.call(message));
     }
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-The [HuggingfaceChatModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-huggingface/src/main/java/org/springframework/ai/huggingface/HuggingfaceChatModel.java) implements the `ChatModel` interface and uses the low-level API to connect to the Hugging Face inference endpoints.
+[HuggingfaceChatModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-huggingface/src/main/java/org/springframework/ai/huggingface/HuggingfaceChatModel.java) 实现了 `ChatModel` 接口，并使用低级 API 连接到 Hugging Face 推理端点。
 
-Add the `spring-ai-huggingface` dependency to your project's Maven `pom.xml` file:
+将 `spring-ai-huggingface` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -166,7 +166,7 @@ Add the `spring-ai-huggingface` dependency to your project's Maven `pom.xml` fil
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到你的 Gradle `build.gradle` 构建文件中。
 
 ```gradle
 dependencies {
@@ -175,16 +175,16 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
-Next, create a `HuggingfaceChatModel` and use it for text generations:
+接下来，创建一个 `HuggingfaceChatModel` 并将其用于文本生成：
 
 ```java
 HuggingfaceChatModel chatModel = new HuggingfaceChatModel(apiKey, url);
 
 ChatResponse response = this.chatModel.call(
-    new Prompt("Generate the names of 5 famous pirates."));
+    new Prompt("生成 5 个著名海盗的名字。"));
 
 System.out.println(response.getGeneration().getResult().getOutput().getContent());
 ``` 

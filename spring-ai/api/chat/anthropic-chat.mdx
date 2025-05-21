@@ -1,32 +1,32 @@
 ---
-title: "Anthropic Claude 3 Chat"
+title: "Anthropic Claude 3 聊天"
 ---
 
-[Anthropic Claude](https://www.anthropic.com/) is a family of foundational AI models that can be used in a variety of applications.
-For developers and businesses, you can leverage the API access and build directly on top of [Anthropic's AI infrastructure](https://www.anthropic.com/api).
+[Anthropic Claude](https://www.anthropic.com/) 是一系列基础 AI 模型，可用于各种应用程序。
+对于开发人员和企业，你可以利用 API 访问权限并直接在 [Anthropic 的 AI 基础设施](https://www.anthropic.com/api)之上进行构建。
 
-Spring AI supports the Anthropic [Messaging API](https://docs.anthropic.com/claude/reference/messages_post) for sync and streaming text generations.
+Spring AI 支持 Anthropic [消息传递 API](https://docs.anthropic.com/claude/reference/messages_post) 进行同步和流式文本生成。
 
 <Tip>
-Anthropic's Claude models are also available through Amazon Bedrock Converse.
-Spring AI provides dedicated [Amazon Bedrock Converse Anthropic](/spring4ai/api/chat/bedrock-converse) client implementations as well.
+Anthropic 的 Claude 模型也可通过 Amazon Bedrock Converse 获得。
+Spring AI 还提供专用的 [Amazon Bedrock Converse Anthropic](/spring4ai/api/chat/bedrock-converse) 客户端实现。
 </Tip>
 
-## Prerequisites
+## 前提条件
 
-You will need to create an API key on the Anthropic portal.
+你需要在 Anthropic 门户上创建一个 API 密钥。
 
-Create an account at [Anthropic API dashboard](https://console.anthropic.com/dashboard) and generate the API key on the [Get API Keys](https://console.anthropic.com/settings/keys) page.
+在 [Anthropic API 仪表板](https://console.anthropic.com/dashboard)创建一个帐户，并在[获取 API 密钥](https://console.anthropic.com/settings/keys)页面生成 API 密钥。
 
-The Spring AI project defines a configuration property named `spring.ai.anthropic.api-key` that you should set to the value of the `API Key` obtained from anthropic.com.
+Spring AI 项目定义了一个名为 `spring.ai.anthropic.api-key` 的配置属性，你应该将其设置为从 anthropic.com 获取的 `API 密钥` 的值。
 
-You can set this configuration property in your `application.properties` file:
+你可以在 `application.properties` 文件中设置此配置属性：
 
 ```properties
-spring.ai.anthropic.api-key=<your-anthropic-api-key>
+spring.ai.anthropic.api-key=<你的-anthropic-api-密钥>
 ```
 
-For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference a custom environment variable:
+为了在处理 API 密钥等敏感信息时增强安全性，你可以使用 Spring 表达式语言 (SpEL) 来引用自定义环境变量：
 
 <Tabs>
   <Tab title="application.yml">
@@ -39,34 +39,34 @@ For enhanced security when handling sensitive information like API keys, you can
   </Tab>
   <Tab title=".env">
     ```bash
-    export ANTHROPIC_API_KEY=<your-anthropic-api-key>
+    export ANTHROPIC_API_KEY=<你的-anthropic-api-密钥>
     ```
   </Tab>
 </Tabs>
 
-You can also set this configuration programmatically in your application code:
+你也可以在应用程序代码中以编程方式设置此配置：
 
 ```java
-// Retrieve API key from a secure source or environment variable
+// 从安全来源或环境变量中检索 API 密钥
 String apiKey = System.getenv("ANTHROPIC_API_KEY");
 ```
 
-### Add Repositories and BOM
+### 添加仓库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 的构件发布在 Maven Central 和 Spring Snapshot 仓库中。
+请参阅[构件仓库](/spring4ai/getting-started#artifact-repositories)部分，将这些仓库添加到你的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (bill of materials)，以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置、启动器模块的构件名称发生了重大变化。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the Anthropic Chat Client.
-To enable it add the following dependency to your project's Maven `pom.xml` or Gradle `build.gradle` file:
+Spring AI 为 Anthropic 聊天客户端提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 或 Gradle `build.gradle` 文件中：
 
 <Tabs>
   <Tab title="Maven">
@@ -87,88 +87,88 @@ To enable it add the following dependency to your project's Maven `pom.xml` or G
 </Tabs>
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
-### Chat Properties
+### 聊天属性
 
-#### Retry Properties
+#### 重试属性
 
-The prefix `spring.ai.retry` is used as the property prefix that lets you configure the retry mechanism for the Anthropic chat model.
+前缀 `spring.ai.retry` 用作属性前缀，允许你配置 Anthropic 聊天模型的重试机制。
 
-| Property                                | Description                                                                                      | Default |
+| 属性                                | 描述                                                                                      | 默认值 |
 | :-------------------------------------- | :----------------------------------------------------------------------------------------------- | :------ |
-| `spring.ai.retry.max-attempts`          | Maximum number of retry attempts.                                                                | 10      |
-| `spring.ai.retry.backoff.initial-interval` | Initial sleep duration for the exponential backoff policy.                                       | 2 sec.  |
-| `spring.ai.retry.backoff.multiplier`    | Backoff interval multiplier.                                                                     | 5       |
-| `spring.ai.retry.backoff.max-interval`  | Maximum backoff duration.                                                                        | 3 min.  |
-| `spring.ai.retry.on-client-errors`      | If false, throw a NonTransientAiException, and do not attempt retry for `4xx` client error codes | false   |
-| `spring.ai.retry.exclude-on-http-codes` | List of HTTP status codes that should NOT trigger a retry (e.g. to throw NonTransientAiException). | empty   |
-| `spring.ai.retry.on-http-codes`         | List of HTTP status codes that should trigger a retry (e.g. to throw TransientAiException).        | empty   |
+| `spring.ai.retry.max-attempts`          | 最大重试次数。                                                                | 10      |
+| `spring.ai.retry.backoff.initial-interval` | 指数退避策略的初始休眠持续时间。                                       | 2 秒  |
+| `spring.ai.retry.backoff.multiplier`    | 退避间隔乘数。                                                                     | 5       |
+| `spring.ai.retry.backoff.max-interval`  | 最大退避持续时间。                                                                        | 3 分钟  |
+| `spring.ai.retry.on-client-errors`      | 如果为 false，则抛出 NonTransientAiException，并且不尝试对 `4xx` 客户端错误代码进行重试 | false   |
+| `spring.ai.retry.exclude-on-http-codes` | 不应触发重试的 HTTP 状态代码列表（例如，抛出 NonTransientAiException）。 | 空   |
+| `spring.ai.retry.on-http-codes`         | 应触发重试的 HTTP 状态代码列表（例如，抛出 TransientAiException）。        | 空   |
 
-<Note>Currently the retry policies are not applicable for the streaming API.</Note>
+<Note>目前，重试策略不适用于流式 API。</Note>
 
-#### Connection Properties
+#### 连接属性
 
-The prefix `spring.ai.anthropic` is used as the property prefix that lets you connect to Anthropic.
+前缀 `spring.ai.anthropic` 用作属性前缀，允许你连接到 Anthropic。
 
-| Property                             | Description                                                                                                | Default                     |
+| 属性                             | 描述                                                                                                | 默认值                     |
 | :----------------------------------- | :--------------------------------------------------------------------------------------------------------- | :-------------------------- |
-| `spring.ai.anthropic.base-url`       | The URL to connect to                                                                                      | `https://api.anthropic.com` |
-| `spring.ai.anthropic.completions-path` | The path to append to the base URL.                                                                        | `/v1/chat/completions`      |
-| `spring.ai.anthropic.version`        | Anthropic API version                                                                                      | `2023-06-01`                |
-| `spring.ai.anthropic.api-key`        | The API Key                                                                                                | -                           |
-| `spring.ai.anthropic.beta-version`   | Enables new/experimental features. If set to `max-tokens-3-5-sonnet-2024-07-15` \nthe output tokens limit is increased from `4096` to `8192` tokens (for claude-3-5-sonnet only). | `tools-2024-04-04`          |
+| `spring.ai.anthropic.base-url`       | 要连接的 URL                                                                                      | `https://api.anthropic.com` |
+| `spring.ai.anthropic.completions-path` | 要附加到基本 URL 的路径。                                                                        | `/v1/chat/completions`      |
+| `spring.ai.anthropic.version`        | Anthropic API 版本                                                                                      | `2023-06-01`                |
+| `spring.ai.anthropic.api-key`        | API 密钥                                                                                                | -                           |
+| `spring.ai.anthropic.beta-version`   | 启用新的/实验性功能。如果设置为 `max-tokens-3-5-sonnet-2024-07-15` \n输出令牌限制从 `4096` 增加到 `8192` 个令牌（仅适用于 claude-3-5-sonnet）。 | `tools-2024-04-04`          |
 
-#### Configuration Properties
+#### 配置属性
 
 <Note>
-Enabling and disabling of the chat auto-configurations are now configured via top level properties with the prefix `spring.ai.model.chat`.
+聊天自动配置的启用和禁用现在通过前缀为 `spring.ai.model.chat` 的顶级属性进行配置。
 
-To enable, `spring.ai.model.chat=anthropic` (It is enabled by default)
+要启用，`spring.ai.model.chat=anthropic` (默认启用)
 
-To disable, `spring.ai.model.chat=none` (or any value which doesn't match anthropic)
+要禁用，`spring.ai.model.chat=none` (或任何与 anthropic 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.anthropic.chat` is the property prefix that lets you configure the chat model implementation for Anthropic.
+前缀 `spring.ai.anthropic.chat` 是属性前缀，允许你配置 Anthropic 的聊天模型实现。
 
-| Property                                                                 | Description                                                                                                                                                                                                                                                            | Default                       |
+| 属性                                                                 | 描述                                                                                                                                                                                                                                                            | 默认值                       |
 | :----------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------- |
-| `spring.ai.anthropic.chat.enabled` (Removed)                             | Enable Anthropic chat model.                                                                                                                                                                                                                                           | true                          |
-| `spring.ai.model.chat`                                                   | Enable Anthropic chat model.                                                                                                                                                                                                                                           | anthropic                     |
-| `spring.ai.anthropic.chat.options.model`                                 | This is the Anthropic Chat model to use. Supports: `claude-3-7-sonnet-latest`, `claude-3-5-sonnet-latest`, `claude-3-opus-20240229`, `claude-3-sonnet-20240229`, `claude-3-haiku-20240307`                                                                              | `claude-3-7-sonnet-latest`    |
-| `spring.ai.anthropic.chat.options.temperature`                           | The sampling temperature to use that controls the apparent creativity of generated completions. Higher values will make output more random while lower values will make results more focused and deterministic. It is not recommended to modify temperature and top_p for the same completions request as the interaction of these two settings is difficult to predict. | 0.8                           |
-| `spring.ai.anthropic.chat.options.max-tokens`                            | The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model's context length.                                                                                                       | 500                           |
-| `spring.ai.anthropic.chat.options.stop-sequence`                         | Custom text sequences that will cause the model to stop generating. Our models will normally stop when they have naturally completed their turn, which will result in a response stop_reason of "end_turn". If you want the model to stop generating when it encounters custom strings of text, you can use the stop_sequences parameter. If the model encounters one of the custom sequences, the response stop_reason value will be "stop_sequence" and the response stop_sequence value will contain the matched stop sequence. | -                             |
-| `spring.ai.anthropic.chat.options.top-p`                                 | Use nucleus sampling. In nucleus sampling, we compute the cumulative distribution over all the options for each subsequent token in decreasing probability order and cut it off once it reaches a particular probability specified by top_p. You should either alter temperature or top_p, but not both. Recommended for advanced use cases only. You usually only need to use temperature. | -                             |
-| `spring.ai.anthropic.chat.options.top-k`                                 | Only sample from the top K options for each subsequent token. Used to remove "long tail" low probability responses. Learn more technical details here. Recommended for advanced use cases only. You usually only need to use temperature.                                | -                             |
-| `spring.ai.anthropic.chat.options.toolNames`                             | List of tools, identified by their names, to enable for tool calling in a single prompt requests. Tools with those names must exist in the toolCallbacks registry.                                                                                                   | -                             |
-| `spring.ai.anthropic.chat.options.toolCallbacks`                         | Tool Callbacks to register with the ChatModel.                                                                                                                                                                                                                         | -                             |
-| `spring.ai.anthropic.chat.options.internal-tool-execution-enabled`       | If false, the Spring AI will not handle the tool calls internally, but will proxy them to the client. Then it is the client's responsibility to handle the tool calls, dispatch them to the appropriate function, and return the results. If true (the default), the Spring AI will handle the function calls internally. Applicable only for chat models with function calling support | true                          |
-| (**deprecated**) `spring.ai.anthropic.chat.options.functions`            | List of functions, identified by their names, to enable for function calling in a single prompt requests. Functions with those names must exist in the functionCallbacks registry.                                                                                      | -                             |
-| (**deprecated**) `spring.ai.anthropic.chat.options.functionCallbacks`    | Tool Function Callbacks to register with the ChatModel.                                                                                                                                                                                                                | -                             |
-| (**deprecated**) `spring.ai.anthropic.chat.options.proxy-tool-calls`     | If true, the Spring AI will not handle the function calls internally, but will proxy them to the client. Then is the client's responsibility to handle the function calls, dispatch them to the appropriate function, and return the results. If false (the default), the Spring AI will handle the function calls internally. Applicable only for chat models with function calling support | false                         |
-| `spring.ai.anthropic.chat.options.http-headers`                          | Optional HTTP headers to be added to the chat completion request.                                                                                                                                                                                                      | -                             |
+| `spring.ai.anthropic.chat.enabled` (已移除)                             | 启用 Anthropic 聊天模型。                                                                                                                                                                                                                                           | true                          |
+| `spring.ai.model.chat`                                                   | 启用 Anthropic 聊天模型。                                                                                                                                                                                                                                           | anthropic                     |
+| `spring.ai.anthropic.chat.options.model`                                 | 这是要使用的 Anthropic 聊天模型。支持：`claude-3-7-sonnet-latest`、`claude-3-5-sonnet-latest`、`claude-3-opus-20240229`、`claude-3-sonnet-20240229`、`claude-3-haiku-20240307`                                                                              | `claude-3-7-sonnet-latest`    |
+| `spring.ai.anthropic.chat.options.temperature`                           | 用于控制生成补全的明显创造性的采样温度。较高的值会使输出更随机，而较低的值会使结果更集中和确定。不建议为同一补全请求修改温度和 top_p，因为这两个设置的相互作用很难预测。 | 0.8                           |
+| `spring.ai.anthropic.chat.options.max-tokens`                            | 在聊天补全中生成的最大标记数。输入标记和生成标记的总长度受模型上下文长度的限制。                                                                                                       | 500                           |
+| `spring.ai.anthropic.chat.options.stop-sequence`                         | 模型将停止生成的自定义文本序列。我们的模型通常会在自然完成其回合时停止，这将导致响应 stop_reason 为"end_turn"。如果你希望模型在遇到自定义文本字符串时停止生成，则可以使用 stop_sequences 参数。如果模型遇到自定义序列之一，则响应 stop_reason 值将为"stop_sequence"，响应 stop_sequence 值将包含匹配的停止序列。 | -                             |
+| `spring.ai.anthropic.chat.options.top-p`                                 | 使用核采样。在核采样中，我们计算后续每个标记的所有选项的累积分布（按概率降序排列），并在达到 top_p 指定的特定概率时将其截断。你应该更改温度或 top_p，但不能同时更改两者。建议仅用于高级用例。通常只需要使用温度。 | -                             |
+| `spring.ai.anthropic.chat.options.top-k`                                 | 仅从后续每个标记的前 K 个选项中采样。用于删除"长尾"低概率响应。在此处了解更多技术细节。建议仅用于高级用例。通常只需要使用温度。                                | -                             |
+| `spring.ai.anthropic.chat.options.toolNames`                             | 在单个提示请求中启用工具调用的工具列表（按其名称标识）。具有这些名称的工具必须存在于 toolCallbacks 注册表中。                                                                                                   | -                             |
+| `spring.ai.anthropic.chat.options.toolCallbacks`                         | 要注册到 ChatModel 的工具回调。                                                                                                                                                                                                                         | -                             |
+| `spring.ai.anthropic.chat.options.internal-tool-execution-enabled`       | 如果为 false，Spring AI 将不会在内部处理工具调用，而是将它们代理到客户端。然后由客户端负责处理工具调用，将它们分派到适当的函数，并返回结果。如果为 true（默认值），Spring AI 将在内部处理函数调用。仅适用于具有函数调用支持的聊天模型 | true                          |
+| (**已弃用**) `spring.ai.anthropic.chat.options.functions`            | 在单个提示请求中启用函数调用的函数列表（按其名称标识）。具有这些名称的函数必须存在于 functionCallbacks 注册表中。                                                                                      | -                             |
+| (**已弃用**) `spring.ai.anthropic.chat.options.functionCallbacks`    | 要注册到 ChatModel 的工具函数回调。                                                                                                                                                                                                                | -                             |
+| (**已弃用**) `spring.ai.anthropic.chat.options.proxy-tool-calls`     | 如果为 true，Spring AI 将不会在内部处理函数调用，而是将它们代理到客户端。然后由客户端负责处理函数调用，将它们分派到适当的函数，并返回结果。如果为 false（默认值），Spring AI 将在内部处理函数调用。仅适用于具有函数调用支持的聊天模型 | false                         |
+| `spring.ai.anthropic.chat.options.http-headers`                          | 要添加到聊天补全请求的可选 HTTP 标头。                                                                                                                                                                                                      | -                             |
 
 <Tip>
-All properties prefixed with `spring.ai.anthropic.chat.options` can be overridden at runtime by adding a request specific [Runtime Options](#runtime-options) to the `Prompt` call.
+所有以 `spring.ai.anthropic.chat.options` 为前缀的属性都可以在运行时通过向 `Prompt` 调用添加特定于请求的[运行时选项](#runtime-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The [AnthropicChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/AnthropicChatOptions.java) provides model configurations, such as the model to use, the temperature, the max token count, etc.
+[AnthropicChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/AnthropicChatOptions.java) 提供模型配置，例如要使用的模型、温度、最大令牌数等。
 
-On start-up, the default options can be configured with the `AnthropicChatModel(api, options)` constructor or the `spring.ai.anthropic.chat.options.*` properties.
+在启动时，可以使用 `AnthropicChatModel(api, options)` 构造函数或 `spring.ai.anthropic.chat.options.*` 属性配置默认选项。
 
-At run-time you can override the default options by adding new, request specific, options to the `Prompt` call.
-For example to override the default model and temperature for a specific request:
+在运行时，你可以通过向 `Prompt` 调用添加新的、特定于请求的选项来覆盖默认选项。
+例如，要为特定请求覆盖默认模型和温度：
 
 ```java
 ChatResponse response = chatModel.call(
     new Prompt(
-        "Generate the names of 5 famous pirates.",
+        "生成 5 个著名海盗的名字。",
         AnthropicChatOptions.builder()
             .model("claude-3-7-sonnet-latest")
             .temperature(0.4)
@@ -177,34 +177,34 @@ ChatResponse response = chatModel.call(
 ```
 
 <Tip>
-In addition to the model specific [AnthropicChatOptions](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/AnthropicChatOptions.java) you can use a portable [ChatOptions](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptions.java) instance, created with the [ChatOptionsBuilder#builder()](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptionsBuilder.java).
+除了特定于模型的 [AnthropicChatOptions](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/AnthropicChatOptions.java)之外，你还可以使用通过 [ChatOptionsBuilder#builder()](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptionsBuilder.java) 创建的可移植 [ChatOptions](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptions.java) 实例。
 </Tip>
 
-## Tool/Function Calling
+## 工具/函数调用
 
-You can register custom Java Tools with the `AnthropicChatModel` and have the Anthropic Claude model intelligently choose to output a JSON object containing arguments to call one or many of the registered functions.
-This is a powerful technique to connect the LLM capabilities with external tools and APIs.
-Read more about [Tool Calling](/spring4ai/api/tools).
+你可以使用 `AnthropicChatModel` 注册自定义 Java 工具，并让 Anthropic Claude 模型智能地选择输出一个 JSON 对象，其中包含调用一个或多个已注册函数的参数。
+这是将 LLM 功能与外部工具和 API 连接起来的强大技术。
+阅读有关[工具调用](/spring4ai/api/tools)的更多信息。
 
-## Multimodal
+## 多模态
 
-Multimodality refers to a model's ability to simultaneously understand and process information from various sources, including text, pdf, images, data formats. 
+多模态是指模型同时理解和处理来自各种来源的信息的能力，包括文本、pdf、图像、数据格式。
 
-### Images
+### 图像
 
-Currently, Anthropic Claude 3 supports the `base64` source type for `images`, and the `image/jpeg`, `image/png`, `image/gif`, and `image/webp` media types.
-Check the [Vision guide](https://docs.anthropic.com/claude/docs/vision) for more information.
-Anthropic Claude 3.5 Sonnet also supports the `pdf` source type for `application/pdf` files.
+目前，Anthropic Claude 3 支持 `base64` 源类型的 `图像`，以及 `image/jpeg`、`image/png`、`image/gif` 和 `image/webp` 媒体类型。
+有关更多信息，请查看[视觉指南](https://docs.anthropic.com/claude/docs/vision)。
+Anthropic Claude 3.5 Sonnet 还支持 `application/pdf` 文件的 `pdf` 源类型。
 
-Spring AI's `Message` interface supports multimodal AI models by introducing the Media type.
-This type contains data and information about media attachments in messages, using Spring's `org.springframework.util.MimeType` and a `java.lang.Object` for the raw media data.
+Spring AI 的 `Message` 接口通过引入 Media 类型来支持多模态 AI 模型。
+此类型包含有关消息中媒体附件的数据和信息，使用 Spring 的 `org.springframework.util.MimeType` 和 `java.lang.Object` 来获取原始媒体数据。
 
-Below is a simple code example extracted from [AnthropicChatModelIT.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/test/java/org/springframework/ai/anthropic/AnthropicChatModelIT.java), demonstrating the combination of user text with an image.
+以下是从 [AnthropicChatModelIT.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/test/java/org/springframework/ai/anthropic/AnthropicChatModelIT.java) 中提取的简单代码示例，演示了用户文本与图像的组合。
 
 ```java
 var imageData = new ClassPathResource("/multimodal.test.png");
 
-var userMessage = new UserMessage("Explain what do you see on this picture?",
+var userMessage = new UserMessage("解释一下你在这张图片上看到了什么？",
         List.of(new Media(MimeTypeUtils.IMAGE_PNG, this.imageData)));
 
 ChatResponse response = chatModel.call(new Prompt(List.of(this.userMessage)));
@@ -212,53 +212,53 @@ ChatResponse response = chatModel.call(new Prompt(List.of(this.userMessage)));
 logger.info(response.getResult().getOutput().getContent());
 ```
 
-It takes as an input the `multimodal.test.png` image:
+它将 `multimodal.test.png` 图像作为输入：
 
-<Frame caption="Multimodal Test Image">
+<Frame caption="多模态测试图像">
   <img src="/images/multimodal.test.png" width="200" height="200" />
 </Frame>
 
-along with the text message "Explain what do you see on this picture?", and generates a response something like:
+以及文本消息"解释一下你在这张图片上看到了什么？"，并生成如下响应：
 
 ```
-The image shows a close-up view of a wire fruit basket containing several pieces of fruit.
+图片显示了一个装满水果的金属丝水果篮的特写视图。
 ...
 ```
 
 ### PDF
 
-Starting with Sonnet 3.5 [PDF support (beta)](https://docs.anthropic.com/en/docs/build-with-claude/pdf-support) is provided.
-Use the `application/pdf` media type to attach a PDF file to the message:
+从 Sonnet 3.5 开始，提供了 [PDF 支持（测试版）](https://docs.anthropic.com/en/docs/build-with-claude/pdf-support)。
+使用 `application/pdf` 媒体类型将 PDF 文件附加到消息：
 
 ```java
 var pdfData = new ClassPathResource("/spring-ai-reference-overview.pdf");
 
 var userMessage = new UserMessage(
-        "You are a very professional document summarization specialist. Please summarize the given document.",
+        "你是一位非常专业的文档摘要专家。请总结给定的文档。",
         List.of(new Media(new MimeType("application", "pdf"), pdfData)));
 
 var response = this.chatModel.call(new Prompt(List.of(userMessage)));
 ```
 
-## Sample Controller
+## 示例控制器
 
-[Create](https://start.spring.io/) a new Spring Boot project and add the `spring-ai-starter-model-anthropic` to your pom (or gradle) dependencies.
+[创建](https://start.spring.io/)一个新的 Spring Boot 项目，并将 `spring-ai-starter-model-anthropic` 添加到你的 pom (或 gradle) 依赖项中。
 
-Add a `application.properties` file, under the `src/main/resources` directory, to enable and configure the Anthropic chat model:
+在 `src/main/resources` 目录下添加一个 `application.properties` 文件，以启用和配置 Anthropic 聊天模型：
 
 ```properties
-spring.ai.anthropic.api-key=YOUR_API_KEY
+spring.ai.anthropic.api-key=你的API密钥
 spring.ai.anthropic.chat.options.model=claude-3-5-sonnet-latest
 spring.ai.anthropic.chat.options.temperature=0.7
 spring.ai.anthropic.chat.options.max-tokens=450
 ```
 
 <Tip>
-Replace the `api-key` with your Anthropic credentials.
+将 `api-key` 替换为你的 Anthropic 凭据。
 </Tip>
 
-This will create a `AnthropicChatModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the chat model for text generations.
+这将创建一个 `AnthropicChatModel` 实现，你可以将其注入到你的类中。
+以下是一个简单的 `@Controller` 类的示例，该类使用聊天模型进行文本生成。
 
 ```java
 @RestController
@@ -272,23 +272,23 @@ public class ChatController {
     }
 
     @GetMapping("/ai/generate")
-    public Map generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+    public Map generate(@RequestParam(value = "message", defaultValue = "给我讲个笑话") String message) {
         return Map.of("generation", this.chatModel.call(message));
     }
 
     @GetMapping("/ai/generateStream")
-	public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+	public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "给我讲个笑话") String message) {
         Prompt prompt = new Prompt(new UserMessage(message));
         return this.chatModel.stream(prompt);
     }
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-The [AnthropicChatModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/AnthropicChatModel.java) implements the `ChatModel` and `StreamingChatModel` and uses the [Low-level AnthropicApi Client](#low-level-anthropicapi-client) to connect to the Anthropic service.
+[AnthropicChatModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/AnthropicChatModel.java) 实现了 `ChatModel` 和 `StreamingChatModel`，并使用[低级 AnthropicApi 客户端](#low-level-anthropicapi-client)连接到 Anthropic 服务。
 
-Add the `spring-ai-anthropic` dependency to your project's Maven `pom.xml` file:
+将 `spring-ai-anthropic` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -297,7 +297,7 @@ Add the `spring-ai-anthropic` dependency to your project's Maven `pom.xml` file:
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到你的 Gradle `build.gradle` 构建文件中。
 
 ```gradle
 dependencies {
@@ -306,10 +306,10 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
-Next, create a `AnthropicChatModel` and use it for text generations:
+接下来，创建一个 `AnthropicChatModel` 并将其用于文本生成：
 
 ```java
 var anthropicApi = new AnthropicApi(System.getenv("ANTHROPIC_API_KEY"));
@@ -322,52 +322,52 @@ var chatModel = new AnthropicChatModel(this.anthropicApi,
         .build());
 
 ChatResponse response = this.chatModel.call(
-    new Prompt("Generate the names of 5 famous pirates."));
+    new Prompt("生成 5 个著名海盗的名字。"));
 
-// Or with streaming responses
+// 或使用流式响应
 Flux<ChatResponse> response = this.chatModel.stream(
-    new Prompt("Generate the names of 5 famous pirates."));
+    new Prompt("生成 5 个著名海盗的名字。"));
 ```
 
-The `AnthropicChatOptions` provides the configuration information for the chat requests.
-The `AnthropicChatOptions.Builder` is fluent options builder.
+`AnthropicChatOptions` 为聊天请求提供配置信息。
+`AnthropicChatOptions.Builder` 是流畅的选项构建器。
 
-## Low-level AnthropicApi Client
+## 低级 AnthropicApi 客户端
 
-The [AnthropicApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/api/AnthropicApi.java) provides is lightweight Java client for [Anthropic Message API](https://docs.anthropic.com/claude/reference/messages_post).
+[AnthropicApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/api/AnthropicApi.java) 提供了轻量级的 Java 客户端，用于 [Anthropic 消息 API](https://docs.anthropic.com/claude/reference/messages_post)。
 
-Following class diagram illustrates the `AnthropicApi` chat interfaces and building blocks:
+以下类图说明了 `AnthropicApi` 聊天接口和构建块：
 
-<Frame caption="AnthropicApi Chat API Diagram">
+<Frame caption="AnthropicApi 聊天 API 图">
   <img src="/images/anthropic-claude3-class-diagram.jpg" width="1000" />
 </Frame>
 
-<Frame caption="AnthropicApi Event Model">
+<Frame caption="AnthropicApi 事件模型">
   <img src="/images/anthropic-claude3-events-model.jpg" width="1000" />
 </Frame>
 
-Here is a simple snippet how to use the api programmatically:
+以下是一个简单的代码片段，展示了如何以编程方式使用 API：
 
 ```java
 AnthropicApi anthropicApi =
     new AnthropicApi(System.getenv("ANTHROPIC_API_KEY"));
 
 AnthropicMessage chatCompletionMessage = new AnthropicMessage(
-        List.of(new ContentBlock("Tell me a Joke?")), Role.USER);
+        List.of(new ContentBlock("给我讲个笑话？")), Role.USER);
 
-// Sync request
+// 同步请求
 ResponseEntity<ChatCompletionResponse> response = this.anthropicApi
     .chatCompletionEntity(new ChatCompletionRequest(AnthropicApi.ChatModel.CLAUDE_3_OPUS.getValue(),
             List.of(this.chatCompletionMessage), null, 100, 0.8, false));
 
-// Streaming request
+// 流式请求
 Flux<StreamResponse> response = this.anthropicApi
     .chatCompletionStream(new ChatCompletionRequest(AnthropicApi.ChatModel.CLAUDE_3_OPUS.getValue(),
             List.of(this.chatCompletionMessage), null, 100, 0.8, true));
 ```
 
-Follow the [AnthropicApi.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/api/AnthropicApi.java)'s JavaDoc for further information.
+有关更多信息，请参阅 [AnthropicApi.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/main/java/org/springframework/ai/anthropic/api/AnthropicApi.java) 的 JavaDoc。
 
-### Low-level API Examples
+### 低级 API 示例
 
-* The [AnthropicApiIT.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/test/java/org/springframework/ai/anthropic/chat/api/AnthropicApiIT.java) test provides some general examples how to use the lightweight library. 
+* [AnthropicApiIT.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-anthropic/src/test/java/org/springframework/ai/anthropic/chat/api/AnthropicApiIT.java) 测试提供了一些有关如何使用轻量级库的常规示例。 

@@ -1,162 +1,153 @@
 ---
-title: "MCP Client Boot Starters"
+title: "MCP 客户端启动器文档"
 ---
 
-MCP Client Boot Starters provide easy integration of Model Context Protocol (MCP) clients in Spring Boot applications.
+# MCP 客户端启动器文档
 
-## Overview
+Spring AI MCP 客户端启动器 (`spring-ai-mcp-client-boot-starter`) 促进了与符合模型上下文协议 (MCP) 的服务器的集成。
 
-MCP Client Boot Starters enable:
-- Quick setup of MCP clients
-- Automatic configuration
-- Integration with Spring Boot
-- Easy model management
+## 概述
 
-## Features
+MCP 客户端启动器提供：
 
-<CardGroup cols={2}>
-  <Card title="Auto Configuration" icon="gear">
-    Automatic client configuration
-  </Card>
-  <Card title="Model Management" icon="robot">
-    Easy model registration and management
-  </Card>
-  <Card title="Health Checks" icon="heart">
-    Built-in health monitoring
-  </Card>
-  <Card title="Metrics" icon="chart-line">
-    Performance metrics collection
-  </Card>
-</CardGroup>
+-   用于与 MCP 服务器交互的自动配置客户端。
+-   用于发送 MCP 请求和处理响应的简化抽象。
+-   与 Spring Boot 应用程序的无缝集成。
 
-## Implementation
+## 入门
 
-### Basic Setup
+要开始使用 MCP 客户端启动器，请将以下依赖项添加到您的 `pom.xml` 文件中：
 
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-mcp-client-starter</artifactId>
-    <version>${spring-ai.version}</version>
+    <artifactId>spring-ai-mcp-client-boot-starter</artifactId>
 </dependency>
 ```
 
-### Configuration
+## 配置
+
+MCP 客户端启动器可以通过 `application.properties` 或 `application.yml` 文件进行配置。以下是一些常见的配置选项：
+
+### 客户端属性
+
+-   `spring.ai.mcp.client.base-url`: MCP 服务器的基础 URL。
+-   `spring.ai.mcp.client.timeout`: 请求超时时间 (以毫秒为单位，默认为 10000)。
+-   `spring.ai.mcp.client.username` / `spring.ai.mcp.client.password`: 用于基本身份验证的凭证 (如果需要)。
+
+示例 `application.properties`：
 
 ```properties
-# MCP Client Configuration
-spring.ai.mcp.client.enabled=true
-spring.ai.mcp.client.server-url=http://localhost:8080
-spring.ai.mcp.client.timeout=5000
-spring.ai.mcp.client.retry-count=3
+spring.ai.mcp.client.base-url=http://localhost:8080/mcp
+spring.ai.mcp.client.username=user
+spring.ai.mcp.client.password=secret
 ```
 
-### Client Usage
+### ChatModel 和 EmbeddingModel 配置
+
+当使用 MCP 客户端时，您通常会在您的应用程序中定义 `ChatModel` 或 `EmbeddingModel` bean，这些 bean 将通过 MCP 与远程模型进行通信。
+
+通过设置以下属性，将 Spring AI 模型配置为使用 MCP 客户端：
+
+-   对于聊天模型：`spring.ai.mcp.chat.enabled=true`
+-   对于嵌入模型：`spring.ai.mcp.embedding.enabled=true`
+
+您还可以使用 `spring.ai.mcp.chat.options.*` 和 `spring.ai.mcp.embedding.options.*` 配置特定于模型的选项，例如模型名称。
+
+示例 `application.properties` 以通过 MCP 使用远程聊天模型：
+
+```properties
+spring.ai.mcp.client.base-url=http://mcp-server.example.com/mcp
+
+spring.ai.mcp.chat.enabled=true
+spring.ai.mcp.chat.options.model=remote-gpt-model # 在 MCP 服务器上配置的模型名称
+# spring.ai.mcp.chat.options.temperature=0.7 # 其他模型选项
+```
+
+## 用法
+
+配置完成后，您可以像使用任何其他 Spring AI 模型一样，将 `ChatModel` 或 `EmbeddingModel` 注入到您的服务中。MCP 客户端启动器确保这些模型通过 MCP 协议与配置的远程服务器进行通信。
+
+### 使用 `ChatModel`
 
 ```java
+import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 @Service
-public class MCPClientService {
-    private final MCPClient mcpClient;
+public class MyChatService {
 
-    public MCPClientService(MCPClient mcpClient) {
-        this.mcpClient = mcpClient;
+    private final ChatClient chatClient; // ChatClient 将使用配置的 MCP ChatModel
+
+    @Autowired
+    public MyChatService(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
-    public String processRequest(String input) {
-        return mcpClient.process(input);
+    public String getChatResponse(String message) {
+        Prompt prompt = new Prompt(message);
+        ChatResponse response = chatClient.call(prompt);
+        return response.getResult().getOutput().getContent();
     }
 }
 ```
 
-## Client Types
-
-### 1. Standard Client
+### 使用 `EmbeddingModel`
 
 ```java
-@Configuration
-public class MCPClientConfig {
-    @Bean
-    public MCPClient mcpClient(MCPClientProperties properties) {
-        return new StandardMCPClient(properties);
+import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class MyEmbeddingService {
+
+    private final EmbeddingClient embeddingClient; // EmbeddingClient 将使用配置的 MCP EmbeddingModel
+
+    @Autowired
+    public MyEmbeddingService(EmbeddingClient embeddingClient) {
+        this.embeddingClient = embeddingClient;
+    }
+
+    public List<Double> getEmbeddings(String text) {
+        return embeddingClient.embed(text);
     }
 }
 ```
 
-### 2. Async Client
+## 请求和响应
+
+客户端将自动将您的 `ChatModel` 或 `EmbeddingModel` 调用转换为 MCP 请求，并将 MCP 响应转换回标准的 Spring AI 对象 (`ChatResponse`, `EmbeddingResponse`)。
+
+## 安全性
+
+如果 MCP 服务器需要身份验证，请确保在客户端配置中提供必要的凭证 (例如，用户名/密码进行基本身份验证，或配置 OAuth2/JWT 的 `RestTemplate` 自定义器)。
+
+启动器支持通过 `spring.ai.mcp.client.username` 和 `spring.ai.mcp.client.password` 属性进行基本身份验证。
+对于更高级的身份验证方案，您可能需要提供一个自定义的 `RestTemplateBuilderConfigurer` bean 来自定义用于 MCP 通信的 `RestTemplate`。
 
 ```java
-@Configuration
-public class AsyncMCPClientConfig {
-    @Bean
-    public AsyncMCPClient asyncMCPClient(MCPClientProperties properties) {
-        return new AsyncMCPClient(properties);
-    }
+@Bean
+public RestTemplateBuilderConfigurer mcpRestTemplateBuilderConfigurer() {
+    return builder -> builder.additionalInterceptors(
+        // 添加您的自定义身份验证拦截器，例如用于 OAuth2 或 API 密钥头的拦截器
+        (request, body, execution) -> {
+            request.getHeaders().add("X-Custom-Auth-Header", "YourToken");
+            return execution.execute(request, body);
+        }
+    );
 }
 ```
 
-### 3. Reactive Client
+## 故障排除
 
-```java
-@Configuration
-public class ReactiveMCPClientConfig {
-    @Bean
-    public ReactiveMCPClient reactiveMCPClient(MCPClientProperties properties) {
-        return new ReactiveMCPClient(properties);
-    }
-}
-```
+-   **连接错误**：验证 MCP 服务器的 `base-url` 是否正确，以及服务器是否可访问。
+-   **身份验证失败**：检查您的凭证或身份验证机制是否正确配置。
+-   **模型未找到**：确保您在客户端选项中指定的模型名称与 MCP 服务器上可用的模型匹配。
 
-## Advanced Features
-
-### Custom Client Configuration
-
-```java
-@Configuration
-public class CustomMCPClientConfig {
-    @Bean
-    public MCPClient customMCPClient(MCPClientProperties properties) {
-        return MCPClient.builder()
-            .properties(properties)
-            .interceptor(new CustomInterceptor())
-            .build();
-    }
-}
-```
-
-### Client Monitoring
-
-```properties
-management.endpoints.web.exposure.include=mcp-client
-management.endpoint.mcp-client.enabled=true
-```
-
-## Best Practices
-
-<Note>
-When using MCP Client Boot Starters, consider these best practices:
-</Note>
-
-- **Error Handling**: Implement proper error handling
-- **Retry Strategy**: Configure appropriate retry policies
-- **Monitoring**: Set up proper monitoring
-- **Security**: Secure client connections
-- **Performance**: Optimize client configuration
-
-## Troubleshooting
-
-Common issues and solutions:
-
-1. **Connection Issues**
-   - Check server URL
-   - Verify network connectivity
-   - Review timeout settings
-
-2. **Performance Problems**
-   - Optimize client configuration
-   - Implement caching
-   - Use appropriate client type
-
-3. **Integration Issues**
-   - Verify Spring Boot version
-   - Check dependency conflicts
-   - Review configuration 
+有关更多详细信息和高级配置，请参阅 Spring AI MCP [参考文档](https://docs.spring.io/spring-ai/reference/api/mcp.html) 和 [GitHub 仓库](https://github.com/spring-projects/spring-ai/tree/main/spring-ai-spring-boot-starters/spring-ai-mcp-client-spring-boot-starter)。 

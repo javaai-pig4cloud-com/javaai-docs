@@ -1,26 +1,26 @@
 ---
-title: Testcontainers
-description: Using Testcontainers with Spring AI
+title: 单元测试容器
+description: 在 Spring AI 中使用 Testcontainers
 ---
 
 # Testcontainers
 
-Spring AI provides Testcontainers support for testing your AI applications.
+Spring AI 提供 Testcontainers 支持，用于测试您的 AI 应用程序。
 
-## Overview
+## 概述
 
-Testcontainers allows you to run tests against real services in Docker containers, providing a more realistic testing environment.
+Testcontainers 允许您在 Docker 容器中针对真实服务运行测试，提供更真实的测试环境。
 
-## Features
+## 特性
 
-- Pre-configured containers for AI models
-- Vector database containers
-- Easy integration with Spring Boot tests
-- Automatic container lifecycle management
+- AI 模型的预配置容器
+- 向量数据库容器
+- 与 Spring Boot 测试的轻松集成
+- 自动容器生命周期管理
 
-## Getting Started
+## 开始使用
 
-Add the following dependency to your project:
+将以下依赖项添加到您的项目中：
 
 ```xml
 <dependency>
@@ -30,7 +30,7 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-## Usage
+## 使用方法
 
 ```java
 @SpringBootTest
@@ -41,12 +41,12 @@ class MyAITest {
 
     @Test
     void testWithOllama() {
-        // Your test code here
+        // 在此处编写测试代码
     }
 }
 ```
 
-## Available Containers
+## 可用容器
 
 - OllamaContainer
 - MilvusContainer
@@ -54,9 +54,9 @@ class MyAITest {
 - WeaviateContainer
 - ChromaContainer
 
-## Configuration
+## 配置
 
-Containers can be configured through properties or programmatically:
+可以通过属性或编程方式配置容器：
 
 ```java
 @Container

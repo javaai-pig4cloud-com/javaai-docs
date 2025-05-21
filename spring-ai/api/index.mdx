@@ -2,54 +2,54 @@
 title: "Spring AI API"
 ---
 
-## Introduction
+## 简介
 
-The Spring AI API covers a wide range of functionalities.
-Each major feature is detailed in its own dedicated section.
-To provide an overview, the following key functionalities are available:
+Spring AI API 涵盖了广泛的功能。
+每个主要功能都在其专门的章节中有详细说明。
+为了提供概述，以下是可用的关键功能：
 
-### AI Model API
+### AI 模型 API
 
-Portable `Model API` across AI providers for `Chat`, `Text to Image`, `Audio Transcription`, `Text to Speech`, and `Embedding` models.
-Both `synchronous` and `stream` API options are supported.
-Dropping down to access model specific features is also supported.
+跨 AI 提供商的便携式 `Model API`，用于 `Chat`、`Text to Image`、`Audio Transcription`、`Text to Speech` 和 `Embedding` 模型。
+同时支持 `同步` 和 `流式` API 选项。
+还支持访问模型特定功能。
 
-<Frame caption="Model hierarchy">
+<Frame caption="模型层次结构">
   <img src="/images/model-hierarchy.jpg" width="900" />
 </Frame>
 
-With support for AI Models from OpenAI, Microsoft, Amazon, Google, Amazon Bedrock, Hugging Face and more.
+支持来自 OpenAI、Microsoft、Amazon、Google、Amazon Bedrock、Hugging Face 等的 AI 模型。
 
-<Frame caption="Spring AI Chat Completions Clients">
+<Frame caption="Spring AI 聊天完成客户端">
   <img src="/images/spring-ai-chat-completions-clients.jpg" width="800px" />
 </Frame>
 
-### Vector Store API
+### 向量存储 API
 
-Portable `Vector Store API` across multiple providers, including a novel `SQL-like metadata filter API` that is also portable. Support for 14 vector databases are available.
+跨多个提供商的便携式 `Vector Store API`，包括一个新颖的 `SQL 类元数据过滤 API`，它也是可移植的。支持 14 个向量数据库。
 
-### Tool Calling API
+### 工具调用 API
 
-Spring AI makes it easy to have the AI model invoke your services as `@Tool`-annotated methods or POJO `java.util.Function` objects.
+Spring AI 使 AI 模型能够轻松调用您的服务作为 `@Tool` 注解的方法或 POJO `java.util.Function` 对象。
 
-<Frame caption="The main sequence of actions for tool calling">
+<Frame caption="工具调用的主要操作序列">
   <img src="/images/tools/tool-calling-01.jpg" width="500" />
 </Frame>
 
-Check the Spring AI [Tool Calling](/spring4ai/api/tools) documentation.
+查看 Spring AI [工具调用](/spring4ai/api/tools) 文档。
 
-### Auto Configuration
+### 自动配置
 
-Spring Boot Auto Configuration and Starters for AI Models and Vector Stores.
+用于 AI 模型和向量存储的 Spring Boot 自动配置和启动器。
 
-### ETL Data Engineering
+### ETL 数据工程
 
-ETL framework for Data Engineering. This provides the basis of loading data into a vector database, helping implement the Retrieval Augmented Generation pattern that enables you to bring your data to the AI model to incorporate into its response.
+用于数据工程的 ETL 框架。这为将数据加载到向量数据库提供了基础，帮助实现检索增强生成模式，使您能够将数据带到 AI 模型中并整合到其响应中。
 
 <Frame>
   <img src="/images/etl-pipeline.jpg" />
 </Frame>
 
-## Feedback and Contributions
+## 反馈和贡献
 
-The project's [GitHub discussions](https://github.com/spring-projects/spring-ai/discussions) is a great place to send feedback. 
+项目的 [GitHub 讨论](https://github.com/spring-projects/spring-ai/discussions) 是发送反馈的好地方。 

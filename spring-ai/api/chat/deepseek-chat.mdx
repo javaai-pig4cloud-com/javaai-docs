@@ -1,28 +1,28 @@
 ---
-title: "DeepSeek Chat"
+title: "DeepSeek 聊天"
 ---
 
-[DeepSeek](https://platform.deepseek.com/) provides various AI language models that you can use to create multilingual conversational assistants. Spring AI integrates with DeepSeek's models to provide a seamless experience for building AI-powered applications.
+[DeepSeek](https://platform.deepseek.com/) 提供各种 AI 语言模型，你可以使用它们来创建多语言会话助手。Spring AI 与 DeepSeek 的模型集成，为构建 AI 驱动的应用程序提供无缝体验。
 
-<Frame caption="Spring AI DeepSeek Integration">
+<Frame caption="Spring AI DeepSeek 集成">
   <img src="/images/spring-ai-deepseek-integration.jpg" width="800" />
 </Frame>
 
-## Prerequisites
+## 前提条件
 
-To get started with DeepSeek in Spring AI, you'll need to:
+要在 Spring AI 中开始使用 DeepSeek，你需要：
 
-1. Create an account at [DeepSeek registration page](https://platform.deepseek.com/sign_up)
-2. Generate an API key on the [API Keys page](https://platform.deepseek.com/api_keys)
-3. Configure the API key in your Spring AI project
+1. 在 [DeepSeek 注册页面](https://platform.deepseek.com/sign_up)创建一个帐户
+2. 在 [API 密钥页面](https://platform.deepseek.com/api_keys)生成一个 API 密钥
+3. 在你的 Spring AI 项目中配置 API 密钥
 
-You can set the API key configuration in your `application.properties` file:
+你可以在 `application.properties` 文件中设置 API 密钥配置：
 
 ```properties
-spring.ai.deepseek.api-key=<your-deepseek-api-key>
+spring.ai.deepseek.api-key=<你的-deepseek-api-密钥>
 ```
 
-For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference custom environment variables:
+为了在处理 API 密钥等敏感信息时增强安全性，你可以使用 Spring 表达式语言 (SpEL) 来引用自定义环境变量：
 
 <Tabs>
   <Tab title="application.yml">
@@ -35,29 +35,29 @@ For enhanced security when handling sensitive information like API keys, you can
   </Tab>
   <Tab title=".env">
     ```bash
-    export DEEPSEEK_API_KEY=<your-deepseek-api-key>
+    export DEEPSEEK_API_KEY=<你的-deepseek-api-密钥>
     ```
   </Tab>
 </Tabs>
 
-You can also set this configuration programmatically in your application code:
+你也可以在应用程序代码中以编程方式设置此配置：
 
 ```java
-// Retrieve API key from a secure source or environment variable
+// 从安全来源或环境变量中检索 API 密钥
 String apiKey = System.getenv("DEEPSEEK_API_KEY");
 ```
 
-### Add Repositories and BOM
+### 添加仓库和 BOM
 
-Spring AI artifacts are published in the Spring Milestone and Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 的构件发布在 Spring Milestone 和 Snapshot 仓库中。
+请参阅[构件仓库](/spring4ai/getting-started#artifact-repositories)部分，将这些仓库添加到你的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout your entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (bill of materials)，以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
-Spring AI provides Spring Boot auto-configuration for the DeepSeek Chat Model.
-To enable it, add the following dependency to your project's build file:
+Spring AI 为 DeepSeek 聊天模型提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的构建文件中：
 
 <Tabs>
   <Tab title="Maven">
@@ -78,78 +78,78 @@ To enable it, add the following dependency to your project's build file:
 </Tabs>
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
-### Chat Properties
+### 聊天属性
 
-#### Retry Properties
+#### 重试属性
 
-The prefix `spring.ai.retry` is used as the property prefix that lets you configure the retry mechanism for the DeepSeek Chat model.
+前缀 `spring.ai.retry` 用作属性前缀，允许你配置 DeepSeek 聊天模型的重试机制。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 | :------- | :---------- | :------ |
-| spring.ai.retry.max-attempts | Maximum number of retry attempts. | 10 |
-| spring.ai.retry.backoff.initial-interval | Initial sleep duration for the exponential backoff policy. | 2 sec. |
-| spring.ai.retry.backoff.multiplier | Backoff interval multiplier. | 5 |
-| spring.ai.retry.backoff.max-interval | Maximum backoff duration. | 3 min. |
-| spring.ai.retry.on-client-errors | If false, throws a NonTransientAiException, and does not attempt a retry for `4xx` client error codes | false |
-| spring.ai.retry.exclude-on-http-codes | List of HTTP status codes that should not trigger a retry (e.g. to throw NonTransientAiException). | empty |
-| spring.ai.retry.on-http-codes | List of HTTP status codes that should trigger a retry (e.g. to throw TransientAiException). | empty |
+| spring.ai.retry.max-attempts | 最大重试次数。 | 10 |
+| spring.ai.retry.backoff.initial-interval | 指数退避策略的初始休眠持续时间。 | 2 秒 |
+| spring.ai.retry.backoff.multiplier | 退避间隔乘数。 | 5 |
+| spring.ai.retry.backoff.max-interval | 最大退避持续时间。 | 3 分钟 |
+| spring.ai.retry.on-client-errors | 如果为 false，则抛出 NonTransientAiException，并且不尝试对 `4xx` 客户端错误代码进行重试 | false |
+| spring.ai.retry.exclude-on-http-codes | 不应触发重试的 HTTP 状态代码列表（例如，抛出 NonTransientAiException）。 | 空 |
+| spring.ai.retry.on-http-codes | 应触发重试的 HTTP 状态代码列表（例如，抛出 TransientAiException）。 | 空 |
 
-#### Connection Properties
+#### 连接属性
 
-The prefix `spring.ai.deepseek` is used as the property prefix that lets you connect to DeepSeek.
+前缀 `spring.ai.deepseek` 用作属性前缀，允许你连接到 DeepSeek。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 | :------- | :---------- | :------ |
-| spring.ai.deepseek.base-url | The URL to connect to | https://api.deepseek.com |
-| spring.ai.deepseek.api-key | The API Key | - |
+| spring.ai.deepseek.base-url | 要连接的 URL | https://api.deepseek.com |
+| spring.ai.deepseek.api-key | API 密钥 | - |
 
-#### Configuration Properties
+#### 配置属性
 
-The prefix `spring.ai.deepseek.chat` is the property prefix that lets you configure the chat model implementation for DeepSeek.
+前缀 `spring.ai.deepseek.chat` 是属性前缀，允许你配置 DeepSeek 的聊天模型实现。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 | :------- | :---------- | :------ |
-| spring.ai.deepseek.chat.enabled | Enables the DeepSeek chat model. | true |
-| spring.ai.deepseek.chat.base-url | Optionally overrides the spring.ai.deepseek.base-url to provide a chat-specific URL | https://api.deepseek.com/ |
-| spring.ai.deepseek.chat.api-key | Optionally overrides the spring.ai.deepseek.api-key to provide a chat-specific API key | - |
-| spring.ai.deepseek.chat.completions-path | The path to the chat completions endpoint | /chat/completions |
-| spring.ai.deepseek.chat.beta-prefix-path | The prefix path to the beta feature endpoint | /beta/chat/completions |
-| spring.ai.deepseek.chat.options.model | ID of the model to use. You can use either deepseek-coder or deepseek-chat. | deepseek-chat |
-| spring.ai.deepseek.chat.options.frequencyPenalty | Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far. | 0.0f |
-| spring.ai.deepseek.chat.options.maxTokens | The maximum number of tokens to generate in the chat completion. | - |
-| spring.ai.deepseek.chat.options.presencePenalty | Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far. | 0.0f |
-| spring.ai.deepseek.chat.options.stop | Up to 4 sequences where the API will stop generating further tokens. | - |
-| spring.ai.deepseek.chat.options.temperature | Sampling temperature between 0 and 2. Higher values like 0.8 make output more random. | 1.0F |
-| spring.ai.deepseek.chat.options.topP | Alternative to temperature for nucleus sampling. Value between 0 and 1. | 1.0F |
-| spring.ai.deepseek.chat.options.logprobs | Whether to return log probabilities of the output tokens. | - |
-| spring.ai.deepseek.chat.options.topLogprobs | Number of most likely tokens (0-20) to return with log probabilities. | - |
+| spring.ai.deepseek.chat.enabled | 启用 DeepSeek 聊天模型。 | true |
+| spring.ai.deepseek.chat.base-url | 可选地覆盖 spring.ai.deepseek.base-url 以提供特定于聊天的 URL | https://api.deepseek.com/ |
+| spring.ai.deepseek.chat.api-key | 可选地覆盖 spring.ai.deepseek.api-key 以提供特定于聊天的 API 密钥 | - |
+| spring.ai.deepseek.chat.completions-path | 聊天补全端点的路径 | /chat/completions |
+| spring.ai.deepseek.chat.beta-prefix-path | Beta 功能端点的前缀路径 | /beta/chat/completions |
+| spring.ai.deepseek.chat.options.model | 要使用的模型的 ID。你可以使用 deepseek-coder 或 deepseek-chat。 | deepseek-chat |
+| spring.ai.deepseek.chat.options.frequencyPenalty | -2.0 到 2.0 之间的数字。正值会根据新标记在文本中已有的频率对其进行惩罚。 | 0.0f |
+| spring.ai.deepseek.chat.options.maxTokens | 在聊天补全中生成的最大标记数。 | - |
+| spring.ai.deepseek.chat.options.presencePenalty | -2.0 到 2.0 之间的数字。正值会根据新标记是否已出现在文本中对其进行惩罚。 | 0.0f |
+| spring.ai.deepseek.chat.options.stop | API 将停止生成更多标记的最多 4 个序列。 | - |
+| spring.ai.deepseek.chat.options.temperature | 采样温度在 0 到 2 之间。较高的值（如 0.8）会使输出更随机。 | 1.0F |
+| spring.ai.deepseek.chat.options.topP | 核采样的温度替代方案。值在 0 到 1 之间。 | 1.0F |
+| spring.ai.deepseek.chat.options.logprobs | 是否返回输出标记的对数概率。 | - |
+| spring.ai.deepseek.chat.options.topLogprobs | 与对数概率一起返回的最可能标记的数量 (0-20)。 | - |
 
 <Note>
-You can override the common `spring.ai.deepseek.base-url` and `spring.ai.deepseek.api-key` for the `ChatModel` implementations.
-The `spring.ai.deepseek.chat.base-url` and `spring.ai.deepseek.chat.api-key` properties, if set, take precedence over the common properties.
-This is useful if you want to use different DeepSeek accounts for different models and different model endpoints.
+你可以为 `ChatModel` 实现覆盖通用的 `spring.ai.deepseek.base-url` 和 `spring.ai.deepseek.api-key`。
+如果设置了 `spring.ai.deepseek.chat.base-url` 和 `spring.ai.deepseek.chat.api-key` 属性，则它们优先于通用属性。
+如果你想为不同的模型和不同的模型端点使用不同的 DeepSeek 帐户，这将非常有用。
 </Note>
 
 <Tip>
-All properties prefixed with `spring.ai.deepseek.chat.options` can be overridden at runtime by adding a request-specific Runtime Options to the `Prompt` call.
+所有以 `spring.ai.deepseek.chat.options` 为前缀的属性都可以在运行时通过向 `Prompt` 调用添加特定于请求的运行时选项来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The [DeepSeekChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-deepseek/src/main/java/org/springframework/ai/deepseek/DeepSeekChatOptions.java) provides model configurations, such as the model to use, the temperature, the frequency penalty, etc.
+[DeepSeekChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-deepseek/src/main/java/org/springframework/ai/deepseek/DeepSeekChatOptions.java) 提供模型配置，例如要使用的模型、温度、频率惩罚等。
 
-On startup, the default options can be configured with the `DeepSeekChatModel(api, options)` constructor or the `spring.ai.deepseek.chat.options.*` properties.
+在启动时，可以使用 `DeepSeekChatModel(api, options)` 构造函数或 `spring.ai.deepseek.chat.options.*` 属性配置默认选项。
 
-At runtime, you can override the default options by adding new, request-specific options to the `Prompt` call.
-For example, to override the default model and temperature for a specific request:
+在运行时，你可以通过向 `Prompt` 调用添加新的、特定于请求的选项来覆盖默认选项。
+例如，要为特定请求覆盖默认模型和温度：
 
 ```java
 ChatResponse response = chatModel.call(
     new Prompt(
-        "Generate the names of 5 famous pirates. Please provide the JSON response without any code block markers such as ```json```.",
+        "生成 5 个著名海盗的名字。请提供 JSON 响应，不要包含任何代码块标记，例如 ```json```。",
         DeepSeekChatOptions.builder()
             .withModel(DeepSeekApi.ChatModel.DEEPSEEK_CHAT.getValue())
             .withTemperature(0.8f)
@@ -158,27 +158,27 @@ ChatResponse response = chatModel.call(
 ```
 
 <Tip>
-In addition to the model-specific [DeepSeekChatOptions](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-deepseek/src/main/java/org/springframework/ai/deepseek/DeepSeekChatOptions.java), you can use a portable [ChatOptions](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-core/src/main/java/org/springframework/ai/chat/ChatOptions.java) instance, created with the [ChatOptionsBuilder#builder()](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-core/src/main/java/org/springframework/ai/chat/ChatOptionsBuilder.java).
+除了特定于模型的 [DeepSeekChatOptions](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-deepseek/src/main/java/org/springframework/ai/deepseek/DeepSeekChatOptions.java)之外，你还可以使用通过 [ChatOptionsBuilder#builder()](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-core/src/main/java/org/springframework/ai/chat/ChatOptionsBuilder.java) 创建的可移植 [ChatOptions](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-core/src/main/java/org/springframework/ai/chat/ChatOptions.java) 实例。
 </Tip>
 
-## Sample Controller
+## 示例控制器
 
-[Create](https://start.spring.io/) a new Spring Boot project and add the `spring-ai-starter-model-deepseek` to your pom (or gradle) dependencies.
+[创建](https://start.spring.io/)一个新的 Spring Boot 项目，并将 `spring-ai-starter-model-deepseek` 添加到你的 pom (或 gradle) 依赖项中。
 
-Add an `application.properties` file under the `src/main/resources` directory to enable and configure the DeepSeek Chat model:
+在 `src/main/resources` 目录下添加一个 `application.properties` 文件，以启用和配置 DeepSeek 聊天模型：
 
 ```properties
-spring.ai.deepseek.api-key=YOUR_API_KEY
+spring.ai.deepseek.api-key=你的API密钥
 spring.ai.deepseek.chat.options.model=deepseek-chat
 spring.ai.deepseek.chat.options.temperature=0.8
 ```
 
 <Tip>
-Replace the `api-key` with your DeepSeek credentials.
+将 `api-key` 替换为你的 DeepSeek 凭据。
 </Tip>
 
-This will create a `DeepSeekChatModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the chat model for text generation:
+这将创建一个 `DeepSeekChatModel` 实现，你可以将其注入到你的类中。
+以下是一个简单的 `@Controller` 类的示例，该类使用聊天模型进行文本生成：
 
 ```java
 @RestController
@@ -192,27 +192,27 @@ public class ChatController {
     }
 
     @GetMapping("/ai/generate")
-    public Map generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+    public Map generate(@RequestParam(value = "message", defaultValue = "给我讲个笑话") String message) {
         return Map.of("generation", chatModel.call(message));
     }
 
     @GetMapping("/ai/generateStream")
-    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "给我讲个笑话") String message) {
         var prompt = new Prompt(new UserMessage(message));
         return chatModel.stream(prompt);
     }
 }
 ```
 
-## Chat Prefix Completion
+## 聊天前缀补全
 
-The chat prefix completion follows the Chat Completion API, where users provide an assistant's prefix message for the model to complete the rest of the message.
+聊天前缀补全遵循聊天补全 API，用户提供助手的消息前缀，模型补全消息的其余部分。
 
 <Note>
-When using prefix completion, the user must ensure that the last message in the messages list is a DeepSeekAssistantMessage.
+使用前缀补全时，用户必须确保消息列表中的最后一条消息是 DeepSeekAssistantMessage。
 </Note>
 
-Below is a complete Java code example for chat prefix completion. In this example, we set the prefix message of the assistant to "```python\n" to force the model to output Python code, and set the stop parameter to ['```'] to prevent additional explanations from the model:
+以下是聊天前缀补全的完整 Java 代码示例。在此示例中，我们将助手的消息前缀设置为 "```python\n" 以强制模型输出 Python 代码，并将 stop 参数设置为 ['```'] 以防止模型进行额外解释：
 
 ```java
 @RestController
@@ -226,7 +226,7 @@ public class CodeGenerateController {
     }
 
     @GetMapping("/ai/generatePythonCode")
-    public String generate(@RequestParam(value = "message", defaultValue = "Please write quick sort code") String message) {
+    public String generate(@RequestParam(value = "message", defaultValue = "请编写快速排序代码") String message) {
         UserMessage userMessage = new UserMessage(message);
         Message assistantMessage = DeepSeekAssistantMessage.prefixAssistantMessage("```python\\n");
         Prompt prompt = new Prompt(List.of(userMessage, assistantMessage), 
@@ -237,25 +237,25 @@ public class CodeGenerateController {
 }
 ```
 
-## Reasoning Model (deepseek-reasoner)
+## 推理模型 (deepseek-reasoner)
 
-The `deepseek-reasoner` is a reasoning model developed by DeepSeek. Before delivering the final answer, the model first generates a Chain of Thought (CoT) to enhance the accuracy of its responses.
+`deepseek-reasoner` 是 DeepSeek 开发的推理模型。在给出最终答案之前，模型首先生成一个思维链 (CoT) 以提高其响应的准确性。
 
 <Tip>
-Our API provides users with access to the CoT content generated by `deepseek-reasoner`, enabling them to view, display, and distill it.
+我们的 API 允许用户访问 `deepseek-reasoner` 生成的 CoT 内容，从而能够查看、显示和提炼它。
 </Tip>
 
-You can use the `DeepSeekAssistantMessage` to get the CoT content generated by `deepseek-reasoner`:
+你可以使用 `DeepSeekAssistantMessage` 获取 `deepseek-reasoner` 生成的 CoT 内容：
 
 ```java
 public void deepSeekReasonerExample() {
     DeepSeekChatOptions promptOptions = DeepSeekChatOptions.builder()
             .model(DeepSeekApi.ChatModel.DEEPSEEK_REASONER.getValue())
             .build();
-    Prompt prompt = new Prompt("9.11 and 9.8, which is greater?", promptOptions);
+    Prompt prompt = new Prompt("9.11 和 9.8，哪个更大？", promptOptions);
     ChatResponse response = chatModel.call(prompt);
 
-    // Get the CoT content generated by deepseek-reasoner
+    // 获取 deepseek-reasoner 生成的 CoT 内容
     DeepSeekAssistantMessage deepSeekAssistantMessage = 
         (DeepSeekAssistantMessage) response.getResult().getOutput();
     String reasoningContent = deepSeekAssistantMessage.getReasoningContent();

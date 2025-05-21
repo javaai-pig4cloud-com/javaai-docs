@@ -1,15 +1,14 @@
 ---
-title: OpenAI Image Generation
-description: Using OpenAI's DALL-E models for image generation
+title: "OpenAI 图像模型"
 ---
 
-# OpenAI Image Generation
+# OpenAI 图像模型
 
-Spring AI provides integration with OpenAI's DALL-E models for image generation capabilities.
+Spring AI 项目集成了 OpenAI 的图像生成模型。
 
-## Configuration
+## 添加依赖
 
-Add the following dependency to your project:
+将 `spring-ai-openai-spring-boot-starter` 依赖项添加到您的 `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -18,21 +17,46 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-## Properties
+## 配置 OpenAI 凭证
+
+请确保在您的 `application.properties` 文件中设置了 `spring.ai.openai.api-key` 属性：
 
 ```properties
 spring.ai.openai.api-key=YOUR_API_KEY
-spring.ai.openai.image.model=dall-e-3
 ```
 
-## Usage
+您还需要通过设置 `spring.ai.openai.image.enabled=true` 属性来启用 OpenAI 图像客户端。
+
+此外，请浏览 [OpenAI图像选项 (OpenAiImageOptions)](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-openai/src/main/java/org/springframework/ai/openai/OpenAiImageOptions.java) 了解可用的调用选项。常用选项也可以通过 `spring.ai.openai.image.options.*` 属性进行配置。
+
+## 调用 ImageClient
+
+`ImageClient` 接口提供了一种与图像生成模型交互的便携方式。
 
 ```java
-@Autowired
-private ImageClient imageClient;
-
-// Generate an image
-ImageResponse response = imageClient.call(
-    new ImagePrompt("A futuristic cityscape at night")
+ImageResponse imageResponse = imageClient.call(
+    new ImagePrompt("A light cream cat on a purple background") // 示例提示内容通常保留英文
 );
-``` 
+```
+---
+
+`ImageClient` 会自动配置和注入。
+
+```java
+@RestController
+public class ImageController {
+
+    private final ImageClient imageClient;
+
+    @Autowired
+    public ImageController(ImageClient imageClient) {
+        this.imageClient = imageClient;
+    }
+
+    @GetMapping("/image")
+    public String image(@RequestParam String prompt) {
+        ImageResponse response = imageClient.call(new ImagePrompt(prompt));
+        // 处理响应
+        return response.getResult().getOutput().getUrl();
+    }
+} 

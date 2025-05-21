@@ -1,137 +1,135 @@
 ---
-title: "Advisors API"
+title: "增强器 API"
 ---
 
-The Spring AI Advisors API provides a flexible and powerful way to intercept, modify, and enhance AI-driven interactions in your Spring applications. 
-By leveraging the Advisors API, developers can create more sophisticated, reusable, and maintainable AI components.
+Spring AI 增强器 API 提供了一种灵活而强大的方式来拦截、修改和增强 Spring 应用程序中的 AI 驱动交互。
+通过利用增强器 API，开发者可以创建更复杂、可重用和可维护的 AI 组件。
 
-The key benefits include encapsulating recurring Generative AI patterns, transforming data sent to and from Large Language Models (LLMs), and providing portability across various models and use cases.
+主要优势包括封装重复出现的生成式 AI 模式、转换发送到大型语言模型（LLM） 的数据，以及提供跨各种模型和用例的可移植性。
 
-You can configure existing advisors using the [ChatClient API](/spring4ai/api/chatclient#advisor-configuration-in-chatclient) as shown in the following example:
+您可以使用 [ChatClient API](/spring4ai/api/chatclient#advisor-configuration-in-chatclient) 配置现有增强器，如下例所示：
 
 ```java
 var chatClient = ChatClient.builder(chatModel)
     .defaultAdvisors(
-        MessageChatMemoryAdvisor.builder(chatMemory).build(), // chat-memory advisor
-        QuestionAnswerAdvisor.builder((vectorStore).builder() // RAG advisor
+        MessageChatMemoryAdvisor.builder(chatMemory).build(), // chat-memory 增强器
+        QuestionAnswerAdvisor.builder((vectorStore).builder() // RAG 增强器
     )
     .build();
 
 var conversationId = "678";
 
 String response = this.chatClient.prompt()
-    // Set advisor parameters at runtime	
+    // 在运行时设置增强器参数	
     .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, conversationId))
     .user(userText)
     .call()
 	.content();
 ```
 
-It is recommend to register the advisors at build time using builder's `defaultAdvisors()` method.
+建议在构建时使用 builder 的 `defaultAdvisors()` 方法注册增强器。
 
-Advisors also participate in the Observability stack, so you can view metrics and traces related to their execution.
+增强器也参与可观察性堆栈，因此您可以查看与其执行相关的指标和跟踪。
 
-- [Learn about Question Answer Advisor](/spring4ai/api/retrieval-augmented-generation#questionansweradvisor)
-- [Learn about Chat Memory Advisor](/spring4ai/api/chat-memory#memory-in-chat-client)
+- [了解问题回答增强器](/spring4ai/api/retrieval-augmented-generation#questionansweradvisor)
+- [了解聊天内存增强器](/spring4ai/api/chat-memory#memory-in-chat-client)
 
-## Core Components
+## 核心组件
 
-The API consists of `CallAroundAdvisor` and `CallAroundAdvisorChain` for non-streaming scenarios, and `StreamAroundAdvisor` and `StreamAroundAdvisorChain` for streaming scenarios. 
-It also includes `AdvisedRequest` to represent the unsealed Prompt request, `AdvisedResponse` for the Chat Completion response. Both hold an `advise-context` to share state across the advisor chain.
+API 包含用于非流式场景的 `CallAroundAdvisor` 和 `CallAroundAdvisorChain`，以及用于流式场景的 `StreamAroundAdvisor` 和 `StreamAroundAdvisorChain`。
+它还包括 `AdvisedRequest` 用于表示未密封的 Prompt 请求，`AdvisedResponse` 用于 Chat Completion 响应。两者都包含一个 `advise-context` 用于在增强器链中共享状态。
 
-<Frame caption="Advisors API Classes">
+<Frame caption="Advisors API 类">
   <img src="/images/advisors-api-classes.jpg" width="600" />
 </Frame>
 
-The `nextAroundCall()` and the `nextAroundStream()` are the key advisor methods, typically performing actions such as examining the unsealed Prompt data, customizing and augmenting the Prompt data, invoking the next entity in the advisor chain, optionally blocking the request, examining the chat completion response, and throwing exceptions to indicate processing errors.
+`nextAroundCall()` 和 `nextAroundStream()` 是关键增强器方法，通常执行诸如检查未密封的 Prompt 数据、自定义和增强 Prompt 数据、调用增强器链中的下一个实体、可选地阻止请求、检查聊天完成响应以及抛出异常以指示处理错误等操作。
 
-In addition the `getOrder()` method determines advisor order in the chain, while `getName()` provides a unique advisor name.
+此外，`getOrder()` 方法确定增强器在链中的顺序，而 `getName()` 提供唯一的增强器名称。
 
-The Advisor Chain, created by the Spring AI framework, allows sequential invocation of multiple advisors ordered by their `getOrder()` values. 
-The lower values are executed first. 
-The last advisor, added automatically, sends the request to the LLM.
+由 Spring AI 框架创建的增强器链允许按 `getOrder()` 值排序的多个增强器顺序调用。
+较低的值首先执行。
+最后一个增强器（自动添加）将请求发送到 LLM。
 
-Following flow diagram illustrates the interaction between the advisor chain and the Chat Model:
+以下流程图说明了增强器链与聊天模型之间的交互：
 
-<Frame caption="Advisors API Flow">
+<Frame caption="Advisors API 流程">
   <img src="/images/advisors-flow.jpg" width="400" />
 </Frame>
 
 <Steps>
-  <Step title="Create Request">
-    The Spring AI framework creates an `AdvisedRequest` from user's `Prompt` along with an empty `AdvisorContext` object.
+  <Step title="创建请求">
+    Spring AI 框架从用户的 `Prompt` 创建一个 `AdvisedRequest`，同时创建一个空的 `AdvisorContext` 对象。
   </Step>
-  <Step title="Process Request">
-    Each advisor in the chain processes the request, potentially modifying it. Alternatively, it can choose to block the request by not making the call to invoke the next entity. In the latter case, the advisor is responsible for filling out the response.
+  <Step title="处理请求">
+    链中的每个增强器处理请求，可能会修改它。或者，它可以选择通过不调用下一个实体来阻止请求。在后一种情况下，增强器负责填写响应。
   </Step>
-  <Step title="Send Request">
-    The final advisor, provided by the framework, sends the request to the `Chat Model`.
+  <Step title="发送请求">
+    框架提供的最后一个增强器将请求发送到 `Chat Model`。
   </Step>
-  <Step title="Create Response">
-    The Chat Model's response is then passed back through the advisor chain and converted into `AdvisedResponse`. Later includes the shared `AdvisorContext` instance.
+  <Step title="创建响应">
+    聊天模型的响应然后通过增强器链传回并转换为 `AdvisedResponse`。后者包括共享的 `AdvisorContext` 实例。
   </Step>
-  <Step title="Process Response">
-    Each advisor can process or modify the response.
+  <Step title="处理响应">
+    每个增强器可以处理或修改响应。
   </Step>
-  <Step title="Return Response">
-    The final `AdvisedResponse` is returned to the client by extracting the `ChatCompletion`.
+  <Step title="返回响应">
+    通过提取 `ChatCompletion` 将最终的 `AdvisedResponse` 返回给客户端。
   </Step>
 </Steps>
 
-### Advisor Order
+### 增强器顺序
 
-The execution order of advisors in the chain is determined by the `getOrder()` method. Key points to understand:
+增强器在链中的执行顺序由 `getOrder()` 方法决定。需要理解的关键点：
 
 <AccordionGroup>
-  <Accordion title="Order of Execution" icon="sort-numeric-down">
-    * Advisors with lower order values are executed first.
-    * The advisor chain operates as a stack:
-      * The first advisor in the chain is the first to process the request.
-      * It is also the last to process the response.
+  <Accordion title="执行顺序" icon="sort-numeric-down">
+    * 具有较低顺序值的增强器首先执行。
+    * 增强器链作为堆栈运行：
+      * 链中的第一个增强器首先处理请求。
+      * 它也是最后一个处理响应的。
   </Accordion>
   
-  <Accordion title="Controlling Execution Order" icon="sliders-h">
-    * To control execution order:
-      * Set the order close to `Ordered.HIGHEST_PRECEDENCE` to ensure an advisor is executed first in the chain (first for request processing, last for response processing).
-      * Set the order close to `Ordered.LOWEST_PRECEDENCE` to ensure an advisor is executed last in the chain (last for request processing, first for response processing).
-    * Higher values are interpreted as lower priority.
-    * If multiple advisors have the same order value, their execution order is not guaranteed.
+  <Accordion title="控制执行顺序" icon="sliders-h">
+    * 要控制执行顺序：
+      * 将顺序设置为接近 `Ordered.HIGHEST_PRECEDENCE` 以确保增强器在链中首先执行（首先处理请求，最后处理响应）。
+      * 将顺序设置为接近 `Ordered.LOWEST_PRECEDENCE` 以确保增强器在链中最后执行（最后处理请求，首先处理响应）。
+    * 较高的值被解释为较低的优先级。
+    * 如果多个增强器具有相同的顺序值，它们的执行顺序不能保证。
   </Accordion>
 </AccordionGroup>
 
 <Note>
-The seeming contradiction between order and execution sequence is due to the stack-like nature of the advisor chain:
+执行顺序和顺序值之间的表面矛盾是由于增强器链的堆栈性质：
 
-- An advisor with the highest precedence (lowest order value) is added to the top of the stack.
-- It will be the first to process the request as the stack unwinds.
-- It will be the last to process the response as the stack rewinds.
+- 具有最高优先级（最低顺序值）的增强器被添加到堆栈顶部。
+- 当堆栈展开时，它将首先处理请求。
+- 当堆栈重绕时，它将最后处理响应。
 </Note>
 
-As a reminder, here are the semantics of the Spring `Ordered` interface:
+作为提醒，以下是 Spring `Ordered` 接口的语义：
 
 ```java
 public interface Ordered {
 
     /**
-     * Constant for the highest precedence value.
+     * 最高优先级值的常量。
      * @see java.lang.Integer#MIN_VALUE
      */
     int HIGHEST_PRECEDENCE = Integer.MIN_VALUE;
 
     /**
-     * Constant for the lowest precedence value.
+     * 最低优先级值的常量。
      * @see java.lang.Integer#MAX_VALUE
      */
     int LOWEST_PRECEDENCE = Integer.MAX_VALUE;
 
     /**
-     * Get the order value of this object.
-     * <p>Higher values are interpreted as lower priority. As a consequence,
-     * the object with the lowest value has the highest priority (somewhat
-     * analogous to Servlet {@code load-on-startup} values).
-     * <p>Same order values will result in arbitrary sort positions for the
-     * affected objects.
-     * @return the order value
+     * 获取此对象的顺序值。
+     * <p>较高的值被解释为较低的优先级。因此，
+     * 具有最低值的对象具有最高优先级（有点类似于 Servlet {@code load-on-startup} 值）。
+     * <p>相同的顺序值将导致受影响对象的任意排序位置。
+     * @return 顺序值
      * @see #HIGHEST_PRECEDENCE
      * @see #LOWEST_PRECEDENCE
      */
@@ -140,16 +138,16 @@ public interface Ordered {
 ```
 
 <Tip>
-For use cases that need to be first in the chain on both the input and output sides:
+对于需要在输入和输出端都是链中第一个的用例：
 
-1. Use separate advisors for each side.
-2. Configure them with different order values.
-3. Use the advisor context to share state between them.
+1. 为每一端使用单独的增强器。
+2. 使用不同的顺序值配置它们。
+3. 使用增强器上下文在它们之间共享状态。
 </Tip>
 
-## API Overview
+## API 概述
 
-The main Advisor interfaces are located in the package `org.springframework.ai.chat.client.advisor.api`. Here are the key interfaces you'll encounter when creating your own advisor:
+主要增强器接口位于包 `org.springframework.ai.chat.client.advisor.api` 中。以下是创建自己的增强器时会遇到的关键接口：
 
 ```java
 public interface Advisor extends Ordered {
@@ -157,37 +155,37 @@ public interface Advisor extends Ordered {
 }
 ```
 
-The two sub-interfaces for synchronous and reactive Advisors are:
+同步和响应式增强器的两个子接口是：
 
 ```java
 public interface CallAroundAdvisor extends Advisor {
 	/**
-	 * Around advice that wraps the ChatModel#call(Prompt) method.
-	 * @param advisedRequest the advised request
-	 * @param chain the advisor chain
-	 * @return the response
+	 * 环绕通知，包装 ChatModel#call(Prompt) 方法。
+	 * @param advisedRequest 建议的请求
+	 * @param chain 增强器链
+	 * @return 响应
 	 */
 	AdvisedResponse aroundCall(AdvisedRequest advisedRequest, CallAroundAdvisorChain chain);
 }
 ```
 
-and
+和
 
 ```java
 public interface StreamAroundAdvisor extends Advisor {
 	/**
-	 * Around advice that wraps the invocation of the advised request.
-	 * @param advisedRequest the advised request
-	 * @param chain the chain of advisors to execute
-	 * @return the result of the advised request
+	 * 环绕通知，包装建议请求的调用。
+	 * @param advisedRequest 建议的请求
+	 * @param chain 要执行的增强器链
+	 * @return 建议请求的结果
 	 */
 	Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain);
 }
 ```
 
-To continue the chain of Advice, use `CallAroundAdvisorChain` and `StreamAroundAdvisorChain` in your Advice implementation:
+要继续建议链，在您的建议实现中使用 `CallAroundAdvisorChain` 和 `StreamAroundAdvisorChain`：
 
-The interfaces are:
+接口是：
 
 ```java
 public interface CallAroundAdvisorChain {
@@ -195,7 +193,7 @@ public interface CallAroundAdvisorChain {
 }
 ```
 
-and
+和
 
 ```java
 public interface StreamAroundAdvisorChain {
@@ -203,19 +201,19 @@ public interface StreamAroundAdvisorChain {
 }
 ```
 
-## Implementing an Advisor
+## 实现增强器
 
-To create an advisor, implement either `CallAroundAdvisor` or `StreamAroundAdvisor` (or both). The key method to implement is `nextAroundCall()` for non-streaming or `nextAroundStream()` for streaming advisors.
+要创建增强器，实现 `CallAroundAdvisor` 或 `StreamAroundAdvisor`（或两者）。要实现的关键方法是用于非流式的 `nextAroundCall()` 或用于流式增强器的 `nextAroundStream()`。
 
-### Examples
+### 示例
 
-We will provide a few hands-on examples to illustrate how to implement advisors for observing and augmenting use-cases.
+我们将提供一些实践示例来说明如何实现用于观察和增强用例的增强器。
 
-#### Logging Advisor
+#### 日志增强器
 
-We can implement a simple logging advisor that logs the `AdvisedRequest` before and the `AdvisedResponse` after the call to the next advisor in the chain.
-Note that the advisor only observes the request and response and does not modify them.
-This implementation supports both non-streaming and streaming scenarios.
+我们可以实现一个简单的日志增强器，在调用链中的下一个增强器之前记录 `AdvisedRequest`，之后记录 `AdvisedResponse`。
+注意，增强器只观察请求和响应，不修改它们。
+此实现同时支持非流式和流式场景。
 
 ```java
 public class SimpleLoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
@@ -257,21 +255,21 @@ public class SimpleLoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvis
 }
 ```
 
-1. Provides a unique name for the advisor.
-2. You can control the order of execution by setting the order value. Lower values execute first.
-3. The `MessageAggregator` is a utility class that aggregates the Flux responses into a single AdvisedResponse. This can be useful for logging or other processing that observe the entire response rather than individual items in the stream. Note that you can not alter the response in the `MessageAggregator` as it is a read-only operation.
+1. 为增强器提供唯一名称。
+2. 您可以通过设置顺序值来控制执行顺序。较低的值首先执行。
+3. `MessageAggregator` 是一个实用类，将 Flux 响应聚合为单个 AdvisedResponse。这对于记录或观察整个响应而不是流中的单个项目的其他处理很有用。注意，您不能在 `MessageAggregator` 中修改响应，因为它是只读操作。
 
-#### Re-Reading (Re2) Advisor
+#### 重读 (Re2) 增强器
 
-The "[Re-Reading Improves Reasoning in Large Language Models](https://arxiv.org/pdf/2309.06275)" article introduces a technique called Re-Reading (Re2) that improves the reasoning capabilities of Large Language Models.
-The Re2 technique requires augmenting the input prompt like this:
+"[Re-Reading Improves Reasoning in Large Language Models](https://arxiv.org/pdf/2309.06275)" 文章介绍了一种称为重读 (Re2) 的技术，可以提高大型语言模型的推理能力。
+Re2 技术要求像这样增强输入提示：
 
 ```
 {Input_Query}
 Read the question again: {Input_Query}
 ```
 
-Implementing an advisor that applies the Re2 technique to the user's input query can be done like this:
+实现一个将 Re2 技术应用于用户输入查询的增强器可以这样做：
 
 ```java
 public class ReReadingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
@@ -312,62 +310,62 @@ public class ReReadingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor 
 }
 ```
 
-1. The `before` method augments the user's input query applying the Re-Reading technique.
-2. The `aroundCall` method intercepts the non-streaming request and applies the Re-Reading technique.
-3. The `aroundStream` method intercepts the streaming request and applies the Re-Reading technique.
-4. You can control the order of execution by setting the order value. Lower values execute first.
-5. Provides a unique name for the advisor.
+1. `before` 方法通过应用重读技术增强用户的输入查询。
+2. `aroundCall` 方法拦截非流式请求并应用重读技术。
+3. `aroundStream` 方法拦截流式请求并应用重读技术。
+4. 您可以通过设置顺序值来控制执行顺序。较低的值首先执行。
+5. 为增强器提供唯一名称。
 
-### Spring AI Built-in Advisors
+### Spring AI 内置增强器
 
-Spring AI framework provides several built-in advisors to enhance your AI interactions. Here's an overview of the available advisors:
+Spring AI 框架提供了几个内置增强器来增强您的 AI 交互。以下是可用增强器的概述：
 
 <AccordionGroup>
-  <Accordion title="Chat Memory Advisors" icon="memory">
-    These advisors manage conversation history in a chat memory store:
+  <Accordion title="聊天内存增强器" icon="memory">
+    这些增强器在聊天内存存储中管理对话历史：
 
     <CardGroup cols={1}>
       <Card title="MessageChatMemoryAdvisor">
-        Retrieves memory and adds it as a collection of messages to the prompt. This approach maintains the structure of the conversation history. Note, not all AI Models support this approach.
+        检索内存并将其作为消息集合添加到提示中。这种方法保持了对话历史的结构。注意，并非所有 AI 模型都支持这种方法。
       </Card>
       
       <Card title="PromptChatMemoryAdvisor">
-        Retrieves memory and incorporates it into the prompt's system text.
+        检索内存并将其合并到提示的系统文本中。
       </Card>
       
       <Card title="VectorStoreChatMemoryAdvisor">
-        Retrieves memory from a VectorStore and adds it into the prompt's system text. This advisor is useful for efficiently searching and retrieving relevant information from large datasets.
+        从 VectorStore 检索内存并将其添加到提示的系统文本中。此增强器对于从大型数据集中高效搜索和检索相关信息很有用。
       </Card>
     </CardGroup>
   </Accordion>
   
-  <Accordion title="Question Answering Advisor" icon="question-circle">
+  <Accordion title="问题回答增强器" icon="question-circle">
     <CardGroup cols={1}>
       <Card title="QuestionAnswerAdvisor">
-        This advisor uses a vector store to provide question-answering capabilities, implementing the RAG (Retrieval-Augmented Generation) pattern.
+        此增强器使用向量存储来提供问答功能，实现 RAG（检索增强生成）模式。
       </Card>
     </CardGroup>
   </Accordion>
   
-  <Accordion title="Content Safety Advisor" icon="shield-alt">
+  <Accordion title="内容安全增强器" icon="shield-alt">
     <CardGroup cols={1}>
       <Card title="SafeGuardAdvisor">
-        A simple advisor designed to prevent the model from generating harmful or inappropriate content.
+        一个简单的增强器，旨在防止模型生成有害或不适当的内容。
       </Card>
     </CardGroup>
   </Accordion>
 </AccordionGroup>
 
-### Streaming vs Non-Streaming
+### 流式与非流式
 
-<Frame caption="Advisors Streaming vs Non-Streaming Flow">
+<Frame caption="增强器流式与非流式流程">
   <img src="/images/advisors-non-stream-vs-stream.jpg" width="800" />
 </Frame>
 
-* Non-streaming advisors work with complete requests and responses.
-* Streaming advisors handle requests and responses as continuous streams, using reactive programming concepts (e.g., Flux for responses).
+* 非流式增强器处理完整的请求和响应。
+* 流式增强器将请求和响应作为连续流处理，使用响应式编程概念（例如，用于响应的 Flux）。
 
-Example of implementing a streaming advisor with blocking and non-blocking code:
+实现带有阻塞和非阻塞代码的流式增强器的示例：
 
 ```java
 @Override
@@ -376,84 +374,84 @@ public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamA
     return  Mono.just(advisedRequest)
             .publishOn(Schedulers.boundedElastic())
             .map(request -> {
-                // This can be executed by blocking and non-blocking Threads.
-                // Advisor before next section
+                // 这可以由阻塞和非阻塞线程执行。
+                // 增强器在下一个部分之前
             })
             .flatMapMany(request -> chain.nextAroundStream(request))
             .map(response -> {
-                // Advisor after next section
+                // 增强器在下一个部分之后
             });
 }
 ```
 
-### Best Practices
+### 最佳实践
 
 <CardGroup cols={2}>
-  <Card title="Focused Responsibility" icon="crosshairs">
-    Keep advisors focused on specific tasks for better modularity.
+  <Card title="专注责任" icon="crosshairs">
+    保持增强器专注于特定任务以获得更好的模块化。
   </Card>
-  <Card title="Share State" icon="share-alt">
-    Use the `adviseContext` to share state between advisors when necessary.
+  <Card title="共享状态" icon="share-alt">
+    必要时使用 `adviseContext` 在增强器之间共享状态。
   </Card>
-  <Card title="Support Both Modes" icon="sync-alt">
-    Implement both streaming and non-streaming versions of your advisor for maximum flexibility.
+  <Card title="支持两种模式" icon="sync-alt">
+    实现增强器的流式和非流式版本以获得最大灵活性。
   </Card>
-  <Card title="Consider Order" icon="sort">
-    Carefully consider the order of advisors in your chain to ensure proper data flow.
+  <Card title="考虑顺序" icon="sort">
+    仔细考虑增强器在链中的顺序以确保正确的数据流。
   </Card>
 </CardGroup>
 
-## Backward Compatibility
+## 向后兼容性
 
 <Warning>
-The `AdvisedRequest` class is moved to a new package.
+`AdvisedRequest` 类已移动到新包。
 </Warning>
 
-## Breaking API Changes
+## API 重大变更
 
-The Spring AI Advisor Chain underwent significant changes from version 1.0 M2 to 1.0 M3. Here are the key modifications:
+Spring AI 增强器链从版本 1.0 M2 到 1.0 M3 经历了重大变化。以下是主要修改：
 
-### Advisor Interfaces
-
-<Tabs>
-  <Tab title="1.0 M2">
-    * Separate `RequestAdvisor` and `ResponseAdvisor` interfaces
-    * `RequestAdvisor` was invoked before the `ChatModel.call` and `ChatModel.stream` methods
-    * `ResponseAdvisor` was called after these methods
-    * Used `StreamResponseMode` as part of `ResponseAdvisor`
-  </Tab>
-  <Tab title="1.0 M3">
-    * Replaced with `CallAroundAdvisor` and `StreamAroundAdvisor`
-    * `StreamResponseMode` has been removed
-  </Tab>
-</Tabs>
-
-### Context Map Handling
+### 增强器接口
 
 <Tabs>
   <Tab title="1.0 M2">
-    * The context map was a separate method argument
-    * The map was mutable and passed along the chain
+    * 单独的 `RequestAdvisor` 和 `ResponseAdvisor` 接口
+    * `RequestAdvisor` 在 `ChatModel.call` 和 `ChatModel.stream` 方法之前调用
+    * `ResponseAdvisor` 在这些方法之后调用
+    * 使用 `StreamResponseMode` 作为 `ResponseAdvisor` 的一部分
   </Tab>
   <Tab title="1.0 M3">
-    * The context map is now part of the `AdvisedRequest` and `AdvisedResponse` records
-    * The map is immutable
-    * To update the context, use the `updateContext` method, which creates a new unmodifiable map with the updated contents
+    * 替换为 `CallAroundAdvisor` 和 `StreamAroundAdvisor`
+    * 已移除 `StreamResponseMode`
   </Tab>
 </Tabs>
 
-Example of updating the context in 1.0 M3:
+### 上下文映射处理
+
+<Tabs>
+  <Tab title="1.0 M2">
+    * 上下文映射是一个单独的方法参数
+    * 映射是可变的并沿链传递
+  </Tab>
+  <Tab title="1.0 M3">
+    * 上下文映射现在是 `AdvisedRequest` 和 `AdvisedResponse` 记录的一部分
+    * 映射是不可变的
+    * 要更新上下文，使用 `updateContext` 方法，它创建一个具有更新内容的新不可变映射
+  </Tab>
+</Tabs>
+
+在 1.0 M3 中更新上下文的示例：
 
 ```java
 @Override
 public AdvisedResponse aroundCall(AdvisedRequest advisedRequest, CallAroundAdvisorChain chain) {
 
     this.advisedRequest = advisedRequest.updateContext(context -> {
-        context.put("aroundCallBefore" + getName(), "AROUND_CALL_BEFORE " + getName());  // Add multiple key-value pairs
-        context.put("lastBefore", getName());  // Add a single key-value pair
+        context.put("aroundCallBefore" + getName(), "AROUND_CALL_BEFORE " + getName());  // 添加多个键值对
+        context.put("lastBefore", getName());  // 添加单个键值对
         return context;
     });
 
-    // Method implementation continues...
+    // 方法实现继续...
 }
 ``` 

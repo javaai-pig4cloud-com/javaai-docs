@@ -1,26 +1,26 @@
 ---
-title: "Chat Model API"
+title: "聊天模型 API"
 ---
 
-The Chat Model API offers developers the ability to integrate AI-powered chat completion capabilities into their applications. It leverages pre-trained language models, such as GPT (Generative Pre-trained Transformer), to generate human-like responses to user inputs in natural language.
+聊天模型 API 为开发者提供了将 AI 驱动的聊天完成功能集成到其应用程序中的能力。它利用预训练的语言模型，如 GPT（生成式预训练转换器），以自然语言生成类似人类的响应。
 
-The API typically works by sending a prompt or partial conversation to the AI model, which then generates a completion or continuation of the conversation based on its training data and understanding of natural language patterns. The completed response is then returned to the application, which can present it to the user or use it for further processing.
+API 通常通过向 AI 模型发送提示或部分对话来工作，然后 AI 模型根据其训练数据和对自然语言模式的理解生成完成或对话的延续。完成的响应随后返回给应用程序，应用程序可以将其呈现给用户或用于进一步处理。
 
-The `Spring AI Chat Model API` is designed to be a simple and portable interface for interacting with various [AI Models](/spring4ai/overview/concepts#models), allowing developers to switch between different models with minimal code changes.
-This design aligns with Spring's philosophy of modularity and interchangeability.
+`Spring AI 聊天模型 API` 旨在为与各种 [AI 模型](/spring4ai/overview/concepts#models) 交互提供一个简单且可移植的接口，允许开发者在不同模型之间切换，只需最少的代码更改。
+这种设计符合 Spring 的模块化和可互换性理念。
 
-Also with the help of companion classes like `Prompt` for input encapsulation and `ChatResponse` for output handling, the Chat Model API unifies the communication with AI Models.
-It manages the complexity of request preparation and response parsing, offering a direct and simplified API interaction.
+此外，借助 `Prompt` 等配套类进行输入封装和 `ChatResponse` 进行输出处理，聊天模型 API 统一了与 AI 模型的通信。
+它管理请求准备和响应解析的复杂性，提供直接和简化的 API 交互。
 
-You can find more about available implementations in the [Available Implementations](#available-implementations) section as well as detailed comparison in the [Chat Models Comparison](/spring4ai/api/chat/comparison) section.
+您可以在 [可用实现](#available-implementations) 部分找到更多关于可用实现的信息，以及在 [聊天模型比较](/spring4ai/api/chat/comparison) 部分找到详细的比较。
 
-## API Overview
+## API 概述
 
-This section provides a guide to the Spring AI Chat Model API interface and associated classes.
+本节提供了 Spring AI 聊天模型 API 接口和相关类的指南。
 
 ### ChatModel
 
-Here is the [ChatModel](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat//model/ChatModel.java) interface definition:
+以下是 [ChatModel](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat//model/ChatModel.java) 接口定义：
 
 ```java
 public interface ChatModel extends Model<Prompt, ChatResponse> {
@@ -32,12 +32,12 @@ public interface ChatModel extends Model<Prompt, ChatResponse> {
 }
 ```
 
-The `call()` method with a `String` parameter simplifies initial use, avoiding the complexities of the more sophisticated `Prompt` and `ChatResponse` classes.
-In real-world applications, it is more common to use the `call()` method that takes a `Prompt` instance and returns a `ChatResponse`.
+带有 `String` 参数的 `call()` 方法简化了初始使用，避免了更复杂的 `Prompt` 和 `ChatResponse` 类的复杂性。
+在实际应用程序中，更常见的是使用接受 `Prompt` 实例并返回 `ChatResponse` 的 `call()` 方法。
 
 ### StreamingChatModel
 
-Here is the [StreamingChatModel](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/model/StreamingChatModel.java) interface definition:
+以下是 [StreamingChatModel](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/model/StreamingChatModel.java) 接口定义：
 
 ```java
 public interface StreamingChatModel extends StreamingModel<Prompt, ChatResponse> {
@@ -49,12 +49,12 @@ public interface StreamingChatModel extends StreamingModel<Prompt, ChatResponse>
 }
 ```
 
-The `stream()` method takes a `String` or `Prompt` parameter similar to `ChatModel` but it streams the responses using the reactive Flux API.
+`stream()` 方法接受 `String` 或 `Prompt` 参数，类似于 `ChatModel`，但它使用响应式 Flux API 流式传输响应。
 
 ### Prompt
 
-The [Prompt](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/Prompt.java) is a `ModelRequest` that encapsulates a list of [Message](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/messages/Message.java) objects and optional model request options.
-The following listing shows a truncated version of the `Prompt` class, excluding constructors and other utility methods:
+[Prompt](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/Prompt.java) 是一个 `ModelRequest`，它封装了 [Message](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/messages/Message.java) 对象列表和可选的模型请求选项。
+以下列表显示了 `Prompt` 类的截断版本，不包括构造函数和其他实用方法：
 
 ```java
 public class Prompt implements ModelRequest<List<Message>> {
@@ -69,15 +69,15 @@ public class Prompt implements ModelRequest<List<Message>> {
 	@Override
 	public List<Message> getInstructions() {...}
 
-    // constructors and utility methods omitted
+    // 构造函数和实用方法省略
 }
 ```
 
 #### Message
 
-The `Message` interface encapsulates a `Prompt` textual content, a collection of metadata attributes, and a categorization known as `MessageType`.
+`Message` 接口封装了 `Prompt` 文本内容、元数据属性集合和称为 `MessageType` 的分类。
 
-The interface is defined as follows:
+接口定义如下：
 
 ```java
 public interface Content {
@@ -93,7 +93,7 @@ public interface Message extends Content {
 }
 ```
 
-The multimodal message types implement also the `MediaContent` interface providing a list of `Media` content objects.
+多模态消息类型还实现了 `MediaContent` 接口，提供 `Media` 内容对象列表。
 
 ```java
 public interface MediaContent extends Content {
@@ -103,25 +103,25 @@ public interface MediaContent extends Content {
 }
 ```
 
-The `Message` interface has various implementations that correspond to the categories of messages that an AI model can process:
+`Message` 接口有各种实现，对应于 AI 模型可以处理的消息类别：
 
-<Frame caption="Spring AI Message API">
+<Frame caption="Spring AI 消息 API">
   <img src="/images/spring-ai-message-api.jpg" width="800" />
 </Frame>
 
-The chat completion endpoint, distinguish between message categories based on conversational roles, effectively mapped by the `MessageType`.
+聊天完成端点根据对话角色区分消息类别，这些角色由 `MessageType` 有效映射。
 
-For instance, OpenAI recognizes message categories for distinct conversational roles such as `system`, `user`, `function`, or `assistant`.
+例如，OpenAI 识别不同对话角色的消息类别，如 `system`、`user`、`function` 或 `assistant`。
 
-While the term `MessageType` might imply a specific message format, in this context it effectively designates the role a message plays in the dialogue.
+虽然 `MessageType` 这个术语可能暗示特定的消息格式，但在这种情况下，它实际上指定了消息在对话中扮演的角色。
 
-For AI models that do not use specific roles, the `UserMessage` implementation acts as a standard category, typically representing user-generated inquiries or instructions.
-To understand the practical application and the relationship between `Prompt` and `Message`, especially in the context of these roles or message categories, see the detailed explanations in the [Prompts](/spring4ai/api/prompt) section.
+对于不使用特定角色的 AI 模型，`UserMessage` 实现作为标准类别，通常代表用户生成的查询或指令。
+要了解 `Prompt` 和 `Message` 之间的实际应用和关系，特别是在这些角色或消息类别的上下文中，请参阅 [提示](/spring4ai/api/prompt) 部分中的详细说明。
 
-#### Chat Options
+#### 聊天选项
 
-Represents the options that can be passed to the AI model. The `ChatOptions` class is a subclass of `ModelOptions` and is used to define few portable options that can be passed to the AI model.
-The `ChatOptions` class is defined as follows:
+表示可以传递给 AI 模型的选项。`ChatOptions` 类是 `ModelOptions` 的子类，用于定义可以传递给 AI 模型的几个可移植选项。
+`ChatOptions` 类定义如下：
 
 ```java
 public interface ChatOptions extends ModelOptions {
@@ -139,43 +139,43 @@ public interface ChatOptions extends ModelOptions {
 }
 ```
 
-Additionally, every model specific ChatModel/StreamingChatModel implementation can have its own options that can be passed to the AI model. For example, the OpenAI Chat Completion model has its own options like `logitBias`, `seed`, and `user`.
+此外，每个模型特定的 ChatModel/StreamingChatModel 实现都可以有自己的选项，可以传递给 AI 模型。例如，OpenAI 聊天完成模型有自己的选项，如 `logitBias`、`seed` 和 `user`。
 
-This is a powerful feature that allows developers to use model-specific options when starting the application and then override them at runtime using the `Prompt` request.
+这是一个强大的功能，允许开发者在启动应用程序时使用模型特定的选项，然后使用 `Prompt` 请求在运行时覆盖它们。
 
-Spring AI provides a sophisticated system for configuring and using Chat Models. 
-It allows for default configurations to be set at start-up, while also providing the flexibility to override these settings on a per-request basis. 
-This approach enables developers to easily work with different AI models and adjust parameters as needed, all within a consistent interface provided by the Spring AI framework.
+Spring AI 提供了一个复杂的系统来配置和使用聊天模型。
+它允许在启动时设置默认配置，同时还提供了在每次请求的基础上覆盖这些设置的灵活性。
+这种方法使开发者能够轻松地使用不同的 AI 模型并根据需要调整参数，所有这些都在 Spring AI 框架提供的一致接口内。
 
-Following flow diagram illustrates how Spring AI handles the configuration and execution of Chat Models, combining start-up and runtime options:
+以下流程图说明了 Spring AI 如何处理聊天模型的配置和执行，结合了启动和运行时选项：
 
-<Frame caption="Chat Options Flow">
+<Frame caption="聊天选项流程">
   <img src="/images/chat-options-flow.jpg" width="800px" />
 </Frame>
 
 <Steps>
-  <Step title="Start-up Configuration">
-    The ChatModel/StreamingChatModel is initialized with "Start-Up" Chat Options. These options are set during the ChatModel initialization and are meant to provide default configurations.
+  <Step title="启动配置">
+    ChatModel/StreamingChatModel 使用"启动"聊天选项进行初始化。这些选项在 ChatModel 初始化期间设置，旨在提供默认配置。
   </Step>
-  <Step title="Runtime Configuration">
-    For each request, the Prompt can contain a Runtime Chat Options: These can override the start-up options.
+  <Step title="运行时配置">
+    对于每个请求，Prompt 可以包含运行时聊天选项：这些可以覆盖启动选项。
   </Step>
-  <Step title="Option Merging Process">
-    The "Merge Options" step combines the start-up and runtime options. If runtime options are provided, they take precedence over the start-up options.
+  <Step title="选项合并过程">
+    "合并选项"步骤结合了启动和运行时选项。如果提供了运行时选项，它们将优先于启动选项。
   </Step>
-  <Step title="Input Processing">
-    The "Convert Input" step transforms the input instructions into native, model-specific formats.
+  <Step title="输入处理">
+    "转换输入"步骤将输入指令转换为本地的、模型特定的格式。
   </Step>
-  <Step title="Output Processing">
-    The "Convert Output" step transforms the model's response into a standardized `ChatResponse` format.
+  <Step title="输出处理">
+    "转换输出"步骤将模型的响应转换为标准化的 `ChatResponse` 格式。
   </Step>
 </Steps>
 
-The separation of start-up and runtime options allows for both global configurations and request-specific adjustments.
+启动和运行时选项的分离允许全局配置和请求特定的调整。
 
 ### ChatResponse
 
-The structure of the `ChatResponse` class is as follows:
+`ChatResponse` 类的结构如下：
 
 ```java
 public class ChatResponse implements ModelResponse<Generation> {
@@ -189,17 +189,17 @@ public class ChatResponse implements ModelResponse<Generation> {
     @Override
 	public List<Generation> getResults() {...}
 
-    // other methods omitted
+    // 其他方法省略
 }
 ```
 
-The [ChatResponse](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/model/ChatResponse.java) class holds the AI Model's output, with each `Generation` instance containing one of potentially multiple outputs resulting from a single prompt.
+[ChatResponse](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/model/ChatResponse.java) 类保存 AI 模型的输出，每个 `Generation` 实例包含来自单个提示的潜在多个输出之一。
 
-The `ChatResponse` class also carries a `ChatResponseMetadata` metadata about the AI Model's response.
+`ChatResponse` 类还携带有关 AI 模型响应的 `ChatResponseMetadata` 元数据。
 
 ### Generation
 
-Finally, the [Generation](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/model/Generation.java) class extends from the `ModelResult` to represent the model output (assistant message) and related metadata:
+最后，[Generation](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/model/Generation.java) 类从 `ModelResult` 扩展而来，表示模型输出（助手消息）和相关元数据：
 
 ```java
 public class Generation implements ModelResult<AssistantMessage> {
@@ -213,55 +213,55 @@ public class Generation implements ModelResult<AssistantMessage> {
 	@Override
 	public ChatGenerationMetadata getMetadata() {...}
 
-    // other methods omitted
+    // 其他方法省略
 }
 ```
 
-## Available Implementations
+## 可用实现
 
-This diagram illustrates the unified interfaces, `ChatModel` and `StreamingChatModel`, are used for interacting with various AI chat models from different providers, allowing easy integration and switching between different AI services while maintaining a consistent API for the client application.
+此图说明了统一的接口 `ChatModel` 和 `StreamingChatModel` 用于与来自不同提供商的各种 AI 聊天模型交互，允许轻松集成和在不同 AI 服务之间切换，同时为客户端应用程序维护一致的 API。
 
-<Frame caption="Spring AI Chat Completions Clients">
+<Frame caption="Spring AI 聊天完成客户端">
   <img src="/images/spring-ai-chat-completions-clients.jpg" width="1000px" />
 </Frame>
 
 <CardGroup cols={2}>
-  <Card title="OpenAI Chat Completion" icon="openai" href="/spring4ai/api/chat/openai-chat">
-    Supports streaming, multi-modality & function-calling.
+  <Card title="OpenAI 聊天完成" icon="openai" href="/spring4ai/api/chat/openai-chat">
+    支持流式传输、多模态和函数调用。
   </Card>
-  <Card title="Azure OpenAI Chat Completion" icon="microsoft" href="/spring4ai/api/chat/azure-openai-chat">
-    Supports streaming & function-calling.
+  <Card title="Azure OpenAI 聊天完成" icon="microsoft" href="/spring4ai/api/chat/azure-openai-chat">
+    支持流式传输和函数调用。
   </Card>
-  <Card title="Ollama Chat Completion" icon="cube" href="/spring4ai/api/chat/ollama-chat">
-    Supports streaming, multi-modality & function-calling.
+  <Card title="Ollama 聊天完成" icon="cube" href="/spring4ai/api/chat/ollama-chat">
+    支持流式传输、多模态和函数调用。
   </Card>
-  <Card title="Hugging Face Chat Completion" icon="face-smile" href="/spring4ai/api/chat/huggingface">
-    No streaming support.
+  <Card title="Hugging Face 聊天完成" icon="face-smile" href="/spring4ai/api/chat/huggingface">
+    不支持流式传输。
   </Card>
-  <Card title="Google Vertex AI Gemini Chat Completion" icon="google" href="/spring4ai/api/chat/vertexai-gemini-chat">
-    Supports streaming, multi-modality & function-calling.
+  <Card title="Google Vertex AI Gemini 聊天完成" icon="google" href="/spring4ai/api/chat/vertexai-gemini-chat">
+    支持流式传输、多模态和函数调用。
   </Card>
   <Card title="Amazon Bedrock" icon="aws" href="/spring4ai/api/bedrock">
-    Various models with different capabilities.
+    各种具有不同功能的模型。
   </Card>
-  <Card title="Mistral AI Chat Completion" icon="cloud" href="/spring4ai/api/chat/mistralai-chat">
-    Supports streaming & function-calling.
+  <Card title="Mistral AI 聊天完成" icon="cloud" href="/spring4ai/api/chat/mistralai-chat">
+    支持流式传输和函数调用。
   </Card>
-  <Card title="Anthropic Chat Completion" icon="cat" href="/spring4ai/api/chat/anthropic-chat">
-    Supports streaming & function-calling.
+  <Card title="Anthropic 聊天完成" icon="cat" href="/spring4ai/api/chat/anthropic-chat">
+    支持流式传输和函数调用。
   </Card>
 </CardGroup>
 
 <Tip>
-Find a detailed comparison of the available Chat Models in the [Chat Models Comparison](/spring4ai/api/chat/comparison) section.
+在 [聊天模型比较](/spring4ai/api/chat/comparison) 部分找到可用聊天模型的详细比较。
 </Tip>
 
-## Chat Model API
+## 聊天模型 API
 
-The Spring AI Chat Model API is built on top of the Spring AI `Generic Model API` providing Chat specific abstractions and implementations.
-This allows an easy integration and switching between different AI services while maintaining a consistent API for the client application.
-The following class diagram illustrates the main classes and interfaces of the Spring AI Chat Model API.
+Spring AI 聊天模型 API 构建在 Spring AI `通用模型 API` 之上，提供聊天特定的抽象和实现。
+这允许轻松集成和在不同 AI 服务之间切换，同时为客户端应用程序维护一致的 API。
+以下类图说明了 Spring AI 聊天模型 API 的主要类和接口。
 
-<Frame caption="Spring AI Chat API">
+<Frame caption="Spring AI 聊天 API">
   <img src="/images/spring-ai-chat-api.jpg" width="1000px" />
 </Frame> 

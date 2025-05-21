@@ -1,29 +1,29 @@
 ---
-title: "Oracle Cloud Infrastructure (OCI) GenAI Embeddings"
+title: "OCI GenAI 向量模型"
 ---
 
-[OCI GenAI Service](https://www.oracle.com/artificial-intelligence/generative-ai/generative-ai-service/) offers text embedding with on-demand models, or dedicated AI clusters.
+[OCI GenAI 服务](https://www.oracle.com/artificial-intelligence/generative-ai/generative-ai-service/) 提供文本嵌入功能，支持按需模型或专用 AI 集群。
 
-The [OCI Embedding Models Page](https://docs.oracle.com/en-us/iaas/Content/generative-ai/embed-models.htm) and [OCI Text Embeddings Page](https://docs.oracle.com/en-us/iaas/Content/generative-ai/use-playground-embed.htm) provide detailed information about using and hosting embedding models on OCI.
+[OCI Embedding 模型页面](https://docs.oracle.com/en-us/iaas/Content/generative-ai/embed-models.htm) 和 [OCI 文本嵌入页面](https://docs.oracle.com/en-us/iaas/Content/generative-ai/use-playground-embed.htm) 提供了有关在 OCI 上使用和托管嵌入模型的详细信息。
 
-## Prerequisites
+## 先决条件
 
-### Add Repositories and BOM
+### 添加存储库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 工件发布在 Maven Central 和 Spring Snapshot 存储库中。
+请参阅[工件存储库](/spring4ai/getting-started#artifact-repositories)部分，将这些存储库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (物料清单) 以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the OCI GenAI Embedding Client.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI 为 OCI GenAI Embedding 客户端提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -32,7 +32,7 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -41,60 +41,60 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-### Embedding Properties
+### Embedding 属性
 
-The prefix `spring.ai.oci.genai` is the property prefix to configure the connection to OCI GenAI.
+前缀 `spring.ai.oci.genai` 是用于配置与 OCI GenAI 连接的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.oci.genai.authenticationType | The type of authentication to use when authenticating to OCI. May be `file`, `instance-principal`, `workload-identity`, or `simple`. | file |
-| spring.ai.oci.genai.region | OCI service region. | us-chicago-1 |
-| spring.ai.oci.genai.tenantId | OCI tenant OCID, used when authenticating with `simple` auth. | - |
-| spring.ai.oci.genai.userId | OCI user OCID, used when authenticating with `simple` auth. | - |
-| spring.ai.oci.genai.fingerprint | Private key fingerprint, used when authenticating with `simple` auth. | - |
-| spring.ai.oci.genai.privateKey | Private key content, used when authenticating with `simple` auth. | - |
-| spring.ai.oci.genai.passPhrase | Optional private key passphrase, used when authenticating with `simple` auth and a passphrase protected private key. | - |
-| spring.ai.oci.genai.file | Path to OCI config file. Used when authenticating with `file` auth. | user's home directory/.oci/config |
-| spring.ai.oci.genai.profile | OCI profile name. Used when authenticating with `file` auth. | DEFAULT |
-| spring.ai.oci.genai.endpoint | Optional OCI GenAI endpoint. | - |
+| 属性                                     | 描述                                                                                                | 默认值                               |
+| :--------------------------------------- | :-------------------------------------------------------------------------------------------------- | :----------------------------------- |
+| spring.ai.oci.genai.authenticationType | 用于向 OCI 进行身份验证的身份验证类型。可以是 `file`、`instance-principal`、`workload-identity` 或 `simple`。 | file                                 |
+| spring.ai.oci.genai.region             | OCI 服务区域。                                                                                        | us-chicago-1                         |
+| spring.ai.oci.genai.tenantId           | OCI 租户 OCID，在使用 `simple` 身份验证时使用。                                                              | -                                    |
+| spring.ai.oci.genai.userId             | OCI 用户 OCID，在使用 `simple` 身份验证时使用。                                                              | -                                    |
+| spring.ai.oci.genai.fingerprint        | 私钥指纹，在使用 `simple` 身份验证时使用。                                                                  | -                                    |
+| spring.ai.oci.genai.privateKey         | 私钥内容，在使用 `simple` 身份验证时使用。                                                                  | -                                    |
+| spring.ai.oci.genai.passPhrase         | 可选的私钥密码短语，在使用 `simple` 身份验证和受密码短语保护的私钥时使用。                                                | -                                    |
+| spring.ai.oci.genai.file               | OCI 配置文件路径。在使用 `file` 身份验证时使用。                                                                | 用户主目录/.oci/config                 |
+| spring.ai.oci.genai.profile            | OCI 配置文件名称。在使用 `file` 身份验证时使用。                                                                | DEFAULT                              |
+| spring.ai.oci.genai.endpoint           | 可选的 OCI GenAI 端点。                                                                                   | -                                    |
 
 <Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 
-To enable, spring.ai.model.embedding=oci-genai (It is enabled by default)
+要启用，请设置 spring.ai.model.embedding=oci-genai (默认情况下启用)
 
-To disable, spring.ai.model.embedding=none (or any value which doesn't match oci-genai)
+要禁用，请设置 spring.ai.model.embedding=none (或任何与 oci-genai 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.oci.genai.embedding` is the property prefix that configures the `EmbeddingModel` implementation for OCI GenAI
+前缀 `spring.ai.oci.genai.embedding` 是配置 OCI GenAI 的 `EmbeddingModel` 实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.oci.genai.embedding.enabled (Removed and no longer valid) | Enable OCI GenAI embedding model. | true |
-| spring.ai.model.embedding | Enable OCI GenAI embedding model. | oci-genai |
-| spring.ai.oci.genai.embedding.compartment | Model compartment OCID. | - |
-| spring.ai.oci.genai.embedding.servingMode | The model serving mode to be used. May be `on-demand`, or `dedicated`. | on-demand |
-| spring.ai.oci.genai.embedding.truncate | How to truncate text if it overruns the embedding context. May be `START`, or `END`. | END |
-| spring.ai.oci.genai.embedding.model | The model or model endpoint used for embeddings. | - |
+| 属性                                                                 | 描述                                                                                       | 默认值      |
+| :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------- | :---------- |
+| spring.ai.oci.genai.embedding.enabled (已删除且不再有效)                 | 启用 OCI GenAI 嵌入模型。                                                                      | true        |
+| spring.ai.model.embedding                                            | 启用 OCI GenAI 嵌入模型。                                                                      | oci-genai   |
+| spring.ai.oci.genai.embedding.compartment                            | 模型隔间 OCID。                                                                              | -           |
+| spring.ai.oci.genai.embedding.servingMode                            | 要使用的模型服务模式。可以是 `on-demand` 或 `dedicated`。                                          | on-demand   |
+| spring.ai.oci.genai.embedding.truncate                               | 如果文本超出嵌入上下文，如何截断文本。可以是 `START` 或 `END`。                                            | END         |
+| spring.ai.oci.genai.embedding.model                                  | 用于嵌入的模型或模型端点。                                                                         | -           |
 
 <Tip>
-All properties prefixed with `spring.ai.oci.genai.embedding.options` can be overridden at runtime by adding a request specific [embedding options](#embedding-options) to the `EmbeddingRequest` call.
+所有以 `spring.ai.oci.genai.embedding.options` 为前缀的属性都可以在运行时通过向 `EmbeddingRequest` 调用添加特定于请求的[嵌入选项](#embedding-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The `OCIEmbeddingOptions` provides the configuration information for the embedding requests.
-The `OCIEmbeddingOptions` offers a builder to create the options.
+`OCIEmbeddingOptions` 提供嵌入请求的配置信息。
+`OCIEmbeddingOptions` 提供了一个构建器来创建选项。
 
-At start time use the `OCIEmbeddingOptions` constructor to set the default options used for all embedding requests.
-At run-time you can override the default options, by passing a `OCIEmbeddingOptions` instance with your to the `EmbeddingRequest` request.
+在启动时，使用 `OCIEmbeddingOptions` 构造函数设置用于所有嵌入请求的默认选项。
+在运行时，您可以通过将 `OCIEmbeddingOptions` 实例传递给 `EmbeddingRequest` 请求来覆盖默认选项。
 
-For example to override the default model name for a specific request:
+例如，要覆盖特定请求的默认模型名称：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -105,14 +105,14 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
 ));
 ```
 
-## Sample Code
+## 示例代码
 
-This will create a `EmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+这将创建一个 `EmbeddingModel` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用 `EmbeddingModel` 实现。
 
 ```properties
-spring.ai.oci.genai.embedding.model=<your model>
-spring.ai.oci.genai.embedding.compartment=<your model compartment>
+spring.ai.oci.genai.embedding.model=<你的模型>
+spring.ai.oci.genai.embedding.compartment=<你的模型隔间>
 ```
 
 ```java
@@ -134,10 +134,10 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-If you prefer not to use the Spring Boot auto-configuration, you can manually configure the `OCIEmbeddingModel` in your application.
-For this add the `spring-oci-genai-openai` dependency to your project's Maven `pom.xml` file:
+如果您不想使用 Spring Boot 自动配置，可以在应用程序中手动配置 `OCIEmbeddingModel`。
+为此，请将 `spring-oci-genai-openai` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -146,7 +146,7 @@ For this add the `spring-oci-genai-openai` dependency to your project's Maven `p
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -155,10 +155,10 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-Next, create an `OCIEmbeddingModel` instance and use it to compute the similarity between two input texts:
+接下来，创建一个 `OCIEmbeddingModel` 实例，并用它来计算两个输入文本之间的相似度：
 
 ```java
 final String EMBEDDING_MODEL = "cohere.embed-english-light-v2.0";

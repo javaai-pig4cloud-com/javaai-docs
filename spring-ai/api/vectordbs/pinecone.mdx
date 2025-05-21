@@ -1,37 +1,37 @@
 ---
-title: "Pinecone Vector Database"
+title: "Pinecone 向量数据库"
 ---
 
-Pinecone Vector Database integration in Spring AI provides vector storage and search capabilities using Pinecone's cloud-based vector features.
+Spring AI 中的 Pinecone 向量数据库集成了 Pinecone 基于云的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-Pinecone Vector Database enables:
-- Cloud-based vector storage
-- Real-time similarity search
-- Managed service
-- Scalable architecture
+Pinecone 向量数据库支持：
+- 基于云的向量存储
+- 实时相似性搜索
+- 托管服务
+- 可扩展架构
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Cloud" icon="cloud">
-    Cloud-based storage
+  <Card title="云" icon="cloud">
+    基于云的存储
   </Card>
-  <Card title="Managed" icon="cogs">
-    Managed service
+  <Card title="托管" icon="cogs">
+    托管服务
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time search
+  <Card title="实时" icon="clock">
+    实时搜索
   </Card>
-  <Card title="Scalable" icon="arrows-up-down-left-right">
-    Auto-scaling
+  <Card title="可扩展" icon="arrows-up-down-left-right">
+    自动扩展
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,17 +41,17 @@ Pinecone Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Pinecone Vector Database Configuration
+# Pinecone 向量数据库配置
 spring.ai.pinecone.vectordb.enabled=true
 spring.ai.pinecone.vectordb.api-key=your-api-key
 spring.ai.pinecone.vectordb.environment=us-west1-gcp
 spring.ai.pinecone.vectordb.index-name=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -72,9 +72,9 @@ public class PineconeVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -86,7 +86,7 @@ public class PineconeVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -98,7 +98,7 @@ public class PineconeSimilaritySearchConfig {
 }
 ```
 
-### 3. Index Management
+### 3. 索引管理
 
 ```java
 @Service
@@ -115,9 +115,9 @@ public class IndexService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Index Configuration
+### 自定义索引配置
 
 ```java
 @Configuration
@@ -134,7 +134,7 @@ public class IndexConfig {
 }
 ```
 
-### Namespace Management
+### 命名空间管理
 
 ```java
 @Configuration
@@ -148,40 +148,40 @@ public class NamespaceConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=pinecone-vectordb
 management.endpoint.pinecone-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Pinecone Vector Database, consider these best practices:
+使用 Pinecone 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Index Design**: Design efficient index structure
-- **Namespace Strategy**: Organize data effectively
-- **API Key Management**: Secure API keys
-- **Resource Management**: Choose appropriate pod types
-- **Monitoring**: Set up comprehensive monitoring
+- **索引设计**：设计高效的索引结构
+- **命名空间策略**：有效组织数据
+- **API 密钥管理**：保护 API 密钥
+- **资源管理**：选择合适的 Pod 类型
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify API key
-   - Check environment
-   - Review network settings
+1. **连接问题**
+   - 验证 API 密钥
+   - 检查环境
+   - 查看网络设置
 
-2. **Performance Issues**
-   - Optimize index configuration
-   - Adjust pod type
-   - Review query patterns
+2. **性能问题**
+   - 优化索引配置
+   - 调整 Pod 类型
+   - 查看查询模式
 
-3. **Storage Issues**
-   - Monitor index size
-   - Implement cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控索引大小
+   - 执行清理
+   - 查看保留策略 

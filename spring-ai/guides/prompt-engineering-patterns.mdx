@@ -1,72 +1,72 @@
 ---
-title: Prompt Engineering Patterns
-description: Best practices for prompt engineering in Spring AI
+title: 提示工程模式
+description: Spring AI 中提示工程的最佳实践
 ---
 
-# Prompt Engineering Patterns
+# 提示工程模式
 
-This guide covers common patterns and best practices for prompt engineering in Spring AI applications.
+本指南涵盖了 Spring AI 应用程序中提示工程的常见模式和最佳实践。
 
-## Overview
+## 概述
 
-Prompt engineering is the practice of designing and optimizing prompts to get the best results from AI models.
+提示工程是设计和优化提示以获得 AI 模型最佳结果的实践。
 
-## Common Patterns
+## 常见模式
 
-### Chain of Thought
+### 思维链
 
 ```java
 String prompt = """
-    Let's solve this step by step:
-    1. First, analyze the problem
-    2. Then, break it down into parts
-    3. Finally, provide a solution
+    让我们一步步解决这个问题：
+    1. 首先，分析问题
+    2. 然后，将其分解为部分
+    3. 最后，提供解决方案
     
-    Problem: {problem}
+    问题：{problem}
     """;
 ```
 
-### Few-Shot Learning
+### 少样本学习
 
 ```java
 String prompt = """
-    Here are some examples:
+    这里有一些例子：
     
-    Example 1:
-    Input: "What is the capital of France?"
-    Output: "Paris"
+    示例 1：
+    输入："法国的首都是什么？"
+    输出："巴黎"
     
-    Example 2:
-    Input: "What is the capital of Japan?"
-    Output: "Tokyo"
+    示例 2：
+    输入："日本的首都是什么？"
+    输出："东京"
     
-    Now, answer this:
-    Input: "{question}"
+    现在，回答这个问题：
+    输入："{question}"
     """;
 ```
 
-### Role-Based Prompts
+### 基于角色的提示
 
 ```java
 String prompt = """
-    You are an expert software architect. 
-    Your task is to review the following code and provide suggestions:
+    你是一位专业的软件架构师。
+    你的任务是审查以下代码并提供建议：
     
     {code}
     """;
 ```
 
-## Best Practices
+## 最佳实践
 
-1. Be specific and clear
-2. Provide context
-3. Use examples when possible
-4. Break down complex tasks
-5. Include constraints and requirements
+1. 具体且清晰
+2. 提供上下文
+3. 尽可能使用示例
+4. 分解复杂任务
+5. 包含约束和要求
 
-## Advanced Techniques
+## 高级技术
 
-### Temperature Control
+### 温度控制
 
 ```java
 ChatOptions options = ChatOptions.builder()
@@ -74,17 +74,17 @@ ChatOptions options = ChatOptions.builder()
     .build();
 ```
 
-### System Messages
+### 系统消息
 
 ```java
 String systemMessage = """
-    You are a helpful AI assistant specialized in Java development.
-    Always provide code examples in Java.
+    你是一位专注于 Java 开发的 AI 助手。
+    始终提供 Java 代码示例。
     """;
 ```
 
-## Testing and Evaluation
+## 测试和评估
 
-- Use test cases to validate prompts
-- Measure response quality
-- Iterate and improve based on results 
+- 使用测试用例验证提示
+- 衡量响应质量
+- 根据结果迭代和改进 

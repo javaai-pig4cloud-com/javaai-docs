@@ -1,37 +1,37 @@
 ---
-title: "Chat Memory"
+title: "聊天记忆"
 ---
 
-Chat Memory in Spring AI provides mechanisms to maintain conversation context and history for AI chat applications.
+Spring AI 中的聊天记忆提供了维护 AI 聊天应用程序的对话上下文和历史的机制。
 
-## Overview
+## 概述
 
-Chat Memory enables AI applications to:
-- Maintain conversation history
-- Provide context-aware responses
-- Implement different memory strategies
-- Manage conversation state
+聊天记忆使 AI 应用程序能够：
+- 维护对话历史
+- 提供上下文感知的响应
+- 实现不同的记忆策略
+- 管理对话状态
 
-## Memory Types
+## 记忆类型
 
 <CardGroup cols={2}>
-  <Card title="In-Memory" icon="memory">
-    Simple in-memory storage for development and testing
+  <Card title="内存存储" icon="memory">
+    用于开发和测试的简单内存存储
   </Card>
-  <Card title="Persistent" icon="database">
-    Database-backed storage for production environments
+  <Card title="持久化存储" icon="database">
+    用于生产环境的数据库支持存储
   </Card>
-  <Card title="Distributed" icon="network-wired">
-    Distributed memory for scalable applications
+  <Card title="分布式存储" icon="network-wired">
+    用于可扩展应用程序的分布式存储
   </Card>
-  <Card title="Custom" icon="code">
-    Custom memory implementations for specific needs
+  <Card title="自定义存储" icon="code">
+    用于特定需求的自定义存储实现
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Configuration
+### 基本配置
 
 ```java
 @Configuration
@@ -43,7 +43,7 @@ public class ChatMemoryConfig {
 }
 ```
 
-### Using Chat Memory
+### 使用聊天记忆
 
 ```java
 @Service
@@ -57,16 +57,16 @@ public class ChatService {
     }
 
     public String chat(String message, String sessionId) {
-        // Add message to memory
+        // 将消息添加到记忆中
         chatMemory.addMessage(sessionId, message);
         
-        // Get conversation history
+        // 获取对话历史
         List<Message> history = chatMemory.getMessages(sessionId);
         
-        // Generate response with context
+        // 使用上下文生成响应
         String response = chatClient.generate(history);
         
-        // Store response in memory
+        // 将响应存储在记忆中
         chatMemory.addMessage(sessionId, response);
         
         return response;
@@ -74,27 +74,27 @@ public class ChatService {
 }
 ```
 
-## Memory Strategies
+## 记忆策略
 
-### 1. Fixed Window Memory
+### 1. 固定窗口记忆
 
 ```java
 @Bean
 public ChatMemory fixedWindowMemory() {
-    return new FixedWindowChatMemory(10); // Keep last 10 messages
+    return new FixedWindowChatMemory(10); // 保留最后10条消息
 }
 ```
 
-### 2. Token-Based Memory
+### 2. 基于令牌的记忆
 
 ```java
 @Bean
 public ChatMemory tokenBasedMemory() {
-    return new TokenBasedChatMemory(1000); // Keep messages within token limit
+    return new TokenBasedChatMemory(1000); // 在令牌限制内保留消息
 }
 ```
 
-### 3. Summary Memory
+### 3. 摘要记忆
 
 ```java
 @Bean
@@ -103,7 +103,7 @@ public ChatMemory summaryMemory() {
 }
 ```
 
-## Configuration Properties
+## 配置属性
 
 ```properties
 spring.ai.chat.memory.type=in-memory
@@ -112,62 +112,62 @@ spring.ai.chat.memory.max-tokens=1000
 spring.ai.chat.memory.ttl=3600
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When implementing chat memory, consider these best practices:
+在实现聊天记忆时，请考虑以下最佳实践：
 </Note>
 
-- **Memory Size**: Choose appropriate memory size based on your use case
-- **Persistence**: Use persistent storage for production environments
-- **Cleanup**: Implement proper cleanup mechanisms for old conversations
-- **Security**: Ensure proper data protection and privacy measures
-- **Scalability**: Consider distributed memory for high-scale applications
+- **记忆大小**：根据您的用例选择适当的记忆大小
+- **持久化**：在生产环境中使用持久化存储
+- **清理**：为旧对话实现适当的清理机制
+- **安全性**：确保适当的数据保护和隐私措施
+- **可扩展性**：考虑为高规模应用程序使用分布式记忆
 
-## Advanced Features
+## 高级功能
 
-### Custom Memory Implementation
+### 自定义记忆实现
 
 ```java
 @Component
 public class CustomChatMemory implements ChatMemory {
     @Override
     public void addMessage(String sessionId, String message) {
-        // Custom implementation
+        // 自定义实现
     }
 
     @Override
     public List<Message> getMessages(String sessionId) {
-        // Custom implementation
+        // 自定义实现
         return messages;
     }
 }
 ```
 
-### Memory Monitoring
+### 记忆监控
 
-Monitor memory usage and performance:
+监控记忆使用情况和性能：
 
 ```properties
 management.endpoints.web.exposure.include=chat-memory
 management.endpoint.chat-memory.enabled=true
 ```
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题和解决方案：
 
-1. **Memory Leaks**
-   - Implement proper cleanup
-   - Set appropriate TTL
-   - Monitor memory usage
+1. **内存泄漏**
+   - 实现适当的清理
+   - 设置适当的 TTL
+   - 监控内存使用情况
 
-2. **Performance Issues**
-   - Use appropriate memory type
-   - Implement caching
-   - Optimize storage
+2. **性能问题**
+   - 使用适当的记忆类型
+   - 实现缓存
+   - 优化存储
 
-3. **Scalability**
-   - Use distributed memory
-   - Implement proper partitioning
-   - Consider caching strategies 
+3. **可扩展性**
+   - 使用分布式记忆
+   - 实现适当的分区
+   - 考虑缓存策略 

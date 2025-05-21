@@ -1,37 +1,37 @@
 ---
-title: "Apache Cassandra Vector Database"
+title: "Apache Cassandra 向量数据库"
 ---
 
-Apache Cassandra Vector Database integration in Spring AI provides vector storage and search capabilities using Apache Cassandra's vector features.
+Spring AI 中的 Apache Cassandra 向量数据库集成了 Apache Cassandra 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-Apache Cassandra Vector Database enables:
-- Distributed vector storage
-- Linear scalability
-- High availability
-- Fault tolerance
+Apache Cassandra 向量数据库支持：
+- 分布式向量存储
+- 线性可扩展性
+- 高可用性
+- 容错性
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Distributed Storage" icon="network-wired">
-    Distributed vector storage
+  <Card title="分布式存储" icon="network-wired">
+    分布式向量存储
   </Card>
-  <Card title="Scalability" icon="arrows-up-down-left-right">
-    Linear scaling
+  <Card title="可扩展性" icon="arrows-up-down-left-right">
+    线性扩展
   </Card>
-  <Card title="Availability" icon="server">
-    High availability
+  <Card title="可用性" icon="server">
+    高可用性
   </Card>
-  <Card title="Fault Tolerance" icon="shield">
-    Fault tolerance
+  <Card title="容错性" icon="shield">
+    容错性
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,10 +41,10 @@ Apache Cassandra Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Apache Cassandra Vector Database Configuration
+# Apache Cassandra 向量数据库配置
 spring.ai.cassandra.vectordb.enabled=true
 spring.ai.cassandra.vectordb.contact-points=localhost
 spring.ai.cassandra.vectordb.port=9042
@@ -52,7 +52,7 @@ spring.ai.cassandra.vectordb.keyspace=vectordb
 spring.ai.cassandra.vectordb.table=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -73,9 +73,9 @@ public class CassandraVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -87,7 +87,7 @@ public class CassandraVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -99,7 +99,7 @@ public class CassandraSimilaritySearchConfig {
 }
 ```
 
-### 3. Batch Operations
+### 3. 批量操作
 
 ```java
 @Service
@@ -116,9 +116,9 @@ public class BatchVectorService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Replication Strategy
+### 自定义复制策略
 
 ```java
 @Configuration
@@ -132,7 +132,7 @@ public class ReplicationStrategyConfig {
 }
 ```
 
-### Consistency Level Configuration
+### 一致性级别配置
 
 ```java
 @Configuration
@@ -144,40 +144,40 @@ public class ConsistencyLevelConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=cassandra-vectordb
 management.endpoint.cassandra-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Apache Cassandra Vector Database, consider these best practices:
+使用 Apache Cassandra 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Data Modeling**: Design efficient data models
-- **Replication**: Configure appropriate replication
-- **Consistency**: Choose suitable consistency levels
-- **Compaction**: Optimize compaction strategies
-- **Monitoring**: Set up comprehensive monitoring
+- **数据建模**：设计高效的数据模型
+- **复制**：配置适当的复制
+- **一致性**：选择合适的一致性级别
+- **压缩**：优化压缩策略
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify contact points
-   - Check network connectivity
-   - Review authentication
+1. **连接问题**
+   - 验证联系点
+   - 检查网络连接性
+   - 查看身份验证
 
-2. **Performance Issues**
-   - Optimize data model
-   - Adjust consistency levels
-   - Review compaction strategy
+2. **性能问题**
+   - 优化数据模型
+   - 调整一致性级别
+   - 查看压缩策略
 
-3. **Storage Issues**
-   - Monitor disk usage
-   - Implement cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控磁盘使用情况
+   - 执行清理
+   - 查看保留策略 

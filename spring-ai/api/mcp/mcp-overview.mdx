@@ -1,23 +1,40 @@
 ---
-title: "Model Context Protocol (MCP)"
+title: "MCP 概述"
 ---
 
-The Model Context Protocol (MCP) provides a standardized way to interact with AI models in Spring AI.
+# 模型上下文协议 (MCP) 概述
 
-## MCP Client Boot Starters
+模型上下文协议 (MCP) 为 AI 模型交互定义了一个标准化的消息传递格式。它促进了不同 AI 模型和平台之间的互操作性。
 
-<Card title="MCP Client Boot Starters" href="/spring4ai/api/mcp/mcp-client-boot-starter-docs">
-  Spring Boot starters for MCP client integration
-</Card>
+## 主要特性
 
-## MCP Server Boot Starters
+-   **标准化消息格式**：MCP 为请求、响应和错误消息定义了一个通用的结构。
+-   **模型无关**：该协议设计为可与各种类型的 AI 模型（例如，聊天模型、嵌入模型、图像模型）配合使用。
+-   **可扩展性**：MCP 允许添加自定义元数据和扩展，以支持特定用例。
+-   **互操作性**：通过遵守 MCP，不同的 AI 系统可以无缝通信。
 
-<Card title="MCP Server Boot Starters" href="/spring4ai/api/mcp/mcp-server-boot-starter-docs">
-  Spring Boot starters for MCP server implementation
-</Card>
+## MCP 消息结构
 
-## MCP Utilities
+一个典型的 MCP 消息包含以下组件：
 
-<Card title="MCP Utilities" href="/spring4ai/api/mcp/mcp-helpers">
-  Helper utilities and tools for working with MCP
-</Card> 
+-   **标头 (Headers)**：包含元数据，如消息 ID、时间戳和模型信息。
+-   **正文 (Body)**：携带实际的有效载荷，如用户输入或模型输出。
+-   **上下文 (Context)**：提供有关对话历史或先前交互的附加信息。
+
+## 用例
+
+MCP 可以用于各种场景，包括：
+
+-   在微服务架构中集成多个 AI 模型。
+-   构建可与不同 AI 提供商互操作的应用程序。
+-   标准化 AI 模型交互的日志记录和监控。
+
+## Spring AI 中的 MCP 支持
+
+Spring AI 为 MCP 提供了强大的支持，包括：
+
+-   [MCP 客户端启动器](./mcp-client-boot-starter-docs)：用于轻松与符合 MCP 的服务器集成。
+-   [MCP 服务器启动器](./mcp-server-boot-starter-docs)：用于构建符合 MCP 的服务器应用程序。
+-   [MCP 助手](./mcp-helpers)：用于创建和处理 MCP 消息的实用程序。
+
+通过利用 Spring AI 的 MCP 功能，开发人员可以构建灵活且可互操作的 AI 驱动的应用程序。 

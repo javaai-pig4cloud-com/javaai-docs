@@ -1,37 +1,37 @@
 ---
-title: "Elasticsearch Vector Database"
+title: "Elasticsearch 向量数据库"
 ---
 
-Elasticsearch Vector Database integration in Spring AI provides vector storage and search capabilities using Elasticsearch's vector features.
+Spring AI 中的 Elasticsearch 向量数据库集成了 Elasticsearch 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-Elasticsearch Vector Database enables:
-- Distributed vector storage
-- Advanced search capabilities
-- Real-time vector operations
-- Full-text search integration
+Elasticsearch 向量数据库支持：
+- 分布式向量存储
+- 高级搜索功能
+- 实时向量操作
+- 全文搜索集成
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Distributed Storage" icon="network-wired">
-    Distributed vector storage
+  <Card title="分布式存储" icon="network-wired">
+    分布式向量存储
   </Card>
-  <Card title="Advanced Search" icon="magnifying-glass">
-    Rich search capabilities
+  <Card title="高级搜索" icon="magnifying-glass">
+    丰富的搜索功能
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time operations
+  <Card title="实时" icon="clock">
+    实时操作
   </Card>
-  <Card title="Integration" icon="plug">
-    Full-text search integration
+  <Card title="集成" icon="plug">
+    全文搜索集成
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,17 +41,17 @@ Elasticsearch Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Elasticsearch Vector Database Configuration
+# Elasticsearch 向量数据库配置
 spring.ai.elasticsearch.vectordb.enabled=true
 spring.ai.elasticsearch.vectordb.host=localhost
 spring.ai.elasticsearch.vectordb.port=9200
 spring.ai.elasticsearch.vectordb.index-name=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -72,9 +72,9 @@ public class ElasticsearchVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -86,7 +86,7 @@ public class ElasticsearchVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -98,7 +98,7 @@ public class ElasticsearchSimilaritySearchConfig {
 }
 ```
 
-### 3. Hybrid Search
+### 3. 混合搜索
 
 ```java
 @Service
@@ -111,9 +111,9 @@ public class HybridSearchService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Index Configuration
+### 自定义索引配置
 
 ```java
 @Configuration
@@ -129,7 +129,7 @@ public class IndexConfig {
 }
 ```
 
-### Mapping Configuration
+### 映射配置
 
 ```java
 @Configuration
@@ -144,40 +144,40 @@ public class MappingConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=elasticsearch-vectordb
 management.endpoint.elasticsearch-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Elasticsearch Vector Database, consider these best practices:
+使用 Elasticsearch 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Index Design**: Design efficient index structure
-- **Mapping Optimization**: Optimize field mappings
-- **Shard Management**: Configure appropriate sharding
-- **Query Optimization**: Optimize search queries
-- **Monitoring**: Set up comprehensive monitoring
+- **索引设计**：设计高效的索引结构
+- **映射优化**：优化字段映射
+- **分片管理**：配置适当的分片
+- **查询优化**：优化搜索查询
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify host and port
-   - Check cluster health
-   - Review authentication
+1. **连接问题**
+   - 验证主机和端口
+   - 检查集群健康状况
+   - 查看身份验证
 
-2. **Performance Issues**
-   - Optimize index settings
-   - Adjust shard configuration
-   - Review query patterns
+2. **性能问题**
+   - 优化索引设置
+   - 调整分片配置
+   - 查看查询模式
 
-3. **Storage Issues**
-   - Monitor index size
-   - Configure cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控索引大小
+   - 配置清理
+   - 查看保留策略 

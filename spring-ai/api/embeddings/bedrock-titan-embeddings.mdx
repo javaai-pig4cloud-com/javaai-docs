@@ -1,41 +1,41 @@
 ---
-title: "Bedrock Titan Embeddings"
+title: "Bedrock Titan 向量模型"
 ---
 
-Provides Bedrock Titan Embedding model.
-[Amazon Titan](https://aws.amazon.com/bedrock/titan/) foundation models (FMs) provide customers with a breadth of high-performing image, multimodal embeddings, and text model choices, via a fully managed API.
-Amazon Titan models are created by AWS and pretrained on large datasets, making them powerful, general-purpose models built to support a variety of use cases, while also supporting the responsible use of AI.
-Use them as is or privately customize them with your own data.
+提供 Bedrock Titan Embedding 模型。
+[Amazon Titan](https://aws.amazon.com/bedrock/titan/) 基础模型 (FM) 通过完全托管的 API 为客户提供广泛的高性能图像、多模态嵌入和文本模型选择。
+Amazon Titan 模型由 AWS 创建并在大型数据集上进行了预训练，使其成为功能强大、通用的模型，旨在支持各种用例，同时还支持负责任地使用 AI。
+按原样使用它们或使用您自己的数据私下自定义它们。
 
 <Note>
-Bedrock Titan Embedding supports Text and Image embedding.
+Bedrock Titan Embedding 支持文本和图像嵌入。
 </Note>
 
 <Note>
-Bedrock Titan Embedding does NOT support batch embedding.
+Bedrock Titan Embedding 不支持批量嵌入。
 </Note>
 
-The [AWS Bedrock Titan Model Page](https://aws.amazon.com/bedrock/titan/) and [Amazon Bedrock User Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html) contains detailed information on how to use the AWS hosted model.
+[AWS Bedrock Titan 模型页面](https://aws.amazon.com/bedrock/titan/)和 [Amazon Bedrock 用户指南](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html)包含有关如何使用 AWS 托管模型的详细信息。
 
-## Prerequisites
+## 先决条件
 
-Refer to the [Spring AI documentation on Amazon Bedrock](/spring4ai/api/bedrock) for setting up API access.
+有关设置 API 访问权限，请参阅 [Amazon Bedrock 上的 Spring AI 文档](/spring4ai/api/bedrock)。
 
-### Add Repositories and BOM
+### 添加存储库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 工件发布在 Maven Central 和 Spring Snapshot 存储库中。
+请参阅[工件存储库](/spring4ai/getting-started#artifact-repositories)部分，将这些存储库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (物料清单) 以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Add the `spring-ai-starter-model-bedrock` dependency to your project's Maven `pom.xml` file:
+将 `spring-ai-starter-model-bedrock` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -44,7 +44,7 @@ Add the `spring-ai-starter-model-bedrock` dependency to your project's Maven `po
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -53,22 +53,22 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-### Enable Titan Embedding Support
+### 启用 Titan Embedding 支持
 
-By default, the Titan embedding model is disabled.
-To enable it, set the `spring.ai.model.embedding` property to `bedrock-titan` in your application configuration:
+默认情况下，Titan embedding 模型是禁用的。
+要启用它，请在您的应用程序配置中将 `spring.ai.model.embedding` 属性设置为 `bedrock-titan`：
 
 ```properties
 spring.ai.model.embedding=bedrock-titan
 ```
 
-Alternatively, you can use Spring Expression Language (SpEL) to reference an environment variable:
+或者，您可以使用 Spring 表达式语言 (SpEL) 来引用环境变量：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     model:
@@ -76,54 +76,54 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
+# 在您的环境或 .env 文件中
 export AI_MODEL_EMBEDDING=bedrock-titan
 ```
 
-You can also set this property using Java system properties when starting your application:
+您还可以在启动应用程序时使用 Java 系统属性设置此属性：
 
 ```shell
 java -Dspring.ai.model.embedding=bedrock-titan -jar your-application.jar
 ```
 
-### Embedding Properties
+### Embedding 属性
 
-The prefix `spring.ai.bedrock.aws` is the property prefix to configure the connection to AWS Bedrock.
+前缀 `spring.ai.bedrock.aws` 是用于配置与 AWS Bedrock 连接的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.bedrock.aws.region | AWS region to use. | us-east-1 |
-| spring.ai.bedrock.aws.access-key | AWS access key. | - |
-| spring.ai.bedrock.aws.secret-key | AWS secret key. | - |
+| 属性                             | 描述                | 默认值      |
+| :------------------------------- | :------------------ | :---------- |
+| spring.ai.bedrock.aws.region     | 要使用的 AWS 区域。   | us-east-1   |
+| spring.ai.bedrock.aws.access-key | AWS 访问密钥。      | -           |
+| spring.ai.bedrock.aws.secret-key | AWS 秘密密钥。      | -           |
 
 <Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 
-To enable, spring.ai.model.embedding=bedrock-titan (It is enabled by default)
+要启用，请设置 spring.ai.model.embedding=bedrock-titan (默认情况下启用)
 
-To disable, spring.ai.model.embedding=none (or any value which doesn't match bedrock-titan)
+要禁用，请设置 spring.ai.model.embedding=none (或任何与 bedrock-titan 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.bedrock.titan.embedding` (defined in `BedrockTitanEmbeddingProperties`) is the property prefix that configures the embedding model implementation for Titan.
+前缀 `spring.ai.bedrock.titan.embedding` (在 `BedrockTitanEmbeddingProperties` 中定义) 是为 Titan 配置嵌入模型实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.bedrock.titan.embedding.enabled (Removed and no longer valid) | Enable or disable support for Titan embedding | false |
-| spring.ai.model.embedding | Enable or disable support for Titan embedding | bedrock-titan |
-| spring.ai.bedrock.titan.embedding.model | The model id to use. See the `TitanEmbeddingModel` for the supported models. | amazon.titan-embed-image-v1 |
+| 属性                                                                    | 描述                                                                      | 默认值                        |
+| :---------------------------------------------------------------------- | :------------------------------------------------------------------------ | :---------------------------- |
+| spring.ai.bedrock.titan.embedding.enabled (已删除且不再有效)              | 启用或禁用对 Titan 嵌入的支持                                                  | false                         |
+| spring.ai.model.embedding                                               | 启用或禁用对 Titan 嵌入的支持                                                  | bedrock-titan                 |
+| spring.ai.bedrock.titan.embedding.model                                 | 要使用的模型 ID。有关支持的模型，请参阅 `TitanEmbeddingModel`。                   | amazon.titan-embed-image-v1   |
 
-Supported values are: `amazon.titan-embed-image-v1`, `amazon.titan-embed-text-v1` and `amazon.titan-embed-text-v2:0`.
-Model ID values can also be found in the [AWS Bedrock documentation for base model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids-arns.html).
+支持的值为：`amazon.titan-embed-image-v1`、`amazon.titan-embed-text-v1` 和 `amazon.titan-embed-text-v2:0`。
+模型 ID 值也可以在 [AWS Bedrock 基础模型 ID 文档](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids-arns.html)中找到。
 
-## Runtime Options
+## 运行时选项
 
-The [BedrockTitanEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/BedrockTitanEmbeddingOptions.java) provides model configurations, such as `input-type`.
-On start-up, the default options can be configured with the `BedrockTitanEmbeddingModel(api).withInputType(type)` method or the `spring.ai.bedrock.titan.embedding.input-type` properties.
+[BedrockTitanEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/BedrockTitanEmbeddingOptions.java) 提供模型配置，例如 `input-type`。
+启动时，可以使用 `BedrockTitanEmbeddingModel(api).withInputType(type)` 方法或 `spring.ai.bedrock.titan.embedding.input-type` 属性配置默认选项。
 
-At run-time you can override the default options by adding new, request specific, options to the `EmbeddingRequest` call.
-For example to override the default temperature for a specific request:
+在运行时，您可以通过向 `EmbeddingRequest` 调用添加新的、特定于请求的选项来覆盖默认选项。
+例如，要覆盖特定请求的默认温度：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -133,11 +133,11 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
         .build()));
 ```
 
-## Sample Controller
+## 示例控制器
 
-[Create](https://start.spring.io/) a new Spring Boot project and add the `spring-ai-starter-model-bedrock` to your pom (or gradle) dependencies.
+[创建](https://start.spring.io/)一个新的 Spring Boot 项目，并将 `spring-ai-starter-model-bedrock` 添加到您的 pom (或 gradle) 依赖项中。
 
-Add a `application.properties` file, under the `src/main/resources` directory, to enable and configure the Titan Embedding model:
+在 `src/main/resources` 目录下添加一个 `application.properties` 文件，以启用和配置 Titan Embedding 模型：
 
 ```properties
 spring.ai.bedrock.aws.region=eu-central-1
@@ -148,11 +148,11 @@ spring.ai.model.embedding=bedrock-titan
 ```
 
 <Tip>
-replace the `regions`, `access-key` and `secret-key` with your AWS credentials.
+将 `regions`、`access-key` 和 `secret-key` 替换为您的 AWS 凭证。
 </Tip>
 
-This will create a `EmbeddingController` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the chat model for text generations.
+这将创建一个 `EmbeddingController` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用聊天模型进行文本生成。
 
 ```java
 @RestController
@@ -173,11 +173,11 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-The [BedrockTitanEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/BedrockTitanEmbeddingModel.java) implements the `EmbeddingModel` and uses the [low-level-api](#low-level-api) to connect to the Bedrock Titan service.
+[BedrockTitanEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/BedrockTitanEmbeddingModel.java) 实现了 `EmbeddingModel` 并使用[低级 API](#low-level-api) 连接到 Bedrock Titan 服务。
 
-Add the `spring-ai-bedrock` dependency to your project's Maven `pom.xml` file:
+将 `spring-ai-bedrock` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -186,7 +186,7 @@ Add the `spring-ai-bedrock` dependency to your project's Maven `pom.xml` file:
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -195,10 +195,10 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-Next, create a [BedrockTitanEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/BedrockTitanEmbeddingModel.java) and use it for text embeddings:
+接下来，创建一个 [BedrockTitanEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/BedrockTitanEmbeddingModel.java) 并将其用于文本嵌入：
 
 ```java
 var titanEmbeddingApi = new TitanEmbeddingBedrockApi(
@@ -207,20 +207,20 @@ var titanEmbeddingApi = new TitanEmbeddingBedrockApi(
 var embeddingModel = new BedrockTitanEmbeddingModel(this.titanEmbeddingApi);
 
 EmbeddingResponse embeddingResponse = this.embeddingModel
-    .embedForResponse(List.of("Hello World")); // NOTE titan does not support batch embedding.
+    .embedForResponse(List.of("Hello World")); // 注意：titan 不支持批量嵌入。
 ```
 
-## Low-level TitanEmbeddingBedrockApi Client
+## 低级 TitanEmbeddingBedrockApi 客户端
 
-The [TitanEmbeddingBedrockApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/api/TitanEmbeddingBedrockApi.java) provides is lightweight Java client on top of AWS Bedrock [Titan Embedding models](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-multiemb-models.html).
+[TitanEmbeddingBedrockApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/titan/api/TitanEmbeddingBedrockApi.java) 提供了基于 AWS Bedrock [Titan Embedding 模型](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-multiemb-models.html)的轻量级 Java 客户端。
 
-Following class diagram illustrates the TitanEmbeddingBedrockApi interface and building blocks:
+以下类图说明了 TitanEmbeddingBedrockApi 接口和构建块：
 
 ![Bedrock Titan Embedding Low Level API](bedrock/bedrock-titan-embedding-low-level-api.jpg)
 
-The TitanEmbeddingBedrockApi supports the `amazon.titan-embed-image-v1` and `amazon.titan-embed-image-v1` models for single and batch embedding computation.
+TitanEmbeddingBedrockApi 支持 `amazon.titan-embed-image-v1` 和 `amazon.titan-embed-image-v1` 模型进行单个和批量嵌入计算。
 
-Here is a simple snippet how to use the api programmatically:
+这是一个如何以编程方式使用 api 的简单代码片段：
 
 ```java
 TitanEmbeddingBedrockApi titanEmbedApi = new TitanEmbeddingBedrockApi(
@@ -233,7 +233,7 @@ TitanEmbeddingRequest request = TitanEmbeddingRequest.builder()
 TitanEmbeddingResponse response = this.titanEmbedApi.embedding(this.request);
 ```
 
-To embed an image you need to convert it into `base64` format:
+要嵌入图像，您需要将其转换为 `base64` 格式：
 
 ```java
 TitanEmbeddingBedrockApi titanEmbedApi = new TitanEmbeddingBedrockApi(

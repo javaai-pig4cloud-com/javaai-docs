@@ -1,29 +1,29 @@
 ---
-title: "ZhiPuAI Embeddings"
+title: "智谱AI 向量模型"
 ---
 
-Spring AI supports the ZhiPuAI's text embeddings models.
-ZhiPuAI's text embeddings measure the relatedness of text strings.
-An embedding is a vector (list) of floating point numbers. The distance between two vectors measures their relatedness. Small distances suggest high relatedness and large distances suggest low relatedness.
+Spring AI 支持智谱AI的文本嵌入模型。
+智谱AI的文本嵌入模型衡量文本字符串的相关性。
+嵌入是一个浮点数向量（列表）。两个向量之间的距离衡量它们的相关性。小距离表示高相关性，大距离表示低相关性。
 
-## Prerequisites
+## 先决条件
 
-You will need to create an API with ZhiPuAI to access ZhiPu AI language models.
+您需要使用智谱AI创建一个API才能访问智谱AI语言模型。
 
-Create an account at [ZhiPu AI registration page](https://open.bigmodel.cn/login) and generate the token on the [API Keys page](https://open.bigmodel.cn/usercenter/apikeys).
+在[智谱AI注册页面](https://open.bigmodel.cn/login)创建一个帐户，并在[API密钥页面](https://open.bigmodel.cn/usercenter/apikeys)生成令牌。
 
-The Spring AI project defines a configuration property named `spring.ai.zhipu.api-key` that you should set to the value of the `API Key` obtained from the API Keys page.
+Spring AI项目定义了一个名为`spring.ai.zhipu.api-key`的配置属性，您应该将其设置为从API密钥页面获取的`API Key`的值。
 
-You can set this configuration property in your `application.properties` file:
+您可以在`application.properties`文件中设置此配置属性：
 
 ```properties
-spring.ai.zhipu.api-key=<your-zhipu-api-key>
+spring.ai.zhipu.api-key=<您的智谱AI API密钥>
 ```
 
-For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference an environment variable:
+为了在处理API密钥等敏感信息时增强安全性，您可以使用Spring表达式语言（SpEL）引用环境变量：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     zhipu:
@@ -31,33 +31,33 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
-export ZHIPU_API_KEY=<your-zhipu-api-key>
+# 在您的环境或 .env 文件中
+export ZHIPU_API_KEY=<您的智谱AI API密钥>
 ```
 
-You can also set this configuration programmatically in your application code:
+您还可以在应用程序代码中以编程方式设置此配置：
 
 ```java
-// Retrieve API key from a secure source or environment variable
+// 从安全来源或环境变量中检索API密钥
 String apiKey = System.getenv("ZHIPU_API_KEY");
 ```
 
-### Add Repositories and BOM
+### 添加仓库和BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI的构件发布在Maven Central和Spring Snapshot仓库中。
+请参阅[构件仓库](/spring4ai/getting-started#artifact-repositories)部分，将这些仓库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI提供了一个BOM（物料清单），以确保在整个项目中都使用一致的Spring AI版本。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将Spring AI BOM添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI自动配置、启动器模块的构件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the Azure ZhiPuAI Embedding Model.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI为智谱AI Embedding模型提供Spring Boot自动配置。
+要启用它，请将以下依赖项添加到项目的Maven `pom.xml`文件中：
 
 ```xml
 <dependency>
@@ -66,7 +66,7 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的Gradle `build.gradle`构建文件中。
 
 ```groovy
 dependencies {
@@ -75,78 +75,78 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将Spring AI BOM添加到您的构建文件中。
 </Tip>
 
-### Embedding Properties
+### Embedding属性
 
-#### Retry Properties
+#### 重试属性
 
-The prefix `spring.ai.retry` is used as the property prefix that lets you configure the retry mechanism for the ZhiPuAI Embedding model.
+前缀`spring.ai.retry`用作属性前缀，可让您配置智谱AI Embedding模型的重试机制。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.retry.max-attempts | Maximum number of retry attempts. | 10 |
-| spring.ai.retry.backoff.initial-interval | Initial sleep duration for the exponential backoff policy. | 2 sec. |
-| spring.ai.retry.backoff.multiplier | Backoff interval multiplier. | 5 |
-| spring.ai.retry.backoff.max-interval | Maximum backoff duration. | 3 min. |
-| spring.ai.retry.on-client-errors | If false, throw a NonTransientAiException, and do not attempt retry for `4xx` client error codes | false |
-| spring.ai.retry.exclude-on-http-codes | List of HTTP status codes that should not trigger a retry (e.g. to throw NonTransientAiException). | empty |
-| spring.ai.retry.on-http-codes | List of HTTP status codes that should trigger a retry (e.g. to throw TransientAiException). | empty |
+| 属性                                  | 描述                                                                                         | 默认值    |
+| :------------------------------------ | :------------------------------------------------------------------------------------------- | :-------- |
+| spring.ai.retry.max-attempts          | 最大重试次数。                                                                                 | 10        |
+| spring.ai.retry.backoff.initial-interval | 指数退避策略的初始休眠持续时间。                                                                 | 2 秒     |
+| spring.ai.retry.backoff.multiplier    | 退避间隔乘数。                                                                                 | 5         |
+| spring.ai.retry.backoff.max-interval  | 最大退避持续时间。                                                                               | 3 分钟   |
+| spring.ai.retry.on-client-errors      | 如果为false，则抛出NonTransientAiException，并且不尝试对`4xx`客户端错误代码进行重试。                      | false     |
+| spring.ai.retry.exclude-on-http-codes | 不应触发重试的HTTP状态代码列表（例如，抛出NonTransientAiException）。                                | 空        |
+| spring.ai.retry.on-http-codes         | 应触发重试的HTTP状态代码列表（例如，抛出TransientAiException）。                                  | 空        |
 
-#### Connection Properties
+#### 连接属性
 
-The prefix `spring.ai.zhipuai` is used as the property prefix that lets you connect to ZhiPuAI.
+前缀`spring.ai.zhipuai`用作属性前缀，可让您连接到智谱AI。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.zhipuai.base-url | The URL to connect to | https://open.bigmodel.cn/api/paas |
-| spring.ai.zhipuai.api-key | The API Key | - |
+| 属性                        | 描述             | 默认值                               |
+| :-------------------------- | :--------------- | :----------------------------------- |
+| spring.ai.zhipuai.base-url | 要连接的URL。       | https://open.bigmodel.cn/api/paas |
+| spring.ai.zhipuai.api-key  | API密钥。         | -                                    |
 
-#### Configuration Properties
+#### 配置属性
 
 <Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+Embedding自动配置的启用和禁用现在通过前缀为`spring.ai.model.embedding`的顶级属性进行配置。
 
-To enable, spring.ai.model.embedding=zhipuai (It is enabled by default)
+要启用，请设置 spring.ai.model.embedding=zhipuai (默认启用)
 
-To disable, spring.ai.model.embedding=none (or any value which doesn't match zhipuai)
+要禁用，请设置 spring.ai.model.embedding=none (或任何与zhipuai不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.zhipuai.embedding` is property prefix that configures the `EmbeddingModel` implementation for ZhiPuAI.
+前缀`spring.ai.zhipuai.embedding`是配置智谱AI的`EmbeddingModel`实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.zhipuai.embedding.enabled (Removed and no longer valid) | Enable ZhiPuAI embedding model. | true |
-| spring.ai.model.embedding | Enable ZhiPuAI embedding model. | zhipuai |
-| spring.ai.zhipuai.embedding.base-url | Optional overrides the spring.ai.zhipuai.base-url to provide embedding specific url | - |
-| spring.ai.zhipuai.embedding.api-key | Optional overrides the spring.ai.zhipuai.api-key to provide embedding specific api-key | - |
-| spring.ai.zhipuai.embedding.options.model | The model to use | embedding-2 |
-| spring.ai.zhipuai.embedding.options.dimensions | The number of dimensions, the default value is 2048 when the model is embedding-3 | - |
+| 属性                                                          | 描述                                                                 | 默认值        |
+| :------------------------------------------------------------ | :------------------------------------------------------------------- | :------------ |
+| spring.ai.zhipuai.embedding.enabled (已移除且不再有效)             | 启用智谱AI Embedding模型。                                              | true          |
+| spring.ai.model.embedding                                     | 启用智谱AI Embedding模型。                                              | zhipuai       |
+| spring.ai.zhipuai.embedding.base-url                          | 可选，覆盖spring.ai.zhipuai.base-url以提供特定于Embedding的URL。        | -             |
+| spring.ai.zhipuai.embedding.api-key                           | 可选，覆盖spring.ai.zhipuai.api-key以提供特定于Embedding的API密钥。     | -             |
+| spring.ai.zhipuai.embedding.options.model                     | 要使用的模型。                                                          | embedding-2   |
+| spring.ai.zhipuai.embedding.options.dimensions                | 维度数量，当模型为embedding-3时，默认值为2048。                           | -             |
 
 <Note>
-You can override the common `spring.ai.zhipuai.base-url` and `spring.ai.zhipuai.api-key` for the `ChatModel` and `EmbeddingModel` implementations.
-The `spring.ai.zhipuai.embedding.base-url` and `spring.ai.zhipuai.embedding.api-key` properties if set take precedence over the common properties.
-Similarly, the `spring.ai.zhipuai.chat.base-url` and `spring.ai.zhipuai.chat.api-key` properties if set take precedence over the common properties.
-This is useful if you want to use different ZhiPuAI accounts for different models and different model endpoints.
+您可以为`ChatModel`和`EmbeddingModel`实现覆盖通用的`spring.ai.zhipuai.base-url`和`spring.ai.zhipuai.api-key`。
+如果设置了`spring.ai.zhipuai.embedding.base-url`和`spring.ai.zhipuai.embedding.api-key`属性，则它们优先于通用属性。
+同样，如果设置了`spring.ai.zhipuai.chat.base-url`和`spring.ai.zhipuai.chat.api-key`属性，则它们优先于通用属性。
+如果您想为不同的模型和不同的模型端点使用不同的智谱AI帐户，这将非常有用。
 </Note>
 
 <Tip>
-All properties prefixed with `spring.ai.zhipuai.embedding.options` can be overridden at runtime by adding a request specific [embedding options](#embedding-options) to the `EmbeddingRequest` call.
+所有以`spring.ai.zhipuai.embedding.options`为前缀的属性都可以在运行时通过向`EmbeddingRequest`调用添加特定于请求的[Embedding选项](#embedding-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The [ZhiPuAiEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-zhipuai/src/main/java/org/springframework/ai/zhipuai/ZhiPuAiEmbeddingOptions.java) provides the ZhiPuAI configurations, such as the model to use and etc.
+[ZhiPuAiEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-zhipuai/src/main/java/org/springframework/ai/zhipuai/ZhiPuAiEmbeddingOptions.java)提供了智谱AI的配置，例如要使用的模型等。
 
-The default options can be configured using the `spring.ai.zhipuai.embedding.options` properties as well.
+默认选项也可以使用`spring.ai.zhipuai.embedding.options`属性进行配置。
 
-At start-time use the `ZhiPuAiEmbeddingModel` constructor to set the default options used for all embedding requests.
-At run-time you can override the default options, using a `ZhiPuAiEmbeddingOptions` instance as part of your `EmbeddingRequest`.
+在启动时，使用`ZhiPuAiEmbeddingModel`构造函数设置用于所有Embedding请求的默认选项。
+在运行时，您可以通过在`EmbeddingRequest`中使用`ZhiPuAiEmbeddingOptions`实例来覆盖默认选项。
 
-For example to override the default model name for a specific request:
+例如，要覆盖特定请求的默认模型名称：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -156,13 +156,13 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
         .build()));
 ```
 
-## Sample Controller
+## 示例控制器
 
-This will create a `EmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+这将创建一个`EmbeddingModel`实现，您可以将其注入到您的类中。
+这是一个简单的`@Controller`类的示例，它使用`EmbeddingModel`实现。
 
 ```properties
-spring.ai.zhipuai.api-key=YOUR_API_KEY
+spring.ai.zhipuai.api-key=您的API密钥
 spring.ai.zhipuai.embedding.options.model=embedding-2
 ```
 
@@ -185,10 +185,10 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-If you are not using Spring Boot, you can manually configure the ZhiPuAI Embedding Model.
-For this add the `spring-ai-zhipuai` dependency to your project's Maven `pom.xml` file:
+如果您不使用Spring Boot，则可以手动配置智谱AI Embedding模型。
+为此，请将`spring-ai-zhipuai`依赖项添加到项目的Maven `pom.xml`文件中：
 
 ```xml
 <dependency>
@@ -197,7 +197,7 @@ For this add the `spring-ai-zhipuai` dependency to your project's Maven `pom.xml
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的Gradle `build.gradle`构建文件中。
 
 ```groovy
 dependencies {
@@ -206,15 +206,15 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将Spring AI BOM添加到您的构建文件中。
 </Tip>
 
 <Note>
-The `spring-ai-zhipuai` dependency provides access also to the `ZhiPuAiChatModel`.
-For more information about the `ZhiPuAiChatModel` refer to the [ZhiPuAI Chat Client](/spring4ai/api/chat/zhipuai-chat) section.
+`spring-ai-zhipuai`依赖项还提供对`ZhiPuAiChatModel`的访问。
+有关`ZhiPuAiChatModel`的更多信息，请参阅[智谱AI聊天客户端](/spring4ai/api/chat/zhipuai-chat)部分。
 </Note>
 
-Next, create an `ZhiPuAiEmbeddingModel` instance and use it to compute the similarity between two input texts:
+接下来，创建一个`ZhiPuAiEmbeddingModel`实例，并使用它来计算两个输入文本之间的相似度：
 
 ```java
 var zhiPuAiApi = new ZhiPuAiApi(System.getenv("ZHIPU_AI_API_KEY"));
@@ -229,5 +229,5 @@ EmbeddingResponse embeddingResponse = this.embeddingModel
     .embedForResponse(List.of("Hello World", "World is big and salvation is near"));
 ```
 
-The `ZhiPuAiEmbeddingOptions` provides the configuration information for the embedding requests.
-The options class offers a `builder()` for easy options creation. 
+`ZhiPuAiEmbeddingOptions`为Embedding请求提供配置信息。
+该选项类提供了一个`builder()`，以便轻松创建选项。 

@@ -39,7 +39,7 @@
           "spring-ai/overview/concepts",
           "spring-ai/getting-started",
           {
-            "group": "Reference",
+            "group": "手册",
             "pages": [
               "spring-ai/api/chatclient",
               "spring-ai/api/advisors",
@@ -47,10 +47,10 @@
               "spring-ai/api/structured-output-converter",
               "spring-ai/api/multimodality",
               {
-                "group": "Models",
+                "group": "模型列表",
                 "pages": [
                   {
-                    "group": "Chat Models",
+                    "group": "聊天模型",
                     "pages": [
                       "spring-ai/api/chatmodel",
                       "spring-ai/api/chat/comparison",
@@ -85,7 +85,7 @@
                     ]
                   },
                   {
-                    "group": "Embedding Models",
+                    "group": "向量模型",
                     "pages": [
                       "spring-ai/api/embeddings",
                       "spring-ai/api/embeddings/azure-openai-embeddings",
@@ -106,7 +106,7 @@
                     ]
                   },
                   {
-                    "group": "Image Models",
+                    "group": "图像模型",
                     "pages": [
                       "spring-ai/api/imageclient",
                       "spring-ai/api/image/azure-openai-image",
@@ -117,7 +117,7 @@
                     ]
                   },
                   {
-                    "group": "Audio Models",
+                    "group": "音频模型",
                     "pages": [
                       "spring-ai/api/audio",
                       {
@@ -138,7 +138,7 @@
                     ]
                   },
                   {
-                    "group": "Moderation Models",
+                    "group": "审查模型",
                     "pages": [
                       "spring-ai/api/moderation",
                       "spring-ai/api/moderation/openai-moderation",
@@ -150,7 +150,7 @@
               "spring-ai/api/chat-memory",
               "spring-ai/api/tools",
               {
-                "group": "Model Context Protocol (MCP)",
+                "group": "MCModel Context Protocol",
                 "pages": [
                   "spring-ai/api/mcp/mcp-overview",
                   "spring-ai/api/mcp/mcp-client-boot-starter-docs",
@@ -159,7 +159,7 @@
                 ]
               },
               {
-                "group": "Retrieval Augmented Generation (RAG)",
+                "group": "RAG 知识库",
                 "pages": [
                   "spring-ai/api/retrieval-augmented-generation",
                   "spring-ai/api/etl-pipeline"
@@ -167,7 +167,7 @@
               },
               "spring-ai/api/testing",
               {
-                "group": "Vectordbs",
+                "group": "向量数据库",
                 "pages": [
                   "spring-ai/api/vectordbs/azure",
                   "spring-ai/api/vectordbs/azure-cosmos-db",
@@ -193,7 +193,10 @@
               },
               "spring-ai/observability",
               "spring-ai/api/docker-compose",
-              "spring-ai/api/testcontainers"
+              "spring-ai/api/testcontainers",
+              "spring-ai/guides/prompt-engineering-patterns",
+              "spring-ai/guides/effective-agents",
+              "spring-ai/guides/cloud-bindings"
             ]
           }
         ]
@@ -270,7 +273,7 @@
   "navbar": {
     "links": [
       {
-        "label": "微信交流群",
+        "label": "🔥微信交流群",
         "href": "https://minio.pigx.vip/oss/202501/1735692902.png"
       }
     ],

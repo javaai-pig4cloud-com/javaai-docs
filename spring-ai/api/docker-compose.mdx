@@ -1,64 +1,64 @@
 ---
-title: Development-time Services
-description: Docker Compose services for Spring AI development
+title: AI Docker Compose
+description: Spring AI 开发的 Docker Compose 服务
 ---
 
-# Development-time Services
+# 开发时服务
 
-Spring AI provides Docker Compose configurations for local development and testing.
+Spring AI 为本地开发和测试提供 Docker Compose 配置。
 
-## Overview
+## 概述
 
-This section describes the Docker Compose services available for Spring AI development, including:
+本节描述了可用于 Spring AI 开发的 Docker Compose 服务，包括：
 
-- Vector databases
-- AI model servers
-- Testing utilities
+- 向量数据库
+- AI 模型服务器
+- 测试工具
 
-## Available Services
+## 可用服务
 
-### Vector Databases
+### 向量数据库
 
-- PostgreSQL with pgvector
+- 带 pgvector 的 PostgreSQL
 - Milvus
 - Qdrant
 - Weaviate
 - Chroma
 
-### AI Model Servers
+### AI 模型服务器
 
 - Ollama
 - LocalAI
-- Hugging Face Inference Server
+- Hugging Face 推理服务器
 
-### Testing Utilities
+### 测试工具
 
-- Testcontainers configurations
-- Mock AI services
+- Testcontainers 配置
+- 模拟 AI 服务
 
-## Usage
+## 使用方法
 
-To use these services, you can run:
+要使用这些服务，您可以运行：
 
 ```bash
 docker-compose up -d
 ```
 
-This will start all the necessary services for local development.
+这将启动本地开发所需的所有必要服务。
 
-## Configuration
+## 配置
 
-Each service can be configured through environment variables or Docker Compose overrides.
+每个服务都可以通过环境变量或 Docker Compose 覆盖进行配置。
 
-## Implementation
+## 实现
 
-### Basic Docker Compose Setup
+### 基本 Docker Compose 设置
 
 ```yaml
 version: '3.8'
 
 services:
-  # Vector Store
+  # 向量存储
   pgvector:
     image: pgvector/pgvector:latest
     environment:
@@ -68,7 +68,7 @@ services:
     ports:
       - "5432:5432"
 
-  # AI Model Server
+  # AI 模型服务器
   ollama:
     image: ollama/ollama:latest
     ports:
@@ -76,7 +76,7 @@ services:
     volumes:
       - ollama_data:/root/.ollama
 
-  # Monitoring
+  # 监控
   prometheus:
     image: prom/prometheus:latest
     ports:
@@ -88,25 +88,25 @@ volumes:
   ollama_data:
 ```
 
-### Service Configuration
+### 服务配置
 
 ```yaml
-# Vector Store Configuration
+# 向量存储配置
 spring.ai.vectorstore.pgvector.url=jdbc:postgresql://localhost:5432/vectordb
 spring.ai.vectorstore.pgvector.username=postgres
 spring.ai.vectorstore.pgvector.password=postgres
 
-# AI Model Configuration
+# AI 模型配置
 spring.ai.ollama.base-url=http://localhost:11434
 spring.ai.ollama.model=llama2
 ```
 
-## Service Categories
+## 服务类别
 
-### 1. Vector Stores
+### 1. 向量存储
 
 ```yaml
-# PostgreSQL with pgvector
+# 带 pgvector 的 PostgreSQL
 pgvector:
   image: pgvector/pgvector:latest
   environment:
@@ -124,7 +124,7 @@ milvus:
     - "9091:9091"
 ```
 
-### 2. AI Model Servers
+### 2. AI 模型服务器
 
 ```yaml
 # Ollama
@@ -144,7 +144,7 @@ localai:
     - ./models:/models
 ```
 
-### 3. Monitoring Services
+### 3. 监控服务
 
 ```yaml
 # Prometheus
@@ -164,7 +164,7 @@ grafana:
     - grafana_data:/var/lib/grafana
 ```
 
-## Configuration Properties
+## 配置属性
 
 ```properties
 spring.ai.development.services.enabled=true
@@ -172,24 +172,24 @@ spring.ai.development.services.auto-start=true
 spring.ai.development.services.port-range=8000-9000
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using development-time services, consider these best practices:
+使用开发时服务时，请考虑以下最佳实践：
 </Note>
 
-- **Resource Management**: Monitor resource usage
-- **Data Persistence**: Use volumes for data persistence
-- **Security**: Secure development environments
-- **Networking**: Configure proper network isolation
-- **Documentation**: Document service configurations
+- **资源管理**：监控资源使用情况
+- **数据持久化**：使用卷进行数据持久化
+- **安全性**：保护开发环境
+- **网络**：配置适当的网络隔离
+- **文档**：记录服务配置
 
-## Advanced Features
+## 高级功能
 
-### Custom Service Configuration
+### 自定义服务配置
 
 ```yaml
-# Custom service configuration
+# 自定义服务配置
 services:
   custom-service:
     build:
@@ -201,7 +201,7 @@ services:
       - "8080:8080"
 ```
 
-### Service Health Checks
+### 服务健康检查
 
 ```yaml
 services:
@@ -213,21 +213,21 @@ services:
       retries: 5
 ```
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题和解决方案：
 
-1. **Service Startup Issues**
-   - Check port conflicts
-   - Verify resource availability
-   - Review service logs
+1. **服务启动问题**
+   - 检查端口冲突
+   - 验证资源可用性
+   - 查看服务日志
 
-2. **Connection Problems**
-   - Check network configuration
-   - Verify service health
-   - Test connectivity
+2. **连接问题**
+   - 检查网络配置
+   - 验证服务健康状态
+   - 测试连接性
 
-3. **Resource Issues**
-   - Monitor resource usage
-   - Adjust resource limits
-   - Clean up unused resources 
+3. **资源问题**
+   - 监控资源使用情况
+   - 调整资源限制
+   - 清理未使用的资源 

@@ -1,37 +1,37 @@
 ---
-title: "MariaDB Vector Database"
+title: "MariaDB 向量数据库"
 ---
 
-MariaDB Vector Database integration in Spring AI provides vector storage and search capabilities using MariaDB's vector features.
+Spring AI 中的 MariaDB 向量数据库集成了 MariaDB 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-MariaDB Vector Database enables:
-- Relational vector storage
-- SQL-based vector operations
-- Full-text search integration
-- Transaction support
+MariaDB 向量数据库支持：
+- 关系型向量存储
+- 基于 SQL 的向量操作
+- 全文搜索集成
+- 事务支持
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Relational" icon="database">
-    Relational vector storage
+  <Card title="关系型" icon="database">
+    关系型向量存储
   </Card>
-  <Card title="SQL Support" icon="code">
-    SQL-based operations
+  <Card title="SQL 支持" icon="code">
+    基于 SQL 的操作
   </Card>
-  <Card title="Transactions" icon="exchange-alt">
-    Transaction support
+  <Card title="事务" icon="exchange-alt">
+    事务支持
   </Card>
-  <Card title="Integration" icon="plug">
-    Full-text search integration
+  <Card title="集成" icon="plug">
+    全文搜索集成
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,10 +41,10 @@ MariaDB Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# MariaDB Vector Database Configuration
+# MariaDB 向量数据库配置
 spring.ai.mariadb.vectordb.enabled=true
 spring.ai.mariadb.vectordb.url=jdbc:mariadb://localhost:3306/vectordb
 spring.ai.mariadb.vectordb.username=root
@@ -52,7 +52,7 @@ spring.ai.mariadb.vectordb.password=password
 spring.ai.mariadb.vectordb.table-name=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -73,9 +73,9 @@ public class MariaDBVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -87,7 +87,7 @@ public class MariaDBVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -99,7 +99,7 @@ public class MariaDBSimilaritySearchConfig {
 }
 ```
 
-### 3. Transaction Management
+### 3. 事务管理
 
 ```java
 @Service
@@ -113,9 +113,9 @@ public class TransactionalVectorService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Table Configuration
+### 自定义表配置
 
 ```java
 @Configuration
@@ -131,7 +131,7 @@ public class TableConfig {
 }
 ```
 
-### Index Configuration
+### 索引配置
 
 ```java
 @Configuration
@@ -147,40 +147,40 @@ public class IndexConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=mariadb-vectordb
 management.endpoint.mariadb-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using MariaDB Vector Database, consider these best practices:
+使用 MariaDB 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Table Design**: Design efficient table structure
-- **Index Management**: Optimize index configuration
-- **Transaction Management**: Use appropriate transaction levels
-- **Connection Pooling**: Configure connection pools
-- **Monitoring**: Set up comprehensive monitoring
+- **表设计**：设计高效的表结构
+- **索引管理**：优化索引配置
+- **事务管理**：使用适当的事务级别
+- **连接池**：配置连接池
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify database connection
-   - Check credentials
-   - Review network settings
+1. **连接问题**
+   - 验证数据库连接
+   - 检查凭据
+   - 查看网络设置
 
-2. **Performance Issues**
-   - Optimize table structure
-   - Configure indexes
-   - Review query patterns
+2. **性能问题**
+   - 优化表结构
+   - 配置索引
+   - 查看查询模式
 
-3. **Storage Issues**
-   - Monitor table size
-   - Implement cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控表大小
+   - 执行清理
+   - 查看保留策略 

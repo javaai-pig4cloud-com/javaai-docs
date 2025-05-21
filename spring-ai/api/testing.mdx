@@ -1,37 +1,37 @@
 ---
-title: "Model Evaluation"
+title: "模型评估"
 ---
 
-Model Evaluation in Spring AI provides comprehensive tools and frameworks for testing and evaluating AI models.
+Spring AI 中的模型评估提供了全面的工具和框架，用于测试和评估 AI 模型。
 
-## Overview
+## 概述
 
-Model Evaluation enables developers to:
-- Test model performance
-- Compare different models
-- Validate model outputs
-- Measure model metrics
+模型评估使开发人员能够：
+- 测试模型性能
+- 比较不同模型
+- 验证模型输出
+- 测量模型指标
 
-## Evaluation Types
+## 评估类型
 
 <CardGroup cols={2}>
-  <Card title="Performance Testing" icon="gauge">
-    Measure model speed and resource usage
+  <Card title="性能测试" icon="gauge">
+    测量模型速度和资源使用情况
   </Card>
-  <Card title="Accuracy Testing" icon="bullseye">
-    Evaluate model accuracy and precision
+  <Card title="准确性测试" icon="bullseye">
+    评估模型准确性和精确度
   </Card>
-  <Card title="Regression Testing" icon="code-compare">
-    Ensure model stability across versions
+  <Card title="回归测试" icon="code-compare">
+    确保模型在不同版本间的稳定性
   </Card>
-  <Card title="Integration Testing" icon="plug">
-    Test model integration with other components
+  <Card title="集成测试" icon="plug">
+    测试模型与其他组件的集成
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Test Setup
+### 基本测试设置
 
 ```java
 @SpringBootTest
@@ -41,7 +41,7 @@ public class ModelEvaluationTest {
     
     @Test
     public void testModelResponse() {
-        String prompt = "What is Spring AI?";
+        String prompt = "什么是 Spring AI？";
         String response = chatClient.generate(prompt);
         
         assertNotNull(response);
@@ -50,7 +50,7 @@ public class ModelEvaluationTest {
 }
 ```
 
-### Performance Testing
+### 性能测试
 
 ```java
 @Test
@@ -58,7 +58,7 @@ public void testModelPerformance() {
     ModelEvaluator evaluator = new ModelEvaluator(chatClient);
     
     PerformanceMetrics metrics = evaluator.evaluatePerformance(
-        "Test prompt",
+        "测试提示",
         Duration.ofSeconds(5)
     );
     
@@ -67,7 +67,7 @@ public void testModelPerformance() {
 }
 ```
 
-### Accuracy Testing
+### 准确性测试
 
 ```java
 @Test
@@ -85,9 +85,9 @@ public void testModelAccuracy() {
 }
 ```
 
-## Test Categories
+## 测试类别
 
-### 1. Unit Tests
+### 1. 单元测试
 
 ```java
 @Test
@@ -102,20 +102,20 @@ public void testModelConfiguration() {
 }
 ```
 
-### 2. Integration Tests
+### 2. 集成测试
 
 ```java
 @Test
 public void testModelIntegration() {
-    // Test model integration with other components
+    // 测试模型与其他组件的集成
     ModelService service = new ModelService(chatClient, memory, tools);
     
-    String result = service.processRequest("Test request");
+    String result = service.processRequest("测试请求");
     assertNotNull(result);
 }
 ```
 
-### 3. Load Tests
+### 3. 负载测试
 
 ```java
 @Test
@@ -132,7 +132,7 @@ public void testModelLoad() {
 }
 ```
 
-## Configuration Properties
+## 配置属性
 
 ```properties
 spring.ai.testing.enabled=true
@@ -141,36 +141,36 @@ spring.ai.testing.retry-count=3
 spring.ai.testing.metrics-enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When implementing model evaluation, consider these best practices:
+在实现模型评估时，请考虑以下最佳实践：
 </Note>
 
-- **Test Coverage**: Ensure comprehensive test coverage
-- **Performance Metrics**: Monitor key performance indicators
-- **Error Handling**: Test error scenarios and edge cases
-- **Data Quality**: Use high-quality test datasets
-- **Continuous Testing**: Implement continuous testing in CI/CD
+- **测试覆盖率**：确保全面的测试覆盖率
+- **性能指标**：监控关键性能指标
+- **错误处理**：测试错误场景和边缘情况
+- **数据质量**：使用高质量的测试数据集
+- **持续测试**：在 CI/CD 中实现持续测试
 
-## Advanced Features
+## 高级特性
 
-### Custom Evaluators
+### 自定义评估器
 
 ```java
 @Component
 public class CustomModelEvaluator implements ModelEvaluator {
     @Override
     public EvaluationResults evaluate(Model model, TestDataset dataset) {
-        // Custom evaluation logic
+        // 自定义评估逻辑
         return results;
     }
 }
 ```
 
-### Test Reporting
+### 测试报告
 
-Generate detailed test reports:
+生成详细的测试报告：
 
 ```properties
 spring.ai.testing.reporting.enabled=true
@@ -178,21 +178,21 @@ spring.ai.testing.reporting.format=html
 spring.ai.testing.reporting.location=reports
 ```
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题和解决方案：
 
-1. **Test Failures**
-   - Check model configuration
-   - Verify test data
-   - Review error logs
+1. **测试失败**
+   - 检查模型配置
+   - 验证测试数据
+   - 查看错误日志
 
-2. **Performance Issues**
-   - Optimize test execution
-   - Use appropriate test data size
-   - Implement proper cleanup
+2. **性能问题**
+   - 优化测试执行
+   - 使用适当的测试数据大小
+   - 实现适当的清理
 
-3. **Integration Problems**
-   - Verify component connections
-   - Check configuration
-   - Test in isolation 
+3. **集成问题**
+   - 验证组件连接
+   - 检查配置
+   - 隔离测试 

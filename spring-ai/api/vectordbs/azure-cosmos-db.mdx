@@ -1,253 +1,233 @@
 ---
-title: "Azure Cosmos DB Vector Store"
+title: "Azure Cosmos DB 向量数据库"
 ---
 
-# Azure Cosmos DB
+# Azure Cosmos DB NoSQL 向量数据库
 
-This section walks you through setting up `CosmosDBVectorStore` to store document embeddings and perform similarity searches.
+Spring AI 支持使用 [Azure Cosmos DB for NoSQL](https://learn.microsoft.com/azure/cosmos-db/nosql/) 作为向量数据库，通过其向量嵌入和索引功能。
 
-## What is Azure Cosmos DB?
+## 先决条件
 
-[Azure Cosmos DB](https://azure.microsoft.com/en-us/services/cosmos-db/) is Microsoft's globally distributed cloud-native database service designed for mission-critical applications. It offers high availability, low latency, and the ability to scale horizontally to meet modern application demands.
+1.  **Azure 账户**：您需要一个拥有有效订阅的 Azure 账户。
+2.  **Azure Cosmos DB for NoSQL 资源**：在您的 Azure 账户中创建一个 Azure Cosmos DB for NoSQL 账户。
+    *   在创建过程中，请确保选择"NoSQL" API。
+    *   记下您的 Cosmos DB 端点和主密钥，因为在应用程序配置中将会用到它们。
+3.  **向量嵌入功能**：目前，Azure Cosmos DB for NoSQL 中的向量搜索功能处于预览阶段。您需要按照[这些说明](https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search#register-for-the-preview-of-vector-search-in-azure-cosmos-db-for-nosql)注册预览版。
 
-<Accordion title="More about Azure Cosmos DB">
-Azure Cosmos DB was built from the ground up with global distribution, fine-grained multi-tenancy, and horizontal scalability at its core. It is a foundational service in Azure, used by most of Microsoft's mission critical applications at global scale, including Teams, Skype, Xbox Live, Office 365, Bing, Azure Active Directory, Azure Portal, Microsoft Store, and many others. It is also used by thousands of external customers including OpenAI for ChatGPT and other mission-critical AI applications that require elastic scale, turnkey global distribution, and low latency and high availability across the planet.
-</Accordion>
+## 添加依赖
 
-## What is DiskANN?
+将 `spring-ai-azure-cosmos-db-store-spring-boot-starter` 依赖项添加到您的 `pom.xml` 文件中：
 
-DiskANN (Disk-based Approximate Nearest Neighbor Search) is an innovative technology used in Azure Cosmos DB to enhance the performance of vector searches. It enables efficient and scalable similarity searches across high-dimensional data by indexing embeddings stored in Cosmos DB.
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-azure-cosmos-db-store-spring-boot-starter</artifactId>
+</dependency>
+```
 
-<CardGroup cols={1}>
-  <Card title="Benefits of DiskANN" icon="chart-line">
-    <ul>
-      <li><strong>Efficiency</strong>: By utilizing disk-based structures, DiskANN significantly reduces the time required to find nearest neighbors compared to traditional methods.</li>
-      <li><strong>Scalability</strong>: It can handle large datasets that exceed memory capacity, making it suitable for various applications, including machine learning and AI-driven solutions.</li>
-      <li><strong>Low Latency</strong>: DiskANN minimizes latency during search operations, ensuring that applications can retrieve results quickly even with substantial data volumes.</li>
-    </ul>
-  </Card>
-</CardGroup>
+您还需要一个 `EmbeddingClient` 实现来为您的文档生成向量嵌入。例如，您可以添加 `spring-ai-openai-spring-boot-starter` 以使用 OpenAI 的嵌入模型：
 
-In the context of Spring AI for Azure Cosmos DB, vector searches will create and leverage DiskANN indexes to ensure optimal performance for similarity queries.
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+</dependency>
+```
 
-## Setting up Azure Cosmos DB Vector Store
+## 配置属性
 
-### Auto Configuration
+在您的 `application.properties` 或 `application.yml` 文件中配置 Azure Cosmos DB 和嵌入客户端属性。
 
-The following code demonstrates how to set up the `CosmosDBVectorStore` with auto-configuration:
+### Azure Cosmos DB 属性
+
+```properties
+# Azure Cosmos DB 配置
+spring.ai.vectorstore.cosmosdb.endpoint=YOUR_COSMOS_DB_ENDPOINT # 例如 https://your-account.documents.azure.com:443/
+spring.ai.vectorstore.cosmosdb.key=YOUR_COSMOS_DB_PRIMARY_KEY
+spring.ai.vectorstore.cosmosdb.database-name=your_database_name
+spring.ai.vectorstore.cosmosdb.container-name=your_container_name # 将在其中存储向量的容器
+spring.ai.vectorstore.cosmosdb.create-container-if-not-exists=true # 如果容器不存在则创建 (可选, 默认为 false)
+
+# 向量索引策略 (在容器创建时应用)
+spring.ai.vectorstore.cosmosdb.indexing-policy.vector-indexes[0].path="/embedding" # JSON 文档中包含向量的路径
+spring.ai.vectorstore.cosmosdb.indexing-policy.vector-indexes[0].type="vector-ivf" # 索引类型，例如 vector-ivf, vector-hnsw
+spring.ai.vectorstore.cosmosdb.indexing-policy.vector-indexes[0].num-lists=1 # 对于 IVF (默认为 1)
+spring.ai.vectorstore.cosmosdb.indexing-policy.vector-indexes[0].dimensions=1536 # 嵌入向量的维度 (例如 OpenAI text-embedding-ada-002 为 1536)
+spring.ai.vectorstore.cosmosdb.indexing-policy.vector-indexes[0].distance-function="cosine" # 距离函数，例如 cosine, euclidean, dotproduct
+```
+
+<Note>
+如果 `create-container-if-not-exists` 设置为 `true`，则当容器尚不存在时，将使用提供的 `indexing-policy` 创建它。
+如果容器已存在，则现有索引策略将保持不变，并且提供的 `indexing-policy` 配置将被忽略。
+确保嵌入客户端输出的维度与索引策略中配置的 `dimensions` 匹配。
+</Note>
+
+### 嵌入客户端属性 (例如 OpenAI)
+
+```properties
+# OpenAI EmbeddingClient 配置
+spring.ai.openai.api-key=YOUR_OPENAI_API_KEY
+spring.ai.openai.embedding.options.model=text-embedding-ada-002
+```
+
+## 使用 `VectorStore`
+
+将 `VectorStore` bean 注入到您的组件中以与之交互：
 
 ```java
-package com.example.demo;
-
-import io.micrometer.observation.ObservationRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.document.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
+@Service
+public class MyVectorStoreService {
 
-@SpringBootApplication
-@EnableAutoConfiguration
-public class DemoApplication implements CommandLineRunner {
+    private final VectorStore vectorStore;
 
-    private static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
-
-    @Lazy
     @Autowired
-    private VectorStore vectorStore;
-
-    public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+    public MyVectorStoreService(VectorStore vectorStore) {
+        this.vectorStore = vectorStore;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        Document document1 = new Document(UUID.randomUUID().toString(), "Sample content1", Map.of("key1", "value1"));
-        Document document2 = new Document(UUID.randomUUID().toString(), "Sample content2", Map.of("key2", "value2"));
-        this.vectorStore.add(List.of(document1, document2));
-        List<Document> results = this.vectorStore.similaritySearch(SearchRequest.builder().query("Sample content").topK(1).build());
+    public void addDocuments(List<Document> documents) {
+        vectorStore.add(documents);
+    }
 
-        log.info("Search results: {}", results);
+    public List<Document> findSimilarDocuments(String query, int k) {
+        return vectorStore.similaritySearch(query, k);
+    }
+}
+```
 
-        // Remove the documents from the vector store
-        this.vectorStore.delete(List.of(document1.getId(), document2.getId()));
+### 创建 `CosmosDBVectorStore` Bean (可选)
+
+Spring Boot 会自动配置 `CosmosDBVectorStore` bean。但是，如果您需要自定义配置，可以定义自己的 bean：
+
+```java
+import com.azure.cosmos.CosmosAsyncClient;
+import com.azure.cosmos.CosmosClientBuilder;
+import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.vectorstore.azure.cosmosdb.CosmosDBVectorStore;
+import org.springframework.ai.vectorstore.azure.cosmosdb.CosmosDBVectorStoreConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class MyCosmosDbConfig {
+
+    @Bean
+    public CosmosAsyncClient cosmosAsyncClient() {
+        // 从属性或直接创建 CosmosAsyncClient
+        return new CosmosClientBuilder()
+            .endpoint("YOUR_COSMOS_DB_ENDPOINT")
+            .key("YOUR_COSMOS_DB_PRIMARY_KEY")
+            .buildAsyncClient();
     }
 
     @Bean
-    public ObservationRegistry observationRegistry() {
-        return ObservationRegistry.create();
+    public CosmosDBVectorStore cosmosDBVectorStore(CosmosAsyncClient cosmosAsyncClient, EmbeddingClient embeddingClient) {
+        CosmosDBVectorStoreConfig config = CosmosDBVectorStoreConfig.builder("your_database_name", "your_container_name")
+            // .createContainerIfNotExists(true) // 按需设置
+            // .indexingPolicy(...) // 按需设置索引策略
+            .build();
+        return new CosmosDBVectorStore(cosmosAsyncClient, embeddingClient, config);
     }
 }
 ```
 
-### Adding Dependencies
+## 向量索引
 
-<Note>
-There has been a significant change in the Spring AI auto-configuration and starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
-</Note>
+Azure Cosmos DB for NoSQL 支持多种类型的向量索引，例如 `vector-ivf` 和 `vector-hnsw`。索引的选择取决于您的特定用例和性能要求。
 
-<Tabs>
-  <Tab title="Maven">
-```xml
-<dependency>
-    <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-vector-store-azure-cosmos-db</artifactId>
-</dependency>
+-   **`vector-ivf` (Inverted File Index)**：适用于大型数据集，并在准确性和查询速度之间提供良好的平衡。它将向量空间划分为簇，并在查询时仅搜索最相关的簇。
+-   **`vector-hnsw` (Hierarchical Navigable Small World)**：一种基于图的索引，以其高查询召回率和低延迟而闻名，尤其适用于高维数据。
+
+您可以在 `application.properties` 中的 `spring.ai.vectorstore.cosmosdb.indexing-policy.vector-indexes` 下或在以编程方式配置 `CosmosDBVectorStoreConfig` 时配置索引类型、维度、距离函数和特定于类型的参数 (例如 `num-lists` for IVF)。
+
+```json
+// 示例索引策略 JSON
+{
+  "indexingMode": "consistent",
+  "automatic": true,
+  "includedPaths": [
+    {
+      "path": "/*"
+    }
+  ],
+  "excludedPaths": [
+    {
+      "path": "/\"_etag\"/?"
+    }
+  ],
+  "vectorIndexes": [
+    {
+      "path": "/embedding", // 确保这与您的文档结构匹配
+      "type": "vector-ivf",
+      "numLists": 1,
+      "dimensions": 1536,
+      "distanceFunction": "cosine"
+    }
+  ]
+}
 ```
-  </Tab>
-</Tabs>
-
-## Configuration Properties
-
-The following configuration properties are available for the Cosmos DB vector store:
-
-<AccordionGroup>
-  <Accordion title="Database Properties">
-    <ul>
-      <li><code>spring.ai.vectorstore.cosmosdb.databaseName</code>: The name of the Cosmos DB database to use.</li>
-      <li><code>spring.ai.vectorstore.cosmosdb.containerName</code>: The name of the Cosmos DB container to use.</li>
-      <li><code>spring.ai.vectorstore.cosmosdb.partitionKeyPath</code>: The path for the partition key.</li>
-    </ul>
-  </Accordion>
-  <Accordion title="Vector Properties">
-    <ul>
-      <li><code>spring.ai.vectorstore.cosmosdb.metadataFields</code>: Comma-separated list of metadata fields.</li>
-      <li><code>spring.ai.vectorstore.cosmosdb.vectorStoreThroughput</code>: The throughput for the vector store.</li>
-      <li><code>spring.ai.vectorstore.cosmosdb.vectorDimensions</code>: The number of dimensions for the vectors.</li>
-    </ul>
-  </Accordion>
-  <Accordion title="Authentication Properties">
-    <ul>
-      <li><code>spring.ai.vectorstore.cosmosdb.endpoint</code>: The endpoint for the Cosmos DB.</li>
-      <li><code>spring.ai.vectorstore.cosmosdb.key</code>: The key for the Cosmos DB (if key is not present, <a href="https://learn.microsoft.com/azure/developer/java/sdk/authentication/credential-chains#defaultazurecredential-overview">DefaultAzureCredential</a> will be used).</li>
-    </ul>
-  </Accordion>
-</AccordionGroup>
-
-## Complex Searches with Filters
-
-You can perform more complex searches using filters in the Cosmos DB vector store. Below is a sample demonstrating how to use filters in your search queries:
-
-```java
-Map<String, Object> metadata1 = new HashMap<>();
-metadata1.put("country", "UK");
-metadata1.put("year", 2021);
-metadata1.put("city", "London");
-
-Map<String, Object> metadata2 = new HashMap<>();
-metadata2.put("country", "NL");
-metadata2.put("year", 2022);
-metadata2.put("city", "Amsterdam");
-
-Document document1 = new Document("1", "A document about the UK", this.metadata1);
-Document document2 = new Document("2", "A document about the Netherlands", this.metadata2);
-
-vectorStore.add(List.of(document1, document2));
-
-FilterExpressionBuilder builder = new FilterExpressionBuilder();
-List<Document> results = vectorStore.similaritySearch(SearchRequest.builder().query("The World")
-    .topK(10)
-    .filterExpression((this.builder.in("country", "UK", "NL")).build()).build());
-```
-
-## Manual Configuration
 
 <Tip>
-Using [DefaultAzureCredential](https://learn.microsoft.com/azure/developer/java/sdk/authentication/credential-chains#defaultazurecredential-overview) is recommended for authentication to Azure Cosmos DB.
+有关向量索引的更多详细信息，请参阅 [Azure Cosmos DB for NoSQL 向量索引文档](https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search#vector-indexing-policies)。
 </Tip>
 
-The following code demonstrates how to set up the `CosmosDBVectorStore` without relying on auto-configuration:
+## 元数据过滤
+
+Cosmos DB 向量存储支持使用 [SQL WHERE子句](https://learn.microsoft.com/azure/cosmos-db/nosql/query/where) 和 [相似性搜索过滤器表达式](./../index.mdx#metadata-filtering) 进行元数据过滤。这些过滤器应用于相似性搜索查询期间，以根据其元数据字段缩小结果范围。
+
+过滤器表达式直接转换为 Cosmos DB SQL WHERE 子句。
+
+例如，如果您有带有元数据字段 `genre` 和 `year` 的文档，则可以按如下方式进行过滤：
 
 ```java
-@Bean
-public VectorStore vectorStore(ObservationRegistry observationRegistry) {
-    // Create the Cosmos DB client
-    CosmosAsyncClient cosmosClient = new CosmosClientBuilder()
-            .endpoint(System.getenv("COSMOSDB_AI_ENDPOINT"))
-            .credential(new DefaultAzureCredentialBuilder().build())
-            .userAgentSuffix("SpringAI-CDBNoSQL-VectorStore")
-            .gatewayMode()
-            .buildAsyncClient();
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.filter.Filter;
+import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
 
-    // Create and configure the vector store
-    return CosmosDBVectorStore.builder(cosmosClient, embeddingModel)
-            .databaseName("test-database")
-            .containerName("test-container")
-            // Configure metadata fields for filtering
-            .metadataFields(List.of("country", "year", "city"))
-            // Set the partition key path (optional)
-            .partitionKeyPath("/id")
-            // Configure performance settings
-            .vectorStoreThroughput(1000)
-            .vectorDimensions(1536)  // Match your embedding model's dimensions
-            // Add custom batching strategy (optional)
-            .batchingStrategy(new TokenCountBatchingStrategy())
-            // Add observation registry for metrics
-            .observationRegistry(observationRegistry)
-            .build();
-}
+// ...
 
-@Bean
-public EmbeddingModel embeddingModel() {
-    return new TransformersEmbeddingModel();
-}
+FilterExpressionBuilder b = new FilterExpressionBuilder();
+
+// WHERE genre = 'drama' AND year > 2020
+Filter filter = new Filter(b.eq("genre", "drama").and(b.gt("year", 2020)).build());
+
+SearchRequest request = SearchRequest.query("A tragic hero") // 示例查询通常保留英文
+    .withTopK(5)
+    .withSimilarityThreshold(0.75)
+    .withFilter(filter);
+
+List<Document> results = vectorStore.similaritySearch(request);
 ```
 
-<AccordionGroup>
-  <Accordion title="Builder Configuration Options">
-    <ul>
-      <li><code>databaseName</code>: The name of your Cosmos DB database</li>
-      <li><code>containerName</code>: The name of your container within the database</li>
-      <li><code>partitionKeyPath</code>: The path for the partition key (e.g., "/id")</li>
-      <li><code>metadataFields</code>: List of metadata fields that will be used for filtering</li>
-      <li><code>vectorStoreThroughput</code>: The throughput (RU/s) for the vector store container</li>
-      <li><code>vectorDimensions</code>: The number of dimensions for your vectors (should match your embedding model)</li>
-      <li><code>batchingStrategy</code>: Strategy for batching document operations (optional)</li>
-    </ul>
-  </Accordion>
-</AccordionGroup>
+这将转换为类似于以下的 Cosmos DB 查询：
 
-### Manual Dependency Setup
-
-<Tabs>
-  <Tab title="Maven">
-```xml
-<dependency>
-    <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-azure-cosmos-db-store</artifactId>
-</dependency>
+```sql
+SELECT c.id, c.content, c.metadata, VectorDistance(c.embedding, @embeddingParam) AS similarity
+FROM c
+WHERE c.metadata.genre = 'drama' AND c.metadata.year > 2020
+ORDER BY VectorDistance(c.embedding, @embeddingParam)
 ```
-  </Tab>
-</Tabs>
 
-## Accessing the Native Client
+<Note>
+确保您的容器中存在用于过滤的元数据字段，并且它们已正确索引 (如果需要提高性能)。
+并非所有 Spring AI 过滤器表达式操作符都直接映射到 Cosmos DB SQL 函数。支持基本比较 (`EQ`, `NE`, `GT`, `GTE`, `LT`, `LTE`)、逻辑运算符 (`AND`, `OR`, `NOT`) 和 `IN` / `NIN`。
+</Note>
 
-The Azure Cosmos DB Vector Store implementation provides access to the underlying native Azure Cosmos DB client (`CosmosClient`) through the `getNativeClient()` method:
+## 删除数据
+
+`CosmosDBVectorStore` 支持通过文档 ID 删除数据。
 
 ```java
-CosmosDBVectorStore vectorStore = context.getBean(CosmosDBVectorStore.class);
-Optional<CosmosClient> nativeClient = vectorStore.getNativeClient();
-
-if (nativeClient.isPresent()) {
-    CosmosClient client = nativeClient.get();
-    // Use the native client for Azure Cosmos DB-specific operations
-}
+boolean deleted = vectorStore.delete(List.of("documentId1", "documentId2"));
 ```
 
-<Warning>
-The native client gives you access to Azure Cosmos DB-specific features and operations that might not be exposed through the `VectorStore` interface. Use with caution.
-</Warning> 
+## 总结
+
+通过将 Spring AI 与 Azure Cosmos DB for NoSQL 集成，您可以利用 Azure 的可扩展且全球分布的数据库服务来满足您的向量存储需求，并结合 Spring AI 的简化抽象来构建强大的 AI 应用程序。 

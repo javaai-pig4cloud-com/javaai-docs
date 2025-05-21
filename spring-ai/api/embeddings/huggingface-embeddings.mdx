@@ -1,36 +1,36 @@
 ---
-title: "Hugging Face Embeddings"
+title: "Hugging Face 向量模型"
 ---
 
-Hugging Face Hub is a platform that provides a collaborative environment for creating and sharing tens of thousands of Open Source ML/AI models, data sets, and demo applications.
+Hugging Face Hub 是一个提供协作环境的平台，用于创建和共享数以万计的开源 ML/AI 模型、数据集和演示应用程序。
 
-Inference Endpoints let you deploy AI Models on dedicated infrastructure with a pay-as-you-go billing model.
-You can use infrastructure provided by Amazon Web Services, Microsoft Azure, and Google Cloud Platform.
-Hugging Face lets you run the models on your own machine, but it is quite common to not have enough CPU/GPU resources to run the larger, more AI-focused models.
+推理端点允许您在专用基础设施上部署 AI 模型，并采用即用即付的计费模式。
+您可以使用 Amazon Web Services、Microsoft Azure 和 Google Cloud Platform提供的基础设施。
+Hugging Face 允许您在自己的计算机上运行模型，但通常没有足够的 CPU/GPU 资源来运行更大、更侧重于 AI 的模型。
 
-## Prerequisites
+## 先决条件
 
-You will need to create an Inference Endpoint on Hugging Face and create an API token to access the endpoint.
-Further details can be found [here](https://huggingface.co/docs/inference-endpoints/index).
+您需要在 Hugging Face 上创建一个推理端点，并创建一个 API 令牌以访问该端点。
+更多详细信息可以在[这里](https://huggingface.co/docs/inference-endpoints/index)找到。
 
-The Spring AI project defines two configuration properties:
+Spring AI 项目定义了两个配置属性：
 
-1. `spring.ai.huggingface.embedding.api-key`: Set this to the value of the API token obtained from Hugging Face.
-2. `spring.ai.huggingface.embedding.url`: Set this to the inference endpoint URL obtained when provisioning your model in Hugging Face.
+1. `spring.ai.huggingface.embedding.api-key`：将其设置为从 Hugging Face 获取的 API 令牌的值。
+2. `spring.ai.huggingface.embedding.url`：将其设置为在 Hugging Face 中配置模型时获取的推理端点 URL。
 
-You can find your inference endpoint URL on the Inference Endpoint's UI [here](https://ui.endpoints.huggingface.co/).
+您可以在推理端点的 UI [这里](https://ui.endpoints.huggingface.co/)找到您的推理端点 URL。
 
-You can set these configuration properties in your `application.properties` file:
+您可以在 `application.properties` 文件中设置这些配置属性：
 
 ```properties
-spring.ai.huggingface.embedding.api-key=<your-huggingface-api-key>
-spring.ai.huggingface.embedding.url=<your-inference-endpoint-url>
+spring.ai.huggingface.embedding.api-key=<您的 Hugging Face API 密钥>
+spring.ai.huggingface.embedding.url=<您的推理端点 URL>
 ```
 
-For enhanced security when handling sensitive information like API keys, you can use Spring Expression Language (SpEL) to reference custom environment variables:
+为了在处理 API 密钥等敏感信息时增强安全性，您可以使用 Spring 表达式语言 (SpEL) 引用自定义环境变量：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     huggingface:
@@ -40,33 +40,33 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
-export HUGGINGFACE_API_KEY=<your-huggingface-api-key>
-export HUGGINGFACE_ENDPOINT_URL=<your-inference-endpoint-url>
+# 在您的环境或 .env 文件中
+export HUGGINGFACE_API_KEY=<您的 Hugging Face API 密钥>
+export HUGGINGFACE_ENDPOINT_URL=<您的推理端点 URL>
 ```
 
-You can also set these configurations programmatically in your application code:
+您还可以在应用程序代码中以编程方式设置这些配置：
 
 ```java
-// Retrieve API key and endpoint URL from secure sources or environment variables
+// 从安全来源或环境变量中检索 API 密钥和端点 URL
 String apiKey = System.getenv("HUGGINGFACE_API_KEY");
 String endpointUrl = System.getenv("HUGGINGFACE_ENDPOINT_URL");
 ```
 
-## Add Repositories and BOM
+## 添加存储库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 工件发布在 Maven Central 和 Spring Snapshot 存储库中。
+请参阅[工件存储库](/spring4ai/getting-started#artifact-repositories)部分，将这些存储库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (物料清单) 以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
-> **Note**: There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-> Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+> **注意**：Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+> 有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 
-Spring AI provides Spring Boot auto-configuration for the Hugging Face Embedding Client.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI 为 Hugging Face Embedding 客户端提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -75,7 +75,7 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -83,40 +83,40 @@ dependencies {
 }
 ```
 
-> **Tip**: Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+> **提示**：请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 
-### Embedding Properties
+### Embedding 属性
 
-> **Note**: Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+> **注意**：嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 >
-> To enable, spring.ai.model.embedding=huggingface (It is enabled by default)
+> 要启用，请设置 spring.ai.model.embedding=huggingface (默认情况下启用)
 >
-> To disable, spring.ai.model.embedding=none (or any value which doesn't match huggingface)
+> 要禁用，请设置 spring.ai.model.embedding=none (或任何与 huggingface 不匹配的值)
 >
-> This change is done to allow configuration of multiple models.
+> 此更改是为了允许配置多个模型。
 
-The prefix `spring.ai.huggingface.embedding` is property prefix that configures the `EmbeddingModel` implementation for Hugging Face embeddings.
+前缀 `spring.ai.huggingface.embedding` 是配置 Hugging Face 嵌入的 `EmbeddingModel` 实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.huggingface.embedding.enabled (Removed and no longer valid) | Enable Hugging Face embedding model. | true |
-| spring.ai.model.embedding | Enable Hugging Face embedding model. | huggingface |
-| spring.ai.huggingface.embedding.api-key | The API key for Hugging Face. | - |
-| spring.ai.huggingface.embedding.url | The inference endpoint URL. | - |
-| spring.ai.huggingface.embedding.options.model | The model to use for embeddings. | - |
-| spring.ai.huggingface.embedding.options.metadataMode | Document metadata aggregation mode | EMBED |
+| 属性                                                                    | 描述                               | 默认值        |
+| :---------------------------------------------------------------------- | :--------------------------------- | :------------ |
+| spring.ai.huggingface.embedding.enabled (已删除且不再有效)              | 启用 Hugging Face 嵌入模型。        | true          |
+| spring.ai.model.embedding                                               | 启用 Hugging Face 嵌入模型。        | huggingface   |
+| spring.ai.huggingface.embedding.api-key                                 | Hugging Face 的 API 密钥。        | -             |
+| spring.ai.huggingface.embedding.url                                     | 推理端点 URL。                     | -             |
+| spring.ai.huggingface.embedding.options.model                           | 用于嵌入的模型。                     | -             |
+| spring.ai.huggingface.embedding.options.metadataMode                    | 文档元数据聚合模式。                 | EMBED         |
 
-> **Tip**: All properties prefixed with `spring.ai.huggingface.embedding.options` can be overridden at runtime by adding a request specific embedding options to the `EmbeddingRequest` call.
+> **提示**：所有以 `spring.ai.huggingface.embedding.options` 为前缀的属性都可以在运行时通过向 `EmbeddingRequest` 调用添加特定于请求的嵌入选项来覆盖。
 
-## Runtime Options
+## 运行时选项
 
-Use the `HuggingFaceEmbeddingOptions` to configure the `HuggingFaceEmbeddingModel` with options, such as the model to use and etc.
+使用 `HuggingFaceEmbeddingOptions` 通过选项（例如要使用的模型等）配置 `HuggingFaceEmbeddingModel`。
 
-On start you can pass a `HuggingFaceEmbeddingOptions` to the `HuggingFaceEmbeddingModel` constructor to configure the default options used for all embedding requests.
+启动时，您可以将 `HuggingFaceEmbeddingOptions` 传递给 `HuggingFaceEmbeddingModel` 构造函数，以配置用于所有嵌入请求的默认选项。
 
-At run-time you can override the default options, using a `HuggingFaceEmbeddingOptions` in your `EmbeddingRequest`.
+在运行时，您可以通过在 `EmbeddingRequest` 中使用 `HuggingFaceEmbeddingOptions` 来覆盖默认选项。
 
-For example to override the default model name for a specific request:
+例如，要覆盖特定请求的默认模型名称：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -126,10 +126,10 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
                 .build()));
 ```
 
-## Sample Controller
+## 示例控制器
 
-This will create a `EmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+这将创建一个 `EmbeddingModel` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用 `EmbeddingModel` 实现。
 
 ```java
 @RestController
@@ -150,10 +150,10 @@ public class EmbeddingController {
 }
 ```
 
-## Manual configuration
+## 手动配置
 
-Instead of using the Spring Boot auto-configuration, you can create the `HuggingFaceEmbeddingModel` manually.
-For this add the `spring-ai-huggingface` dependency to your project's Maven `pom.xml` file:
+您可以不使用 Spring Boot 自动配置，而是手动创建 `HuggingFaceEmbeddingModel`。
+为此，请将 `spring-ai-huggingface` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -162,7 +162,7 @@ For this add the `spring-ai-huggingface` dependency to your project's Maven `pom
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -170,9 +170,9 @@ dependencies {
 }
 ```
 
-> **Tip**: Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+> **提示**：请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 
-Next, create a `HuggingFaceEmbeddingModel` instance and use it to compute embeddings:
+接下来，创建一个 `HuggingFaceEmbeddingModel` 实例并用它来计算嵌入：
 
 ```java
 HuggingFaceEmbeddingModel embeddingModel = new HuggingFaceEmbeddingModel(
@@ -186,9 +186,9 @@ EmbeddingResponse embeddingResponse = this.embeddingModel
     .embedForResponse(List.of("Hello World", "World is big and salvation is near"));
 ```
 
-> **Note**: When created manually, you must call the `afterPropertiesSet()` after setting the properties and before using the client.
-> It is more convenient (and preferred) to create the HuggingFaceEmbeddingModel as a `@Bean`.
-> Then you don't have to call the `afterPropertiesSet()` manually:
+> **注意**：手动创建时，必须在设置属性之后和使用客户端之前调用 `afterPropertiesSet()`。
+> 将 HuggingFaceEmbeddingModel 创建为 `@Bean` 更方便（且推荐）。
+> 这样您就不必手动调用 `afterPropertiesSet()`：
 
 ```java
 @Bean

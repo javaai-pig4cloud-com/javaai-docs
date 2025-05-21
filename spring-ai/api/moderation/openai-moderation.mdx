@@ -1,37 +1,37 @@
 ---
-title: "OpenAI Moderation"
+title: "OpenAI 内容审核"
 ---
 
-OpenAI Moderation in Spring AI provides content moderation capabilities using OpenAI's moderation models.
+Spring AI 中的 OpenAI 内容审核功能使用 OpenAI 的审核模型提供内容审核能力。
 
-## Overview
+## 概述
 
-OpenAI Moderation enables:
-- Content safety checks
-- Harmful content detection
-- Policy compliance verification
-- Automated content filtering
+OpenAI 内容审核能够：
+- 内容安全检查
+- 有害内容检测
+- 策略合规性验证
+- 自动化内容过滤
 
-## Features
+## 功能
 
 <CardGroup cols={2}>
-  <Card title="Content Safety" icon="shield">
-    Detect harmful or inappropriate content
+  <Card title="内容安全" icon="shield">
+    检测有害或不当内容
   </Card>
-  <Card title="Policy Compliance" icon="check">
-    Verify content against policies
+  <Card title="策略合规" icon="check">
+    验证内容是否符合策略
   </Card>
-  <Card title="Multi-category" icon="list">
-    Check multiple content categories
+  <Card title="多类别" icon="list">
+    检查多个内容类别
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time content moderation
+  <Card title="实时" icon="clock">
+    实时内容审核
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,16 +41,16 @@ OpenAI Moderation enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# OpenAI Moderation Configuration
+# OpenAI 内容审核配置
 spring.ai.openai.moderation.enabled=true
 spring.ai.openai.moderation.api-key=${OPENAI_API_KEY}
 spring.ai.openai.moderation.model=text-moderation-latest
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -67,9 +67,9 @@ public class ContentModerationService {
 }
 ```
 
-## Moderation Categories
+## 审核类别
 
-### 1. Basic Moderation
+### 1. 基本审核
 
 ```java
 @Configuration
@@ -81,7 +81,7 @@ public class ModerationConfig {
 }
 ```
 
-### 2. Custom Categories
+### 2. 自定义类别
 
 ```java
 @Configuration
@@ -96,7 +96,7 @@ public class CustomModerationConfig {
 }
 ```
 
-### 3. Threshold-based Moderation
+### 3. 基于阈值的审核
 
 ```java
 @Configuration
@@ -111,9 +111,9 @@ public class ThresholdModerationConfig {
 }
 ```
 
-## Advanced Features
+## 高级功能
 
-### Custom Moderation Rules
+### 自定义审核规则
 
 ```java
 @Component
@@ -127,40 +127,40 @@ public class CustomModerationRules implements ModerationRules {
 }
 ```
 
-### Moderation Monitoring
+### 审核监控
 
 ```properties
 management.endpoints.web.exposure.include=openai-moderation
 management.endpoint.openai-moderation.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using OpenAI Moderation, consider these best practices:
+使用 OpenAI 内容审核时，请考虑以下最佳实践：
 </Note>
 
-- **API Key Security**: Secure your API key
-- **Error Handling**: Implement proper error handling
-- **Rate Limiting**: Monitor API usage
-- **Content Filtering**: Define clear content policies
-- **Monitoring**: Track moderation results
+- **API 密钥安全**：保护您的 API 密钥
+- **错误处理**：实现适当的错误处理
+- **速率限制**：监控 API 使用情况
+- **内容过滤**：定义清晰的内容策略
+- **监控**：跟踪审核结果
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题和解决方案：
 
-1. **API Issues**
-   - Check API key
-   - Verify API limits
-   - Review error responses
+1. **API 问题**
+   - 检查 API 密钥
+   - 验证 API 限制
+   - 查看错误响应
 
-2. **Performance Issues**
-   - Optimize request frequency
-   - Implement caching
-   - Use batch processing
+2. **性能问题**
+   - 优化请求频率
+   - 实现缓存
+   - 使用批处理
 
-3. **Content Issues**
-   - Review moderation thresholds
-   - Update content policies
-   - Monitor false positives 
+3. **内容问题**
+   - 查看审核阈值
+   - 更新内容策略
+   - 监控误报 

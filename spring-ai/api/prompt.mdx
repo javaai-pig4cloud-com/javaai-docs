@@ -1,38 +1,37 @@
 ---
-title: "Prompts"
+title: "提示词"
 ---
 
-Prompts are the inputs that guide an AI model to generate specific outputs.
-The design and phrasing of these prompts significantly influence the model's responses.
+提示是引导 AI 模型生成特定输出的输入。
+提示的设计和措辞会显著影响模型的响应。
 
-At the lowest level of interaction with AI models in Spring AI, handling prompts in Spring AI is somewhat similar to managing the "View" in Spring MVC.
-This involves creating extensive text with placeholders for dynamic content.
-These placeholders are then replaced based on user requests or other code in the application.
-Another analogy is a SQL statement that contain placeholders for certain expressions.
+在 Spring AI 中与 AI 模型交互的最低层级，处理提示有点类似于在 Spring MVC 中管理"视图"。
+这涉及创建带有动态内容占位符的大段文本。
+这些占位符随后会根据用户请求或应用程序中的其他代码进行替换。
+另一个类比是包含某些表达式占位符的 SQL 语句。
 
-As Spring AI evolves, it will introduce higher levels of abstraction for interacting with AI models.
-The foundational classes described in this section can be likened to JDBC in terms of their role and functionality.
-The `ChatModel` class, for instance, is analogous to the core JDBC library in the JDK.
-The `ChatClient` class can be likened to the `JdbcClient`, built on top of `ChatModel` and providing more advanced constructs via `Advisor`
-to consider past interactions with the model, augment the prompt with additional contextual documents, and introduce agentic behavior.
+随着 Spring AI 的发展，它将引入更高级别的与 AI 模型交互的抽象。
+本节描述的基础类在其角色和功能上可以类比为 JDBC。
+例如，`ChatModel` 类类似于 JDK 中的核心 JDBC 库。
+`ChatClient` 类类似于 `JdbcClient`，它构建在 `ChatModel` 之上，并通过 `Advisor` 提供更高级的构造，能够考虑与模型的历史交互、用额外的上下文文档增强提示，并引入代理行为。
 
-The structure of prompts has evolved over time within the AI field.
-Initially, prompts were simple strings.
-Over time, they grew to include placeholders for specific inputs, like "USER:", which the AI model recognizes.
-OpenAI have introduced even more structure to prompts by categorizing multiple message strings into distinct roles before they are processed by the AI model.
+提示的结构在 AI 领域内随着时间的推移而演变。
+最初，提示只是简单的字符串。
+随着时间的推移，它们发展为包含特定输入占位符，如"USER:"，AI 模型能够识别。
+OpenAI 通过在处理前将多条消息字符串分类为不同角色，为提示引入了更多结构。
 
-## API Overview
+## API 概述
 
 ### Prompt
 
-It is common to use the `call()` method of `ChatModel` that takes a `Prompt` instance and returns a `ChatResponse`.
+通常会使用 `ChatModel` 的 `call()` 方法，该方法接受一个 `Prompt` 实例并返回一个 `ChatResponse`。
 
-The `Prompt` class functions as a container for an organized series of `Message` objects and a request `ChatOptions`.
-Every `Message` embodies a unique role within the prompt, differing in its content and intent.
-These roles can encompass a variety of elements, from user inquiries to AI-generated responses to relevant background information.
-This arrangement enables intricate and detailed interactions with AI models, as the prompt is constructed from multiple messages, each assigned a specific role to play in the dialogue.
+`Prompt` 类作为有序 `Message` 对象序列和请求 `ChatOptions` 的容器。
+每个 `Message` 在提示中都具有独特的角色，内容和意图各不相同。
+这些角色可以包含多种元素，从用户提问到 AI 生成的响应，再到相关的背景信息。
+这种安排使与 AI 模型的交互变得复杂且详细，因为提示由多个消息构建，每个消息在对话中扮演特定角色。
 
-Below is a truncated version of the Prompt class, with constructors and utility methods omitted for brevity:
+下面是 Prompt 类的简化版本，省略了构造函数和工具方法：
 
 ```java
 public class Prompt implements ModelRequest<List<Message>> {
@@ -45,9 +44,9 @@ public class Prompt implements ModelRequest<List<Message>> {
 
 ### Message
 
-The `Message` interface encapsulates a `Prompt` textual content, a collection of metadata attributes, and a categorization known as `MessageType`.
+`Message` 接口封装了提示的文本内容、元数据属性集合和称为 `MessageType` 的分类。
 
-The interface is defined as follows:
+接口定义如下：
 
 ```java
 public interface Content {
@@ -63,7 +62,7 @@ public interface Message extends Content {
 }
 ```
 
-The multimodal message types implement also the `MediaContent` interface providing a list of `Media` content objects.
+多模态消息类型还实现了 `MediaContent` 接口，提供 `Media` 内容对象列表。
 
 ```java
 public interface MediaContent extends Content {
@@ -73,40 +72,40 @@ public interface MediaContent extends Content {
 }
 ```
 
-Various implementations of the `Message` interface correspond to different categories of messages that an AI model can process. 
-The Models distinguish between message categories based on conversational roles. 
+`Message` 接口有多种实现，对应于 AI 模型可以处理的不同类别的消息。
+模型根据对话角色区分消息类别。
 
-<Frame caption="Spring AI Message API">
+<Frame caption="Spring AI 消息 API">
   <img src="/images/spring-ai-message-api.jpg" width="800" />
 </Frame>
 
-These roles are effectively mapped by the `MessageType`, as discussed below.
+这些角色由 `MessageType` 有效映射，如下所述。
 
-#### Roles
+#### 角色
 
-Each message is assigned a specific role.
-These roles categorize the messages, clarifying the context and purpose of each segment of the prompt for the AI model.
-This structured approach enhances the nuance and effectiveness of communication with the AI, as each part of the prompt plays a distinct and defined role in the interaction.
+每条消息都被分配了一个特定角色。
+这些角色对消息进行分类，为 AI 模型澄清每个提示片段的上下文和目的。
+这种结构化方法增强了与 AI 的交流的细致性和有效性，因为提示的每一部分在交互中都扮演着独特且明确定义的角色。
 
 <CardGroup cols={2}>
-  <Card title="System Role" icon="cogs">
-    Guides the AI's behavior and response style, setting parameters or rules for how the AI interprets and replies to the input. It's akin to providing instructions to the AI before initiating a conversation.
+  <Card title="系统角色" icon="cogs">
+    指导 AI 的行为和响应风格，设置参数或规则，规定 AI 如何解释和回复输入。类似于在开始对话前为 AI 提供指令。
   </Card>
-  <Card title="User Role" icon="user">
-    Represents the user's input – their questions, commands, or statements to the AI. This role is fundamental as it forms the basis of the AI's response.
+  <Card title="用户角色" icon="user">
+    代表用户的输入——他们对 AI 的问题、命令或陈述。这个角色是基础，因为它构成了 AI 响应的依据。
   </Card>
-  <Card title="Assistant Role" icon="robot">
-    The AI's response to the user's input. More than just an answer or reaction, it's crucial for maintaining the flow of the conversation. 
-    By tracking the AI's previous responses (its 'Assistant Role' messages), the system ensures coherent and contextually relevant interactions.
-    The Assistant message may contain Function Tool Call request information as well.
-    It's like a special feature in the AI, used when needed to perform specific functions such as calculations, fetching data, or other tasks beyond just talking.
+  <Card title="助手角色" icon="robot">
+    AI 对用户输入的响应。不仅仅是答案或反应，对于维持对话的流畅性至关重要。
+    通过跟踪 AI 先前的响应（其"助手角色"消息），系统确保交互的连贯性和上下文相关性。
+    助手消息还可能包含函数工具调用请求信息。
+    这就像 AI 的一个特殊功能，在需要时用于执行特定功能，如计算、获取数据或其他超出对话的任务。
   </Card>
-  <Card title="Tool/Function Role" icon="tools">
-    The Tool/Function Role focuses on returning additional information in response to Tool Call Assistant Messages.
+  <Card title="工具/函数角色" icon="tools">
+    工具/函数角色专注于响应工具调用助手消息时返回额外信息。
   </Card>
 </CardGroup>
 
-Roles are represented as an enumeration in Spring AI as shown below
+角色在 Spring AI 中以枚举方式表示，如下所示：
 
 ```java
 public enum MessageType {
@@ -125,16 +124,16 @@ public enum MessageType {
 
 ### PromptTemplate
 
-A key component for prompt templating in Spring AI is the `PromptTemplate` class, designed to facilitate the creation of structured prompts that are then sent to the AI model for processing
+Spring AI 中提示模板的关键组件是 `PromptTemplate` 类，旨在便于创建结构化提示，然后将其发送给 AI 模型进行处理。
 
 ```java
 public class PromptTemplate implements PromptTemplateActions, PromptTemplateMessageActions {
 
-    // Other methods to be discussed later
+    // 其他方法后续讨论
 }
 ```
 
-This class uses the `TemplateRenderer` API to render templates. By default, Spring AI uses the `StTemplateRenderer` implementation, which is based on the open-source [StringTemplate](https://www.stringtemplate.org/) engine developed by Terence Parr. Template variables are identified by the `{}` syntax, but you can configure the delimiters to use other syntax as well.
+该类使用 `TemplateRenderer` API 渲染模板。默认情况下，Spring AI 使用基于 Terence Parr 开发的开源 [StringTemplate](https://www.stringtemplate.org/) 引擎的 `StTemplateRenderer` 实现。模板变量由 `{}` 语法标识，但您也可以配置分隔符以使用其他语法。
 
 ```java
 public interface TemplateRenderer extends BiFunction<String, Map<String, Object>, String> {
@@ -145,18 +144,18 @@ public interface TemplateRenderer extends BiFunction<String, Map<String, Object>
 }
 ```
 
-Spring AI uses the `TemplateRenderer` interface to handle the actual substitution of variables into the template string.
-The default implementation uses StringTemplate.
-You can provide your own implementation of `TemplateRenderer` if you need custom logic.
-For scenarios where no template rendering is required (e.g., the template string is already complete), you can use the provided `NoOpTemplateRenderer`.
+Spring AI 使用 `TemplateRenderer` 接口处理变量到模板字符串的实际替换。
+默认实现使用 StringTemplate。
+如果需要自定义逻辑，您可以提供自己的 `TemplateRenderer` 实现。
+对于不需要模板渲染的场景（例如模板字符串已完整），可以使用提供的 `NoOpTemplateRenderer`。
 
 <CodeGroup>
-  <code title="Custom StringTemplate renderer">
+  <code title="自定义 StringTemplate 渲染器">
 ```java
 PromptTemplate promptTemplate = PromptTemplate.builder()
     .renderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
     .template("""
-            Tell me the names of 5 movies whose soundtrack was composed by <composer>.
+            告诉我 5 部由 <composer> 作曲的电影名称。
             """)
     .build();
 
@@ -165,15 +164,15 @@ String prompt = promptTemplate.render(Map.of("composer", "John Williams"));
   </code>
 </CodeGroup>
 
-The interfaces implemented by this class support different aspects of prompt creation:
+该类实现的接口支持提示创建的不同方面：
 
-- `PromptTemplateStringActions` focuses on creating and rendering prompt strings, representing the most basic form of prompt generation.
-- `PromptTemplateMessageActions` is tailored for prompt creation through the generation and manipulation of `Message` objects.
-- `PromptTemplateActions` is designed to return the `Prompt` object, which can be passed to `ChatModel` for generating a response.
+- `PromptTemplateStringActions` 专注于创建和渲染提示字符串，代表最基本的提示生成形式。
+- `PromptTemplateMessageActions` 针对通过生成和操作 `Message` 对象进行提示创建。
+- `PromptTemplateActions` 旨在返回 `Prompt` 对象，可传递给 `ChatModel` 以生成响应。
 
-While these interfaces might not be used extensively in many projects, they show the different approaches to prompt creation.
+虽然这些接口在许多项目中可能不会被广泛使用，但它们展示了提示创建的不同方法。
 
-The implemented interfaces are:
+实现的接口如下：
 
 ```java
 public interface PromptTemplateStringActions {
@@ -185,9 +184,9 @@ public interface PromptTemplateStringActions {
 }
 ```
 
-<Accordion title="PromptTemplateStringActions Methods">
-  - `String render()`: Renders a prompt template into a final string format without external input, suitable for templates without placeholders or dynamic content.
-  - `String render(Map<String, Object> model)`: Enhances rendering functionality to include dynamic content. It uses a `Map<String, Object>` where map keys are placeholder names in the prompt template, and values are the dynamic content to be inserted.
+<Accordion title="PromptTemplateStringActions 方法">
+  - `String render()`：将提示模板渲染为最终字符串格式，无需外部输入，适用于无占位符或动态内容的模板。
+  - `String render(Map<String, Object> model)`：增强渲染功能以包含动态内容。它使用 `Map<String, Object>`，其中 map 的键是提示模板中的占位符名称，值是要插入的动态内容。
 </Accordion>
 
 ```java
@@ -202,10 +201,10 @@ public interface PromptTemplateMessageActions {
 }
 ```
 
-<Accordion title="PromptTemplateMessageActions Methods">
-  - `Message createMessage()`: Creates a `Message` object without additional data, used for static or predefined message content.
-  - `Message createMessage(List<Media> mediaList)`: Creates a `Message` object with static textual and media content.
-  - `Message createMessage(Map<String, Object> model)`: Extends message creation to integrate dynamic content, accepting a `Map<String, Object>` where each entry represents a placeholder in the message template and its corresponding dynamic value.
+<Accordion title="PromptTemplateMessageActions 方法">
+  - `Message createMessage()`：创建不带附加数据的 `Message` 对象，用于静态或预定义的消息内容。
+  - `Message createMessage(List<Media> mediaList)`：创建带有静态文本和媒体内容的 `Message` 对象。
+  - `Message createMessage(Map<String, Object> model)`：扩展消息创建以集成动态内容，接受 `Map<String, Object>`，每个条目代表消息模板中的占位符及其对应的动态值。
 </Accordion>
 
 ```java
@@ -222,16 +221,16 @@ public interface PromptTemplateActions extends PromptTemplateStringActions {
 }
 ```
 
-<Accordion title="PromptTemplateActions Methods">
-  - `Prompt create()`: Generates a `Prompt` object without external data inputs, ideal for static or predefined prompts.
-  - `Prompt create(ChatOptions modelOptions)`: Generates a `Prompt` object without external data inputs and with specific options for the chat request.
-  - `Prompt create(Map<String, Object> model)`: Expands prompt creation capabilities to include dynamic content, taking a `Map<String, Object>` where each map entry is a placeholder in the prompt template and its associated dynamic value.
-  - `Prompt create(Map<String, Object> model, ChatOptions modelOptions)`: Expands prompt creation capabilities to include dynamic content, taking a `Map<String, Object>` where each map entry is a placeholder in the prompt template and its associated dynamic value, and specific options for the chat request.
+<Accordion title="PromptTemplateActions 方法">
+  - `Prompt create()`：生成不带外部数据输入的 `Prompt` 对象，适用于静态或预定义的提示。
+  - `Prompt create(ChatOptions modelOptions)`：生成不带外部数据输入且带有特定聊天请求选项的 `Prompt` 对象。
+  - `Prompt create(Map<String, Object> model)`：扩展提示创建能力以包含动态内容，接受 `Map<String, Object>`，每个 map 条目是提示模板中的占位符及其关联的动态值。
+  - `Prompt create(Map<String, Object> model, ChatOptions modelOptions)`：扩展提示创建能力以包含动态内容，接受 `Map<String, Object>`，每个 map 条目是提示模板中的占位符及其关联的动态值，并带有特定的聊天请求选项。
 </Accordion>
 
-## Example Usage
+## 示例用法
 
-A simple example taken from the [AI Workshop on PromptTemplates](https://github.com/Azure-Samples/spring-ai-azure-workshop/blob/main/2-README-prompt-templating.md) is shown below.
+以下是 [AI Workshop on PromptTemplates](https://github.com/Azure-Samples/spring-ai-azure-workshop/blob/main/2-README-prompt-templating.md) 中的一个简单示例。
 
 ```java
 PromptTemplate promptTemplate = new PromptTemplate("Tell me a {adjective} joke about {topic}");
@@ -241,86 +240,34 @@ Prompt prompt = promptTemplate.create(Map.of("adjective", adjective, "topic", to
 return chatModel.call(prompt).getResult();
 ```
 
-Another example taken from the [AI Workshop on Roles](https://github.com/Azure-Samples/spring-ai-azure-workshop/blob/main/3-README-prompt-roles.md) is shown below.
+另一个示例来自 [AI Workshop on Roles](https://github.com/Azure-Samples/spring-ai-azure-workshop/blob/main/3-README-prompt-roles.md)：
 
 ```java
 String userText = """
-    Tell me about three famous pirates from the Golden Age of Piracy and why they did.
-    Write at least a sentence for each pirate.
+    告诉我三位黄金时代著名海盗以及他们为什么出名。
+    每位海盗至少写一句话。
     """;
-
-Message userMessage = new UserMessage(userText);
-
-String systemText = """
-  You are a helpful AI assistant that helps people find information.
-  Your name is {name}
-  You should reply to the user's request with your name and also in the style of a {voice}.
-  """;
-
-SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemText);
-Message systemMessage = systemPromptTemplate.createMessage(Map.of("name", name, "voice", voice));
-
-Prompt prompt = new Prompt(List.of(userMessage, systemMessage));
-
-List<Generation> response = chatModel.call(prompt).getResults();
 ```
 
-This shows how you can build up the `Prompt` instance by using the `SystemPromptTemplate` to create a `Message` with the system role passing in placeholder values.
-The message with the role `user` is then combined with the message of the role `system` to form the prompt.
-The prompt is then passed to the ChatModel to get a generative response.
+## 提示工程
 
-### Using a custom template renderer
+在生成 AI 中，提示的创建是开发人员的重要任务。
+提示的质量和结构会显著影响 AI 的输出效果。
+在设计提示上投入时间和精力可以大大提高 AI 的结果。
 
-You can use a custom template renderer by implementing the `TemplateRenderer` interface and passing it to the `PromptTemplate` constructor. You can also keep using the default `StTemplateRenderer`, but with a custom configuration.
+分享和讨论提示是 AI 社区中的常见做法。
+这种协作方法不仅创造了共享学习环境，还导致了高度有效提示的识别和使用。
 
-By default, template variables are identified by the `{}` syntax. If you're planning to include JSON in your prompt, you might want to use a different syntax to avoid conflicts with JSON syntax. For example, you can use the `<` and `>` delimiters.
+该领域的研究通常涉及分析和比较不同的提示，以评估它们在各种情况下的有效性。
+例如，一项重大研究证明，从"Take a deep breath and work on this problem step by step"开始，问题解决效率显著提高。
+这强调了语言选择对生成 AI 系统性能的影响。
 
-```java
-PromptTemplate promptTemplate = PromptTemplate.builder()
-    .renderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
-    .template("""
-            Tell me the names of 5 movies whose soundtrack was composed by <composer>.
-            """)
-    .build();
+掌握提示的最佳使用，特别是在 AI 技术快速发展的情况下，是一个持续的挑战。
+你应该认识到提示工程的重要性，并考虑使用社区和研究中的见解来改进提示创建策略。
 
-String prompt = promptTemplate.render(Map.of("composer", "John Williams"));
-```
+### 创建有效提示
 
-### Using resources instead of raw Strings
-
-Spring AI supports the `org.springframework.core.io.Resource` abstraction, so you can put prompt data in a file that can directly be used in a `PromptTemplate`.
-For example, you can define a field in your Spring managed component to retrieve the `Resource`.
-
-```java
-@Value("classpath:/prompts/system-message.st")
-private Resource systemResource;
-```
-
-and then pass that resource to the `SystemPromptTemplate` directly.
-
-```java
-SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResource);
-```
-
-## Prompt Engineering
-
-In generative AI, the creation of prompts is a crucial task for developers.
-The quality and structure of these prompts significantly influence the effectiveness of the AI's output.
-Investing time and effort in designing thoughtful prompts can greatly improve the results from the AI.
-
-Sharing and discussing prompts is a common practice in the AI community.
-This collaborative approach not only creates a shared learning environment but also leads to the identification and use of highly effective prompts.
-
-Research in this area often involves analyzing and comparing different prompts to assess their effectiveness in various situations.
-For example, a significant study demonstrated that starting a prompt with "Take a deep breath and work on this problem step by step" significantly enhanced problem-solving efficiency.
-This highlights the impact that well-chosen language can have on generative AI systems' performance.
-
-Grasping the most effective use of prompts, particularly with the rapid advancement of AI technologies, is a continuous challenge.
-You should recognize the importance of prompt engineering and consider using insights from the community and research to improve prompt creation strategies.
-
-### Creating effective prompts
-
-When developing prompts, it's important to integrate several key components to ensure clarity and effectiveness:
+在开发提示时，重要的是整合几个关键组件，以确保清晰和有效性：
 
 <AccordionGroup>
   <Accordion title="Instructions" icon="book">
@@ -340,11 +287,11 @@ When developing prompts, it's important to integrate several key components to e
   </Accordion>
 </AccordionGroup>
 
-Providing the AI with examples of the anticipated question and answer format can be highly beneficial when crafting prompts.
-This practice helps the AI "understand" the structure and intent of your query, leading to more precise and relevant responses.
-While this documentation does not delve deeply into these techniques, they provide a starting point for further exploration in AI prompt engineering.
+提供 AI 预期的提问和答案格式示例可以极大地帮助在创建提示时。
+这种做法帮助 AI "理解"查询的结构和意图，导致更精确和相关的响应。
+虽然此文档不会深入探讨这些技术，但它们为 AI 提示工程提供了起点。
 
-Following is a list of resources for further investigation.
+以下是进一步调查的资源列表。
 
 #### Simple Techniques
 
@@ -394,32 +341,32 @@ Following is a list of resources for further investigation.
 
 ## Tokens
 
-Tokens are essential in how AI models process text, acting as a bridge that converts words (as we understand them) into a format that AI models can process.
-This conversion occurs in two stages: words are transformed into tokens upon input, and these tokens are then converted back into words in the output.
+Tokens 在 AI 模型处理文本中起着关键作用，它们充当中介，将我们理解的单词转换为 AI 模型可以处理的格式。
+这种转换发生在两个阶段：单词在输入时转换为 tokens，然后这些 tokens 再转换回单词输出。
 
-Tokenization, the process of breaking down text into tokens, is fundamental to how AI models comprehend and process language.
-The AI model works with this tokenized format to understand and respond to prompts.
+Tokenization，将文本分解为 tokens 的过程，是 AI 模型理解和处理语言的基础。
+AI 模型使用这种 tokenized 格式来理解和响应提示。
 
-To better understand tokens, think of them as portions of words. Typically, a token represents about three-quarters of a word. For instance, the complete works of Shakespeare, totaling roughly 900,000 words, would translate to around 1.2 million tokens.
+为了更好地理解 tokens，可以将其视为单词的一部分。通常，一个 token 代表大约三个四分之一单词。例如，莎士比亚的完整作品，总计约 900,000 个单词，将翻译为约 120 万个 tokens。
 
-Experiment with the [OpenAI Tokenizer UI](https://platform.openai.com/tokenizer) to see how words are converted into tokens.
+实验使用 [OpenAI Tokenizer UI](https://platform.openai.com/tokenizer) 查看单词如何转换为 tokens。
 
-Tokens have practical implications beyond their technical role in AI processing, especially regarding billing and model capabilities:
+Tokens 在 AI 处理中的实际含义超出了它们的技术角色，特别是在与计费和模型能力相关：
 
 <AccordionGroup>
   <Accordion title="Billing" icon="dollar-sign">
-    AI model services often bill based on token usage. Both the input (prompt) and the output (response) contribute to the total token count, making shorter prompts more cost-effective.
+    AI 模型服务通常根据 token 使用量计费。输入（提示）和输出（响应）都贡献到总 token 计数中，使较短的提示更经济。
   </Accordion>
   
   <Accordion title="Model Limits" icon="barrier-block">
-    Different AI models have varying token limits, defining their "context window" – the maximum amount of information they can process at a time. For example, GPT-3's limit is 4K tokens, while other models like Claude 2 and Meta Llama 2 have limits of 100K tokens, and some research models can handle up to 1 million tokens.
+    Different AI 模型具有不同的 token 限制，定义它们的 "context window" ——它们一次可以处理的最大信息量。例如，GPT-3 限制为 4K tokens，而其他模型如 Claude 2 和 Meta Llama 2 限制为 100K tokens，一些研究模型可以处理高达 100 万个 tokens。
   </Accordion>
   
   <Accordion title="Context Window" icon="window">
-    A model's token limit determines its context window. Inputs exceeding this limit are not processed by the model. It's crucial to send only the minimal effective set of information for processing. For example, when inquiring about "Hamlet," there's no need to include tokens from all of Shakespeare's other works.
+    A model's token limit determines its context window。如果输入超过此限制，模型不会处理输入。为了处理，只需发送最小有效信息集。例如，在询问 "Hamlet" 时，没有必要包括莎士比亚其他作品的 tokens。
   </Accordion>
   
   <Accordion title="Response Metadata" icon="info-circle">
-    The metadata of a response from an AI model includes the number of tokens used, a vital piece of information for managing usage and costs.
+    来自 AI 模型的响应的元数据包括使用的 token 数量，对于管理使用和成本至关重要。
   </Accordion>
 </AccordionGroup> 

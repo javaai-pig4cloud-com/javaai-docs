@@ -1,29 +1,29 @@
 ---
-title: "Getting Started"
+title: "快速入门"
 ---
 
-This section offers jumping off points for how to get started using Spring AI.
+本节提供了开始使用Spring AI的切入点。
 
-You should follow the steps in each of the following sections according to your needs.
+您应该根据自己的需求按照以下各部分的步骤进行操作。
 
-<Note>Spring AI supports Spring Boot 3.4.x. When Spring Boot 3.5.x is released, we will support that as well.</Note>
+<Note>Spring AI支持Spring Boot 3.4.x。当Spring Boot 3.5.x发布时，我们也将支持它。</Note>
 
 ## Spring Initializr
 
-Head on over to [start.spring.io](https://start.spring.io/) and select the AI Models and Vector Stores that you want to use in your new applications.
+前往[start.spring.io](https://start.spring.io/)并选择您希望在新应用程序中使用的AI模型和向量存储。
 
-## Artifact Repositories
+## 制品仓库
 
-### Milestones - Use Maven Central
+### 里程碑版本 - 使用Maven中央仓库
 
-As of 1.0.0-M6, releases are available in Maven Central.
-No changes to your build file are required.
+从1.0.0-M6开始，发布版本可在Maven中央仓库获得。
+您的构建文件不需要任何更改。
 
-### Snapshots - Add Snapshot Repositories
+### 快照版本 - 添加快照仓库
 
-To use the Snapshot (and pre 1.0.0-M6 milestone) versions, you need to add the following snapshot repositories in your build file.
+要使用快照版本（和1.0.0-M6之前的里程碑版本），您需要在构建文件中添加以下快照仓库。
 
-Add the following repository definitions to your Maven or Gradle build file:
+在您的Maven或Gradle构建文件中添加以下仓库定义：
 
 <Tabs>
   <Tab title="Maven">
@@ -31,14 +31,14 @@ Add the following repository definitions to your Maven or Gradle build file:
 <repositories>
   <repository>
     <id>spring-snapshots</id>
-    <name>Spring Snapshots</name>
+    <n>Spring Snapshots</n>
     <url>https://repo.spring.io/snapshot</url>
     <releases>
       <enabled>false</enabled>
     </releases>
   </repository>
   <repository>
-    <name>Central Portal Snapshots</name>
+    <n>Central Portal Snapshots</n>
     <id>central-portal-snapshots</id>
     <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     <releases>
@@ -67,7 +67,7 @@ repositories {
 </Tabs>
 
 <Warning>
-When using Maven with Spring AI snapshots, pay attention to your Maven mirror configuration. If you have configured a mirror in your `settings.xml` like this:
+使用Maven和Spring AI快照时，请注意您的Maven镜像配置。如果您在`settings.xml`中配置了类似这样的镜像：
 
 ```xml
 <mirror>
@@ -77,7 +77,7 @@ When using Maven with Spring AI snapshots, pay attention to your Maven mirror co
 </mirror>
 ```
 
-The wildcard `*` will redirect all repository requests to your mirror, preventing access to Spring snapshot repositories. To fix this, modify the `mirrorOf` configuration to exclude Spring repositories:
+通配符`*`将把所有仓库请求重定向到您的镜像，从而阻止访问Spring快照仓库。要解决此问题，请修改`mirrorOf`配置以排除Spring仓库：
 
 ```xml
 <mirror>
@@ -87,16 +87,16 @@ The wildcard `*` will redirect all repository requests to your mirror, preventin
 </mirror>
 ```
 
-This configuration allows Maven to access Spring snapshot repositories directly while still using your mirror for other dependencies.
+这种配置允许Maven直接访问Spring快照仓库，同时仍然使用您的镜像获取其他依赖项。
 </Warning>
 
-## Dependency Management
+## 依赖管理
 
-The Spring AI Bill of Materials (BOM) declares the recommended versions of all the dependencies used by a given release of Spring AI.
-This is a BOM-only version and it just contains dependency management and no plugin declarations or direct references to Spring or Spring Boot.
-You can use the Spring Boot parent POM, or use the BOM from Spring Boot (`spring-boot-dependencies`) to manage Spring Boot versions.
+Spring AI物料清单(BOM)声明了Spring AI特定发布版本使用的所有依赖项的推荐版本。
+这是一个仅包含BOM的版本，它只包含依赖管理，没有插件声明或对Spring或Spring Boot的直接引用。
+您可以使用Spring Boot父POM，或使用Spring Boot的BOM（`spring-boot-dependencies`）来管理Spring Boot版本。
 
-Add the BOM to your project:
+向您的项目添加BOM：
 
 <Tabs>
   <Tab title="Maven">
@@ -118,40 +118,40 @@ Add the BOM to your project:
 ```groovy
 dependencies {
   implementation platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT")
-  // Replace the following with the starter dependencies of specific modules you wish to use
+  // 将以下内容替换为您希望使用的特定模块的启动器依赖项
   implementation 'org.springframework.ai:spring-ai-openai'
 }
 ```
 
-Gradle users can also use the Spring AI BOM by leveraging Gradle (5.0+) native support for declaring dependency constraints using a Maven BOM. This is implemented by adding a 'platform' dependency handler method to the dependencies section of your Gradle build script.
+Gradle用户还可以通过利用Gradle（5.0+）原生支持使用Maven BOM声明依赖约束来使用Spring AI BOM。这是通过在Gradle构建脚本的依赖部分添加'platform'依赖处理方法来实现的。
   </Tab>
 </Tabs>
 
-## Add dependencies for specific components
+## 添加特定组件的依赖项
 
-Each of the following sections in the documentation shows which dependencies you need to add to your project build system.
+文档中的以下每个部分都显示了您需要添加到项目构建系统的依赖项。
 
 <CardGroup cols={2}>
-  <Card title="Chat Models" icon="comments" href="/spring4ai/api/chatmodel">
-    Models that can generate conversational text responses
+  <Card title="聊天模型" icon="comments" href="/spring4ai/api/chatmodel">
+    可以生成对话文本响应的模型
   </Card>
-  <Card title="Embeddings Models" icon="vector-square" href="/spring4ai/api/embeddings">
-    Models that convert text to vector representations
+  <Card title="嵌入模型" icon="vector-square" href="/spring4ai/api/embeddings">
+    将文本转换为向量表示的模型
   </Card>
-  <Card title="Image Generation Models" icon="image" href="/spring4ai/api/imageclient">
-    Models that can generate images from text prompts
+  <Card title="图像生成模型" icon="image" href="/spring4ai/api/imageclient">
+    可以从文本提示生成图像的模型
   </Card>
-  <Card title="Transcription Models" icon="microphone" href="/spring4ai/api/audio/transcriptions">
-    Models that convert audio to text
+  <Card title="转录模型" icon="microphone" href="/spring4ai/api/audio/transcriptions">
+    将音频转换为文本的模型
   </Card>
-  <Card title="Text-To-Speech Models" icon="volume-high" href="/spring4ai/api/audio/speech">
-    Models that convert text to speech
+  <Card title="文本转语音模型" icon="volume-high" href="/spring4ai/api/audio/speech">
+    将文本转换为语音的模型
   </Card>
-  <Card title="Vector Databases" icon="database" href="/spring4ai/api/vectordbs/index">
-    Databases optimized for storing and searching vector embeddings
+  <Card title="向量数据库" icon="database" href="/spring4ai/api/vectordbs/index">
+    优化用于存储和搜索向量嵌入的数据库
   </Card>
 </CardGroup>
 
-## Spring AI samples
+## Spring AI示例
 
-Please refer to [this page](https://github.com/danvega/awesome-spring-ai) for more resources and samples related to Spring AI. 
+请参考[此页面](https://github.com/danvega/awesome-spring-ai)获取更多与Spring AI相关的资源和示例。 

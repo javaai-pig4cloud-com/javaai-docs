@@ -1,31 +1,31 @@
 ---
-title: "Azure OpenAI Chat"
+title: "Azure OpenAI 聊天"
 ---
 
-Azure's OpenAI offering, powered by ChatGPT, extends beyond traditional OpenAI capabilities, delivering AI-driven text generation with enhanced functionality. Azure offers additional AI safety and responsible AI features, as highlighted in their recent update [here](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/announcing-new-ai-safety-amp-responsible-ai-features-in-azure/ba-p/3983686).
+Azure 的 OpenAI 产品由 ChatGPT 提供支持，超越了传统的 OpenAI 功能，提供具有增强功能的 AI 驱动文本生成。Azure 提供额外的 AI 安全和负责任的 AI 功能，如其最近的更新[此处](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/announcing-new-ai-safety-amp-responsible-ai-features-in-azure/ba-p/3983686)所述。
 
-Azure offers Java developers the opportunity to leverage AI's full potential by integrating it with an array of Azure services, which includes AI-related resources such as Vector Stores on Azure.
+Azure 为 Java 开发人员提供了通过将其与一系列 Azure 服务（包括 Azure 上的向量存储等 AI 相关资源）集成来充分利用 AI 潜力的机会。
 
-## Prerequisites
+## 前提条件
 
-The Azure OpenAI client offers three options to connect: using an Azure API key or using an OpenAI API Key, or using Microsoft Entra ID.
+Azure OpenAI 客户端提供三种连接选项：使用 Azure API 密钥、使用 OpenAI API 密钥或使用 Microsoft Entra ID。
 
-### Azure API Key & Endpoint
+### Azure API 密钥和终结点
 
-To access models using an API key, obtain your Azure OpenAI `endpoint` and `api-key` from the Azure OpenAI Service section on the [Azure Portal](https://portal.azure.com).
+要使用 API 密钥访问模型，请从 [Azure 门户](https://portal.azure.com)上的 Azure OpenAI 服务部分获取你的 Azure OpenAI `endpoint` 和 `api-key`。
 
-Spring AI defines two configuration properties:
+Spring AI 定义了两个配置属性：
 
-1. `spring.ai.azure.openai.api-key`: Set this to the value of the `API Key` obtained from Azure.
-2. `spring.ai.azure.openai.endpoint`: Set this to the endpoint URL obtained when provisioning your model in Azure.
+1. `spring.ai.azure.openai.api-key`：将其设置为从 Azure 获取的 `API 密钥` 的值。
+2. `spring.ai.azure.openai.endpoint`：将其设置为在 Azure 中配置模型时获取的终结点 URL。
 
-You can set these configuration properties in your `application.properties` or `application.yml` file:
+你可以在 `application.properties` 或 `application.yml` 文件中设置这些配置属性：
 
 <Tabs>
   <Tab title="application.properties">
     ```properties
-    spring.ai.azure.openai.api-key=<your-azure-api-key>
-    spring.ai.azure.openai.endpoint=<your-azure-endpoint-url>
+    spring.ai.azure.openai.api-key=<你的-azure-api-密钥>
+    spring.ai.azure.openai.endpoint=<你的-azure-终结点-url>
     ```
   </Tab>
   <Tab title="application.yml">
@@ -40,25 +40,25 @@ You can set these configuration properties in your `application.properties` or `
   </Tab>
   <Tab title=".env">
     ```bash
-    export AZURE_OPENAI_API_KEY=<your-azure-openai-api-key>
-    export AZURE_OPENAI_ENDPOINT=<your-azure-openai-endpoint-url>
+    export AZURE_OPENAI_API_KEY=<你的-azure-openai-api-密钥>
+    export AZURE_OPENAI_ENDPOINT=<你的-azure-openai-终结点-url>
     ```
   </Tab>
 </Tabs>
 
-### OpenAI Key
+### OpenAI 密钥
 
-To authenticate with the OpenAI service (not Azure), provide an OpenAI API key. This will automatically set the endpoint to https://api.openai.com/v1.
+要向 OpenAI 服务（而非 Azure）进行身份验证，请提供 OpenAI API 密钥。这会自动将终结点设置为 https://api.openai.com/v1。
 
-When using this approach, set the `spring.ai.azure.openai.chat.options.deployment-name` property to the name of the [OpenAI model](https://platform.openai.com/docs/models) you wish to use.
+使用此方法时，请将 `spring.ai.azure.openai.chat.options.deployment-name` 属性设置为要使用的 [OpenAI 模型](https://platform.openai.com/docs/models)的名称。
 
-In your application configuration:
+在你的应用程序配置中：
 
 <Tabs>
   <Tab title="application.properties">
     ```properties
-    spring.ai.azure.openai.openai-api-key=<your-azure-openai-key>
-    spring.ai.azure.openai.chat.options.deployment-name=<openai-model-name>
+    spring.ai.azure.openai.openai-api-key=<你的-azure-openai-密钥>
+    spring.ai.azure.openai.chat.options.deployment-name=<openai-模型名称>
     ```
   </Tab>
   <Tab title="application.yml">
@@ -75,74 +75,74 @@ In your application configuration:
   </Tab>
   <Tab title=".env">
     ```bash
-    export AZURE_OPENAI_API_KEY=<your-openai-key>
-    export AZURE_OPENAI_MODEL_NAME=<openai-model-name>
+    export AZURE_OPENAI_API_KEY=<你的-openai-密钥>
+    export AZURE_OPENAI_MODEL_NAME=<openai-模型名称>
     ```
   </Tab>
 </Tabs>
 
 ### Microsoft Entra ID
 
-For keyless authentication using Microsoft Entra ID (formerly Azure Active Directory), set _only_ the `spring.ai.azure.openai.endpoint` configuration property and _not_ the api-key property mentioned above.
+要使用 Microsoft Entra ID（以前称为 Azure Active Directory）进行无密钥身份验证，请_仅_设置 `spring.ai.azure.openai.endpoint` 配置属性，而_不_设置上面提到的 api-key 属性。
 
-Finding only the endpoint property, your application will evaluate several different options for retrieving credentials and an `OpenAIClient` instance will be created using the token credentials.
+仅找到终结点属性后，你的应用程序将评估几个不同的凭据检索选项，并使用令牌凭据创建 `OpenAIClient` 实例。
 
 <Note>
-It is no longer necessary to create a `TokenCredential` bean; it is configured for you automatically.
+不再需要创建 `TokenCredential` bean；它会自动为你配置。
 </Note>
 
-### Deployment Name
+### 部署名称
 
-To use Azure AI applications, you need to create an Azure AI Deployment through the [Azure AI Portal](https://oai.azure.com/portal).
-In Azure, each client must specify a `Deployment Name` to connect to the Azure OpenAI service.
-It's important to note that the `Deployment Name` is different from the model you choose to deploy.
-For example, a deployment named 'MyAiDeployment' could be configured to use either the GPT 3.5 Turbo model or the GPT 4.0 model.
+要使用 Azure AI 应用程序，你需要通过 [Azure AI 门户](https://oai.azure.com/portal)创建一个 Azure AI 部署。
+在 Azure 中，每个客户端都必须指定一个 `Deployment Name` 才能连接到 Azure OpenAI 服务。
+需要注意的是，`Deployment Name` 与你选择部署的模型不同。
+例如，名为"MyAiDeployment"的部署可以配置为使用 GPT 3.5 Turbo 模型或 GPT 4.0 模型。
 
-To get started, follow these steps to create a deployment with the default settings:
+要开始使用，请按照以下步骤使用默认设置创建部署：
 
-   Deployment Name: `gpt-4o`
-   Model Name: `gpt-4o`
+   部署名称：`gpt-4o`
+   模型名称：`gpt-4o`
 
-This Azure configuration aligns with the default configurations of the Spring Boot Azure AI Starter and its Autoconfiguration feature.
-If you use a different Deployment Name, make sure to update the configuration property accordingly:
+此 Azure 配置与 Spring Boot Azure AI Starter 及其自动配置功能的默认配置一致。
+如果你使用不同的部署名称，请确保相应地更新配置属性：
 
 ```properties
-spring.ai.azure.openai.chat.options.deployment-name=<my deployment name>
+spring.ai.azure.openai.chat.options.deployment-name=<我的部署名称>
 ```
 
-The different deployment structures of Azure OpenAI and OpenAI leads to a property in the Azure OpenAI client library named `deploymentOrModelName`.
-This is because in OpenAI there is no `Deployment Name`, only a `Model Name`.
+Azure OpenAI 和 OpenAI 的不同部署结构导致 Azure OpenAI 客户端库中有一个名为 `deploymentOrModelName` 的属性。
+这是因为在 OpenAI 中没有 `Deployment Name`，只有 `Model Name`。
 
 <Note>
-The property `spring.ai.azure.openai.chat.options.model` has been renamed to `spring.ai.azure.openai.chat.options.deployment-name`.
+属性 `spring.ai.azure.openai.chat.options.model` 已重命名为 `spring.ai.azure.openai.chat.options.deployment-name`。
 </Note>
 
 <Note>
-If you decide to connect to `OpenAI` instead of `Azure OpenAI`, by setting the `spring.ai.azure.openai.openai-api-key=<Your OpenAI Key>` property, 
-then the `spring.ai.azure.openai.chat.options.deployment-name` is treated as an [OpenAI model](https://platform.openai.com/docs/models) name.
+如果你决定通过设置 `spring.ai.azure.openai.openai-api-key=<你的 OpenAI 密钥>` 属性来连接到 `OpenAI` 而不是 `Azure OpenAI`，
+那么 `spring.ai.azure.openai.chat.options.deployment-name` 将被视为 [OpenAI 模型](https://platform.openai.com/docs/models)名称。
 </Note>
 
-#### Access the OpenAI Model
+#### 访问 OpenAI 模型
 
-You can configure the client to use directly `OpenAI` instead of the `Azure OpenAI` deployed models. 
-For this you need to set the `spring.ai.azure.openai.openai-api-key=<Your OpenAI Key>` instead of `spring.ai.azure.openai.api-key=<Your Azure OpenAi Key>`.
+你可以将客户端配置为直接使用 `OpenAI`，而不是 `Azure OpenAI` 部署的模型。
+为此，你需要设置 `spring.ai.azure.openai.openai-api-key=<你的 OpenAI 密钥>` 而不是 `spring.ai.azure.openai.api-key=<你的 Azure OpenAi 密钥>`。
 
-### Add Repositories and BOM
+### 添加仓库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 的构件发布在 Maven Central 和 Spring Snapshot 仓库中。
+请参阅[构件仓库](/spring4ai/getting-started#artifact-repositories)部分，将这些仓库添加到你的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (bill of materials)，以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置、启动器模块的构件名称发生了重大变化。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the Azure OpenAI Chat Client.
-To enable it add the following dependency to your project's Maven `pom.xml` or Gradle `build.gradle` build files:
+Spring AI 为 Azure OpenAI 聊天客户端提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 或 Gradle `build.gradle` 构建文件中：
 
 <Tabs>
   <Tab title="Maven">
@@ -163,12 +163,12 @@ To enable it add the following dependency to your project's Maven `pom.xml` or G
 </Tabs>
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
-The Azure OpenAI Chat Client is created using the [OpenAIClientBuilder](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/openai/azure-ai-openai/src/main/java/com/azure/ai/openai/OpenAIClientBuilder.java) provided by the Azure SDK. Spring AI allows to customize the builder by providing [AzureOpenAIClientBuilderCustomizer](https://github.com/spring-projects/spring-ai/blob/main/auto-configurations/models/spring-ai-autoconfigure-model-azure-openai/src/main/java/org/springframework/ai/model/azure/openai/autoconfigure/AzureOpenAIClientBuilderCustomizer.java) beans.
+Azure OpenAI 聊天客户端是使用 Azure SDK 提供的 [OpenAIClientBuilder](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/openai/azure-ai-openai/src/main/java/com/azure/ai/openai/OpenAIClientBuilder.java) 创建的。Spring AI 允许通过提供 [AzureOpenAIClientBuilderCustomizer](https://github.com/spring-projects/spring-ai/blob/main/auto-configurations/models/spring-ai-autoconfigure-model-azure-openai/src/main/java/org/springframework/ai/model/azure/openai/autoconfigure/AzureOpenAIClientBuilderCustomizer.java) bean 来自定义构建器。
 
-A customizer might be used for example to change the default response timeout:
+例如，可以使用自定义程序来更改默认响应超时：
 
 ```java
 @Configuration
@@ -186,64 +186,64 @@ public class AzureOpenAiConfig {
 }
 ```
 
-### Chat Properties
+### 聊天属性
 
-The prefix `spring.ai.azure.openai` is the property prefix to configure the connection to Azure OpenAI.
+前缀 `spring.ai.azure.openai` 是用于配置与 Azure OpenAI 连接的属性前缀。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 | :------- | :---------- | :------ |
-| `spring.ai.azure.openai.api-key` | The Key from Azure AI OpenAI `Keys and Endpoint` section under `Resource Management` | - |
-| `spring.ai.azure.openai.endpoint` | The endpoint from the Azure AI OpenAI `Keys and Endpoint` section under `Resource Management` | - |
-| `spring.ai.azure.openai.openai-api-key` | (non Azure) OpenAI API key. Used to authenticate with the OpenAI service, instead of Azure OpenAI. This automatically sets the endpoint to https://api.openai.com/v1. Use either `api-key` or `openai-api-key` property. With this configuration the `spring.ai.azure.openai.chat.options.deployment-name` is threated as an [OpenAi Model](https://platform.openai.com/docs/models) name. | - |
-| `spring.ai.azure.openai.custom-headers` | A map of custom headers to be included in the API requests. Each entry in the map represents a header, where the key is the header name and the value is the header value. | Empty map |
+| `spring.ai.azure.openai.api-key` | Azure AI OpenAI `密钥和终结点` 部分（在 `资源管理` 下）中的密钥 | - |
+| `spring.ai.azure.openai.endpoint` | Azure AI OpenAI `密钥和终结点` 部分（在 `资源管理` 下）中的终结点 | - |
+| `spring.ai.azure.openai.openai-api-key` | （非 Azure）OpenAI API 密钥。用于向 OpenAI 服务（而非 Azure OpenAI）进行身份验证。这会自动将终结点设置为 https://api.openai.com/v1。使用 `api-key` 或 `openai-api-key` 属性。使用此配置时，`spring.ai.azure.openai.chat.options.deployment-name` 将被视为 [OpenAi 模型](https://platform.openai.com/docs/models)名称。 | - |
+| `spring.ai.azure.openai.custom-headers` | 要包含在 API 请求中的自定义标头映射。映射中的每个条目代表一个标头，其中键是标头名称，值是标头值。 | 空映射 |
 
 <Note>
-Enabling and disabling of the chat auto-configurations are now configured via top level properties with the prefix `spring.ai.model.chat`.
+聊天自动配置的启用和禁用现在通过前缀为 `spring.ai.model.chat` 的顶级属性进行配置。
 
-To enable, `spring.ai.model.chat=azure-openai` (It is enabled by default)
+要启用，`spring.ai.model.chat=azure-openai` (默认启用)
 
-To disable, `spring.ai.model.chat=none` (or any value which doesn't match azure-openai)
+要禁用，`spring.ai.model.chat=none` (或任何与 azure-openai 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.azure.openai.chat` is the property prefix that configures the `ChatModel` implementation for Azure OpenAI.
+前缀 `spring.ai.azure.openai.chat` 是配置 Azure OpenAI 的 `ChatModel` 实现的属性前缀。
 
-| Property | Description | Default |
+| 属性 | 描述 | 默认值 |
 | :------- | :---------- | :------ |
-| `spring.ai.azure.openai.chat.enabled` (Removed and no longer valid) | Enable Azure OpenAI chat model. | true |
-| `spring.ai.model.chat` | Enable Azure OpenAI chat model. | azure-openai |
-| `spring.ai.azure.openai.chat.options.deployment-name` | In use with Azure, this refers to the "Deployment Name" of your model, which you can find at https://oai.azure.com/portal. It's important to note that within an Azure OpenAI deployment, the "Deployment Name" is distinct from the model itself. The confusion around these terms stems from the intention to make the Azure OpenAI client library compatible with the original OpenAI endpoint. The deployment structures offered by Azure OpenAI and Sam Altman's OpenAI differ significantly. Deployments model name to provide as part of this completions request. | gpt-4o |
-| `spring.ai.azure.openai.chat.options.maxTokens` | The maximum number of tokens to generate. | - |
-| `spring.ai.azure.openai.chat.options.temperature` | The sampling temperature to use that controls the apparent creativity of generated completions. Higher values will make output more random while lower values will make results more focused and deterministic. It is not recommended to modify temperature and top_p for the same completions request as the interaction of these two settings is difficult to predict. | 0.7 |
-| `spring.ai.azure.openai.chat.options.topP` | An alternative to sampling with temperature called nucleus sampling. This value causes the model to consider the results of tokens with the provided probability mass. | - |
-| `spring.ai.azure.openai.chat.options.logitBias` | A map between GPT token IDs and bias scores that influences the probability of specific tokens appearing in a completions response. Token IDs are computed via external tokenizer tools, while bias scores reside in the range of -100 to 100 with minimum and maximum values corresponding to a full ban or exclusive selection of a token, respectively. The exact behavior of a given bias score varies by model. | - |
-| `spring.ai.azure.openai.chat.options.user` | An identifier for the caller or end user of the operation. This may be used for tracking or rate-limiting purposes. | - |
-| `spring.ai.azure.openai.chat.options.stream-usage` | (For streaming only) Set to add an additional chunk with token usage statistics for the entire request. The `choices` field for this chunk is an empty array and all other chunks will also include a usage field, but with a null value. | false |
-| `spring.ai.azure.openai.chat.options.n` | The number of chat completions choices that should be generated for a chat completions response. | - |
-| `spring.ai.azure.openai.chat.options.stop` | A collection of textual sequences that will end completions generation. | - |
-| `spring.ai.azure.openai.chat.options.presencePenalty` | A value that influences the probability of generated tokens appearing based on their existing presence in generated text. Positive values will make tokens less likely to appear when they already exist and increase the model's likelihood to output new topics. | - |
-| `spring.ai.azure.openai.chat.options.responseFormat` | An object specifying the format that the model must output. Using `AzureOpenAiResponseFormat.JSON` enables JSON mode, which guarantees the message the model generates is valid JSON. Using AzureOpenAiResponseFormat.TEXT enables TEXT mode. | - |
-| `spring.ai.azure.openai.chat.options.frequencyPenalty` | A value that influences the probability of generated tokens appearing based on their cumulative frequency in generated text. Positive values will make tokens less likely to appear as their frequency increases and decrease the likelihood of the model repeating the same statements verbatim. | - |
-| `spring.ai.azure.openai.chat.options.proxy-tool-calls` | If true, the Spring AI will not handle the function calls internally, but will proxy them to the client. Then is the client's responsibility to handle the function calls, dispatch them to the appropriate function, and return the results. If false (the default), the Spring AI will handle the function calls internally. Applicable only for chat models with function calling support | false |
+| `spring.ai.azure.openai.chat.enabled` (已移除且不再有效) | 启用 Azure OpenAI 聊天模型。 | true |
+| `spring.ai.model.chat` | 启用 Azure OpenAI 聊天模型。 | azure-openai |
+| `spring.ai.azure.openai.chat.options.deployment-name` | 在 Azure 中使用时，这指的是模型的"部署名称"，你可以在 https://oai.azure.com/portal 中找到它。需要注意的是，在 Azure OpenAI 部署中，"部署名称"与模型本身不同。围绕这些术语的混淆源于使 Azure OpenAI 客户端库与原始 OpenAI 终结点兼容的意图。Azure OpenAI 和 Sam Altman 的 OpenAI 提供的部署结构有显著差异。部署模型名称作为此补全请求的一部分提供。 | gpt-4o |
+| `spring.ai.azure.openai.chat.options.maxTokens` | 要生成的最大标记数。 | - |
+| `spring.ai.azure.openai.chat.options.temperature` | 用于控制生成补全的明显创造性的采样温度。较高的值会使输出更随机，而较低的值会使结果更集中和确定。不建议为同一补全请求修改温度和 top_p，因为这两个设置的相互作用很难预测。 | 0.7 |
+| `spring.ai.azure.openai.chat.options.topP` | 温度采样的替代方法，称为核采样。此值使模型考虑具有所提供概率质量的标记的结果。 | - |
+| `spring.ai.azure.openai.chat.options.logitBias` | GPT 令牌 ID 和偏差分数之间的映射，影响特定令牌出现在补全响应中的概率。令牌 ID 通过外部令牌化工具计算，而偏差分数在 -100 到 100 的范围内，最小值和最大值分别对应于完全禁止或独占选择令牌。给定偏差分数的具体行为因模型而异。 | - |
+| `spring.ai.azure.openai.chat.options.user` | 操作的调用方或最终用户的标识符。这可用于跟踪或速率限制目的。 | - |
+| `spring.ai.azure.openai.chat.options.stream-usage` | （仅限流式传输）设置为添加一个包含整个请求的标记使用情况统计信息的附加块。此块的 `choices` 字段是一个空数组，所有其他块也将包含一个 usage 字段，但其值为 null。 | false |
+| `spring.ai.azure.openai.chat.options.n` | 应为聊天补全响应生成的聊天补全选项的数量。 | - |
+| `spring.ai.azure.openai.chat.options.stop` | 将结束补全生成的文本序列集合。 | - |
+| `spring.ai.azure.openai.chat.options.presencePenalty` | 一个影响生成令牌出现概率的值，基于它们在生成文本中已有的存在。正值会使令牌在已存在时不太可能出现，并增加模型输出新主题的可能性。 | - |
+| `spring.ai.azure.openai.chat.options.responseFormat` | 指定模型必须输出的格式的对象。使用 `AzureOpenAiResponseFormat.JSON` 启用 JSON 模式，可确保模型生成的消息是有效的 JSON。使用 AzureOpenAiResponseFormat.TEXT 启用 TEXT 模式。 | - |
+| `spring.ai.azure.openai.chat.options.frequencyPenalty` | 一个影响生成令牌出现概率的值，基于它们在生成文本中的累积频率。正值会使令牌随着频率的增加而不太可能出现，并降低模型逐字重复相同语句的可能性。 | - |
+| `spring.ai.azure.openai.chat.options.proxy-tool-calls` | 如果为 true，Spring AI 将不会在内部处理函数调用，而是将它们代理到客户端。然后由客户端负责处理函数调用，将它们分派到适当的函数，并返回结果。如果为 false（默认值），Spring AI 将在内部处理函数调用。仅适用于具有函数调用支持的聊天模型 | false |
 
 <Tip>
-All properties prefixed with `spring.ai.azure.openai.chat.options` can be overridden at runtime by adding a request specific [Runtime Options](#runtime-options) to the `Prompt` call.
+所有以 `spring.ai.azure.openai.chat.options` 为前缀的属性都可以在运行时通过向 `Prompt` 调用添加特定于请求的[运行时选项](#runtime-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The [AzureOpenAiChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-azure-openai/src/main/java/org/springframework/ai/azure/openai/AzureOpenAiChatOptions.java) provides model configurations, such as the model to use, the temperature, the frequency penalty, etc.
+[AzureOpenAiChatOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-azure-openai/src/main/java/org/springframework/ai/azure/openai/AzureOpenAiChatOptions.java) 提供模型配置，例如要使用的模型、温度、频率惩罚等。
 
-On start-up, the default options can be configured with the `AzureOpenAiChatModel(api, options)` constructor or the `spring.ai.azure.openai.chat.options.*` properties.
+在启动时，可以使用 `AzureOpenAiChatModel(api, options)` 构造函数或 `spring.ai.azure.openai.chat.options.*` 属性配置默认选项。
 
-At runtime you can override the default options by adding new, request specific, options to the `Prompt` call.
-For example to override the default model and temperature for a specific request:
+在运行时，你可以通过向 `Prompt` 调用添加新的、特定于请求的选项来覆盖默认选项。
+例如，要为特定请求覆盖默认模型和温度：
 
 ```java
 ChatResponse response = chatModel.call(
     new Prompt(
-        "Generate the names of 5 famous pirates.",
+        "生成 5 个著名海盗的名字。",
         AzureOpenAiChatOptions.builder()
             .deploymentName("gpt-4o")
             .temperature(0.4)
@@ -252,57 +252,55 @@ ChatResponse response = chatModel.call(
 ```
 
 <Tip>
-In addition to the model specific [AzureOpenAiChatOptions](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-azure-openai/src/main/java/org/springframework/ai/azure/openai/AzureOpenAiChatOptions.java) you can use a portable [ChatOptions](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptions.java) instance, created with the [ChatOptionsBuilder#builder()](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptionsBuilder.java).
+除了特定于模型的 [AzureOpenAiChatOptions](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-azure-openai/src/main/java/org/springframework/ai/azure/openai/AzureOpenAiChatOptions.java)之外，你还可以使用通过 [ChatOptionsBuilder#builder()](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptionsBuilder.java) 创建的可移植 [ChatOptions](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-client-chat/src/main/java/org/springframework/ai/chat/prompt/ChatOptions.java) 实例。
 </Tip>
 
-## Function Calling
+## 函数调用
 
-You can register custom Java functions with the AzureOpenAiChatModel and have the model intelligently choose to output a JSON object containing arguments to call one or many of the registered functions.
-This is a powerful technique to connect the LLM capabilities with external tools and APIs.
-Read more about [Tool Calling](/spring4ai/api/tools).
+你可以使用 AzureOpenAiChatModel 注册自定义 Java 函数，并让模型智能地选择输出一个 JSON 对象，其中包含调用一个或多个已注册函数的参数。
+这是将 LLM 功能与外部工具和 API 连接起来的强大技术。
+阅读有关[工具调用](/spring4ai/api/tools)的更多信息。
 
-## Multimodal
+## 多模态
 
-Multimodality refers to a model's ability to simultaneously understand and process information from various sources, including text, images, audio, and other data formats.
-Presently, the Azure OpenAI `gpt-4o` model offers multimodal support.
+多模态是指模型同时理解和处理来自各种来源的信息的能力，包括文本、图像、音频和其他数据格式。
+目前，Azure OpenAI `gpt-4o` 模型提供多模态支持。
 
-The Azure OpenAI can incorporate a list of base64-encoded images or image urls with the message.
-Spring AI's [Message](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/messages/Message.java) interface facilitates multimodal AI models by introducing the [Media](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/model/Media.java) type.
-This type encompasses data and details regarding media attachments in messages, utilizing Spring's `org.springframework.util.MimeType` and a `java.lang.Object` for the raw media data.
+Azure OpenAI 可以将 base64 编码的图像或图像 URL 列表与消息合并。
+Spring AI 的 [Message](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/chat/messages/Message.java) 接口通过引入 [Media](https://github.com/spring-projects/spring-ai/blob/main/spring-ai-model/src/main/java/org/springframework/ai/model/Media.java) 类型来促进多模态 AI 模型。
+此类型包含有关消息中媒体附件的数据和详细信息，利用 Spring 的 `org.springframework.util.MimeType` 和 `java.lang.Object` 来获取原始媒体数据。
 
-Below is a code example excerpted from [OpenAiChatModelIT.java](https://github.com/spring-projects/spring-ai/blob/c9a3e66f90187ce7eae7eb78c462ec622685de6c/models/spring-ai-openai/src/test/java/org/springframework/ai/openai/chat/OpenAiChatModelIT.java#L293), illustrating the fusion of user text with an image using the `GPT_4_O` model.
+以下是从 [OpenAiChatModelIT.java](https://github.com/spring-projects/spring-ai/blob/c9a3e66f90187ce7eae7eb78c462ec622685de6c/models/spring-ai-openai/src/test/java/org/springframework/ai/openai/chat/OpenAiChatModelIT.java#L293) 中摘录的代码示例，说明了使用 `GPT_4_O` 模型将用户文本与图像融合。
 
 ```java
 URL url = new URL("https://docs.spring.io/spring-ai/reference/_images/multimodal.test.png");
 String response = ChatClient.create(chatModel).prompt()
         .options(AzureOpenAiChatOptions.builder().deploymentName("gpt-4o").build())
-        .user(u -> u.text("Explain what do you see on this picture?").media(MimeTypeUtils.IMAGE_PNG, this.url))
+        .user(u -> u.text("解释一下你在这张图片上看到了什么？").media(MimeTypeUtils.IMAGE_PNG, this.url))
         .call()
         .content();
 ```
 
 <Tip>
-You can pass multiple images as well.
+你也可以传递多个图像。
 </Tip>
 
-It takes as an input the `multimodal.test.png` image:
+它将 `multimodal.test.png` 图像作为输入：
 
-<Frame caption="Multimodal Test Image">
+<Frame caption="多模态测试图像">
   <img src="/images/multimodal.test.png" width="200" height="200" />
 </Frame>
 
-along with the text message "Explain what do you see on this picture?", and generates a response like this:
+以及文本消息"解释一下你在这张图片上看到了什么？"，并生成如下响应：
 
 ```
-This is an image of a fruit bowl with a simple design. The bowl is made of metal with curved wire edges that
-create an open structure, allowing the fruit to be visible from all angles. Inside the bowl, there are two
-yellow bananas resting on top of what appears to be a red apple. The bananas are slightly overripe, as
-indicated by the brown spots on their peels. The bowl has a metal ring at the top, likely to serve as a handle
-for carrying. The bowl is placed on a flat surface with a neutral-colored background that provides a clear
-view of the fruit inside.
+这是一张水果盘的图片，设计简单。碗由金属制成，带有弯曲的金属丝边缘，
+形成开放式结构，可以从各个角度看到水果。碗里，两根香蕉放在一个看起来像是红苹果的水果上面。
+香蕉有点过熟，表皮上有褐色的斑点。碗的顶部有一个金属环，可能是用来提携的。
+碗放在一个平坦的表面上，背景颜色中性，可以清楚地看到里面的水果。
 ```
 
-You can also pass in a classpath resource instead of a URL as shown in the example below:
+你也可以传入类路径资源而不是 URL，如下例所示：
 
 ```java
 Resource resource = new ClassPathResource("multimodality/multimodal.test.png");
@@ -310,31 +308,31 @@ Resource resource = new ClassPathResource("multimodality/multimodal.test.png");
 String response = ChatClient.create(chatModel).prompt()
     .options(AzureOpenAiChatOptions.builder()
     .deploymentName("gpt-4o").build())
-    .user(u -> u.text("Explain what do you see on this picture?")
+    .user(u -> u.text("解释一下你在这张图片上看到了什么？")
     .media(MimeTypeUtils.IMAGE_PNG, this.resource))
     .call()
     .content();
 ```
 
-## Sample Controller
+## 示例控制器
 
-[Create](https://start.spring.io/) a new Spring Boot project and add the `spring-ai-starter-model-azure-openai` to your pom (or gradle) dependencies.
+[创建](https://start.spring.io/)一个新的 Spring Boot 项目，并将 `spring-ai-starter-model-azure-openai` 添加到你的 pom (或 gradle) 依赖项中。
 
-Add a `application.properties` file, under the `src/main/resources` directory, to enable and configure the OpenAi chat model:
+在 `src/main/resources` 目录下添加一个 `application.properties` 文件，以启用和配置 OpenAi 聊天模型：
 
 ```properties
-spring.ai.azure.openai.api-key=YOUR_API_KEY
-spring.ai.azure.openai.endpoint=YOUR_ENDPOINT
+spring.ai.azure.openai.api-key=你的API密钥
+spring.ai.azure.openai.endpoint=你的终结点
 spring.ai.azure.openai.chat.options.deployment-name=gpt-4o
 spring.ai.azure.openai.chat.options.temperature=0.7
 ```
 
 <Tip>
-Replace the `api-key` and `endpoint` with your Azure OpenAI credentials.
+将 `api-key` 和 `endpoint` 替换为你的 Azure OpenAI 凭据。
 </Tip>
 
-This will create a `AzureOpenAiChatModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the chat model for text generations:
+这将创建一个 `AzureOpenAiChatModel` 实现，你可以将其注入到你的类中。
+以下是一个简单的 `@Controller` 类的示例，该类使用聊天模型进行文本生成：
 
 ```java
 @RestController
@@ -348,23 +346,23 @@ public class ChatController {
     }
 
     @GetMapping("/ai/generate")
-    public Map generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+    public Map generate(@RequestParam(value = "message", defaultValue = "给我讲个笑话") String message) {
         return Map.of("generation", this.chatModel.call(message));
     }
 
     @GetMapping("/ai/generateStream")
-    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "给我讲个笑话") String message) {
         Prompt prompt = new Prompt(new UserMessage(message));
         return this.chatModel.stream(prompt);
     }
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-The [AzureOpenAiChatModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-azure-openai/src/main/java/org/springframework/ai/azure/openai/AzureOpenAiChatModel.java) implements the `ChatModel` and `StreamingChatModel` and uses the [Azure OpenAI Java Client](https://learn.microsoft.com/en-us/java/api/overview/azure/ai-openai-readme?view=azure-java-preview).
+[AzureOpenAiChatModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-azure-openai/src/main/java/org/springframework/ai/azure/openai/AzureOpenAiChatModel.java) 实现了 `ChatModel` 和 `StreamingChatModel`，并使用 [Azure OpenAI Java 客户端](https://learn.microsoft.com/en-us/java/api/overview/azure/ai-openai-readme?view=azure-java-preview)。
 
-To enable it, add the `spring-ai-azure-openai` dependency to your project's Maven `pom.xml` file:
+要启用它，请将 `spring-ai-azure-openai` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -373,7 +371,7 @@ To enable it, add the `spring-ai-azure-openai` dependency to your project's Mave
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file:
+或添加到你的 Gradle `build.gradle` 构建文件中：
 
 ```gradle
 dependencies {
@@ -382,14 +380,14 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到你的构建文件中。
 </Tip>
 
 <Tip>
-The `spring-ai-azure-openai` dependency also provide the access to the `AzureOpenAiChatModel`. For more information about the `AzureOpenAiChatModel` refer to the [Azure OpenAI Chat](/spring4ai/api/chat/azure-openai-chat) section.
+`spring-ai-azure-openai` 依赖项还提供对 `AzureOpenAiChatModel` 的访问。有关 `AzureOpenAiChatModel` 的更多信息，请参阅 [Azure OpenAI 聊天](/spring4ai/api/chat/azure-openai-chat)部分。
 </Tip>
 
-Next, create an `AzureOpenAiChatModel` instance and use it to generate text responses:
+接下来，创建一个 `AzureOpenAiChatModel` 实例并将其用于生成文本响应：
 
 ```java
 var openAIClientBuilder = new OpenAIClientBuilder()
@@ -408,13 +406,13 @@ var chatModel = AzureOpenAiChatModel.builder()
                 .build();
 
 ChatResponse response = chatModel.call(
-  new Prompt("Generate the names of 5 famous pirates."));
+  new Prompt("生成 5 个著名海盗的名字。"));
 
-// Or with streaming responses
+// 或使用流式响应
 Flux<ChatResponse> streamingResponses = chatModel.stream(
-  new Prompt("Generate the names of 5 famous pirates."));
+  new Prompt("生成 5 个著名海盗的名字。"));
 ```
 
 <Note>
-The `gpt-4o` is actually the `Deployment Name` as presented in the Azure AI Portal.
+`gpt-4o` 实际上是 Azure AI 门户中显示的`部署名称`。
 </Note> 

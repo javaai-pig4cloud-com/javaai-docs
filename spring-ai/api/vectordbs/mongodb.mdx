@@ -1,37 +1,37 @@
 ---
-title: "MongoDB Vector Database"
+title: "MongoDB 向量数据库"
 ---
 
-MongoDB Vector Database integration in Spring AI provides vector storage and search capabilities using MongoDB's vector features.
+Spring AI 中的 MongoDB 向量数据库集成了 MongoDB 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-MongoDB Vector Database enables:
-- Document-based vector storage
-- Flexible schema design
-- Real-time vector search
-- Scalable architecture
+MongoDB 向量数据库支持：
+- 基于文档的向量存储
+- 灵活的模式设计
+- 实时向量搜索
+- 可扩展架构
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Document-based" icon="file-alt">
-    Document vector storage
+  <Card title="基于文档" icon="file-alt">
+    文档向量存储
   </Card>
-  <Card title="Flexible" icon="sliders-h">
-    Flexible schema design
+  <Card title="灵活" icon="sliders-h">
+    灵活的模式设计
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time search
+  <Card title="实时" icon="clock">
+    实时搜索
   </Card>
-  <Card title="Scalable" icon="arrows-up-down-left-right">
-    Horizontal scaling
+  <Card title="可扩展" icon="arrows-up-down-left-right">
+    水平扩展
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,17 +41,17 @@ MongoDB Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# MongoDB Vector Database Configuration
+# MongoDB 向量数据库配置
 spring.ai.mongodb.vectordb.enabled=true
 spring.ai.mongodb.vectordb.uri=mongodb://localhost:27017
 spring.ai.mongodb.vectordb.database=vectordb
 spring.ai.mongodb.vectordb.collection=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -72,9 +72,9 @@ public class MongoDBVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -86,7 +86,7 @@ public class MongoDBVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -98,7 +98,7 @@ public class MongoDBSimilaritySearchConfig {
 }
 ```
 
-### 3. Collection Management
+### 3. 集合管理
 
 ```java
 @Service
@@ -115,9 +115,9 @@ public class CollectionService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Collection Configuration
+### 自定义集合配置
 
 ```java
 @Configuration
@@ -134,7 +134,7 @@ public class CollectionConfig {
 }
 ```
 
-### Index Management
+### 索引管理
 
 ```java
 @Configuration
@@ -150,40 +150,40 @@ public class IndexConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=mongodb-vectordb
 management.endpoint.mongodb-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using MongoDB Vector Database, consider these best practices:
+使用 MongoDB 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Collection Design**: Design efficient collection structure
-- **Index Management**: Optimize index configuration
-- **Sharding Strategy**: Implement effective sharding
-- **Resource Management**: Configure resource allocation
-- **Monitoring**: Set up comprehensive monitoring
+- **集合设计**：设计高效的集合结构
+- **索引管理**：优化索引配置
+- **分片策略**：实施有效的分片
+- **资源管理**：配置资源分配
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify connection URI
-   - Check authentication
-   - Review network settings
+1. **连接问题**
+   - 验证连接 URI
+   - 检查身份验证
+   - 查看网络设置
 
-2. **Performance Issues**
-   - Optimize index configuration
-   - Adjust sharding strategy
-   - Review query patterns
+2. **性能问题**
+   - 优化索引配置
+   - 调整分片策略
+   - 查看查询模式
 
-3. **Storage Issues**
-   - Monitor collection size
-   - Implement cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控集合大小
+   - 执行清理
+   - 查看保留策略 

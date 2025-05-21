@@ -1,37 +1,37 @@
 ---
-title: "Milvus Vector Database"
+title: "Milvus 向量数据库"
 ---
 
-Milvus Vector Database integration in Spring AI provides vector storage and search capabilities using Milvus's vector features.
+Spring AI 中的 Milvus 向量数据库集成了 Milvus 的向量功能，提供向量存储和搜索能力。
 
-## Overview
+## 概述
 
-Milvus Vector Database enables:
-- Distributed vector storage
-- High-performance similarity search
-- Real-time vector operations
-- Scalable architecture
+Milvus 向量数据库支持：
+- 分布式向量存储
+- 高性能相似性搜索
+- 实时向量操作
+- 可扩展架构
 
-## Features
+## 特性
 
 <CardGroup cols={2}>
-  <Card title="Distributed" icon="network-wired">
-    Distributed architecture
+  <Card title="分布式" icon="network-wired">
+    分布式架构
   </Card>
-  <Card title="High Performance" icon="tachometer-alt">
-    Fast similarity search
+  <Card title="高性能" icon="tachometer-alt">
+    快速相似性搜索
   </Card>
-  <Card title="Scalability" icon="arrows-up-down-left-right">
-    Horizontal scaling
+  <Card title="可扩展性" icon="arrows-up-down-left-right">
+    水平扩展
   </Card>
-  <Card title="Real-time" icon="clock">
-    Real-time operations
+  <Card title="实时" icon="clock">
+    实时操作
   </Card>
 </CardGroup>
 
-## Implementation
+## 实现
 
-### Basic Setup
+### 基本设置
 
 ```xml
 <dependency>
@@ -41,17 +41,17 @@ Milvus Vector Database enables:
 </dependency>
 ```
 
-### Configuration
+### 配置
 
 ```properties
-# Milvus Vector Database Configuration
+# Milvus 向量数据库配置
 spring.ai.milvus.vectordb.enabled=true
 spring.ai.milvus.vectordb.host=localhost
 spring.ai.milvus.vectordb.port=19530
 spring.ai.milvus.vectordb.collection-name=vectors
 ```
 
-### Usage
+### 用法
 
 ```java
 @Service
@@ -72,9 +72,9 @@ public class MilvusVectorService {
 }
 ```
 
-## Vector Operations
+## 向量操作
 
-### 1. Vector Storage
+### 1. 向量存储
 
 ```java
 @Configuration
@@ -86,7 +86,7 @@ public class MilvusVectorStorageConfig {
 }
 ```
 
-### 2. Similarity Search
+### 2. 相似性搜索
 
 ```java
 @Configuration
@@ -98,7 +98,7 @@ public class MilvusSimilaritySearchConfig {
 }
 ```
 
-### 3. Collection Management
+### 3. 集合管理
 
 ```java
 @Service
@@ -115,9 +115,9 @@ public class CollectionService {
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Custom Collection Configuration
+### 自定义集合配置
 
 ```java
 @Configuration
@@ -134,7 +134,7 @@ public class CollectionConfig {
 }
 ```
 
-### Partition Management
+### 分区管理
 
 ```java
 @Configuration
@@ -148,40 +148,40 @@ public class PartitionConfig {
 }
 ```
 
-### Monitoring
+### 监控
 
 ```properties
 management.endpoints.web.exposure.include=milvus-vectordb
 management.endpoint.milvus-vectordb.enabled=true
 ```
 
-## Best Practices
+## 最佳实践
 
 <Note>
-When using Milvus Vector Database, consider these best practices:
+使用 Milvus 向量数据库时，请考虑以下最佳实践：
 </Note>
 
-- **Collection Design**: Design efficient collection structure
-- **Index Selection**: Choose appropriate index types
-- **Partition Strategy**: Implement effective partitioning
-- **Resource Management**: Configure resource allocation
-- **Monitoring**: Set up comprehensive monitoring
+- **集合设计**：设计高效的集合结构
+- **索引选择**：选择合适的索引类型
+- **分区策略**：实施有效的分区
+- **资源管理**：配置资源分配
+- **监控**：设置全面的监控
 
-## Troubleshooting
+## 故障排除
 
-Common issues and solutions:
+常见问题及解决方案：
 
-1. **Connection Issues**
-   - Verify host and port
-   - Check network connectivity
-   - Review authentication
+1. **连接问题**
+   - 验证主机和端口
+   - 检查网络连接性
+   - 查看身份验证
 
-2. **Performance Issues**
-   - Optimize index configuration
-   - Adjust partition strategy
-   - Review resource allocation
+2. **性能问题**
+   - 优化索引配置
+   - 调整分区策略
+   - 查看资源分配
 
-3. **Storage Issues**
-   - Monitor collection size
-   - Implement cleanup
-   - Review retention policy 
+3. **存储问题**
+   - 监控集合大小
+   - 执行清理
+   - 查看保留策略 

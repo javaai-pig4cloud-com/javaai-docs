@@ -1,32 +1,32 @@
 ---
-title: "PostgresML Embeddings"
+title: "PostgresML 向量模型"
 ---
 
-Spring AI supports the PostgresML text embeddings models.
+Spring AI 支持 PostgresML 文本嵌入模型。
 
-Embeddings are a numeric representation of text.
-They are used to represent words and sentences as vectors, an array of numbers.
-Embeddings can be used to find similar pieces of text, by comparing the similarity of the numeric vectors using a distance measure, or they can be used as input features for other machine learning models, since most algorithms can't use text directly.
+嵌入是文本的数字表示。
+它们用于将单词和句子表示为向量，即数字数组。
+嵌入可用于通过使用距离度量比较数字向量的相似性来查找相似的文本片段，或者它们可以用作其他机器学习模型的输入特征，因为大多数算法不能直接使用文本。
 
-Many pre-trained LLMs can be used to generate embeddings from text within PostgresML.
-You can browse all the [models](https://huggingface.co/models?library=sentence-transformers) available to find the best solution on Hugging Face.
+许多预训练的 LLM 可用于在 PostgresML 中从文本生成嵌入。
+您可以在 Hugging Face 上浏览所有可用的[模型](https://huggingface.co/models?library=sentence-transformers)以找到最佳解决方案。
 
-## Add Repositories and BOM
+## 添加存储库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 工件发布在 Maven Central 和 Spring Snapshot 存储库中。
+请参阅[工件存储库](/spring4ai/getting-started#artifact-repositories)部分，将这些存储库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (物料清单) 以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Spring AI provides Spring Boot auto-configuration for the PostgresML Embedding Model.
-To enable it add the following dependency to your project's Maven `pom.xml` file:
+Spring AI 为 PostgresML Embedding 模型提供 Spring Boot 自动配置。
+要启用它，请将以下依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -35,7 +35,7 @@ To enable it add the following dependency to your project's Maven `pom.xml` file
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -44,46 +44,46 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-### Embedding Properties
+### Embedding 属性
 
 <Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
+嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
 
-To enable, spring.ai.model.embedding=postgresml (It is enabled by default)
+要启用，请设置 spring.ai.model.embedding=postgresml (默认情况下启用)
 
-To disable, spring.ai.model.embedding=none (or any value which doesn't match postgresml)
+要禁用，请设置 spring.ai.model.embedding=none (或任何与 postgresml 不匹配的值)
 
-This change is done to allow configuration of multiple models.
+此更改是为了允许配置多个模型。
 </Note>
 
-The prefix `spring.ai.postgresml.embedding` is property prefix that configures the `EmbeddingModel` implementation for PostgresML embeddings.
+前缀 `spring.ai.postgresml.embedding` 是为 PostgresML 嵌入配置 `EmbeddingModel` 实现的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.postgresml.embedding.enabled (Removed and no longer valid) | Enable PostgresML embedding model. | true |
-| spring.ai.model.embedding | Enable PostgresML embedding model. | postgresml |
-| spring.ai.postgresml.embedding.create-extension | Execute the SQL 'CREATE EXTENSION IF NOT EXISTS pgml' to enable the extesnion | false |
-| spring.ai.postgresml.embedding.options.transformer | The Hugging Face transformer model to use for the embedding. | distilbert-base-uncased |
-| spring.ai.postgresml.embedding.options.kwargs | Additional transformer specific options. | empty map |
-| spring.ai.postgresml.embedding.options.vectorType | PostgresML vector type to use for the embedding. Two options are supported: `PG_ARRAY` and `PG_VECTOR`. | PG_ARRAY |
-| spring.ai.postgresml.embedding.options.metadataMode | Document metadata aggregation mode | EMBED |
+| 属性                                                                 | 描述                                                                                             | 默认值                    |
+| :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------- | :------------------------ |
+| spring.ai.postgresml.embedding.enabled (已删除且不再有效)              | 启用 PostgresML 嵌入模型。                                                                         | true                      |
+| spring.ai.model.embedding                                            | 启用 PostgresML 嵌入模型。                                                                         | postgresml                |
+| spring.ai.postgresml.embedding.create-extension                      | 执行 SQL 'CREATE EXTENSION IF NOT EXISTS pgml' 以启用扩展。                                         | false                     |
+| spring.ai.postgresml.embedding.options.transformer                   | 用于嵌入的 Hugging Face 转换器模型。                                                                  | distilbert-base-uncased   |
+| spring.ai.postgresml.embedding.options.kwargs                        | 其他特定于转换器的选项。                                                                                 | 空映射                     |
+| spring.ai.postgresml.embedding.options.vectorType                    | 用于嵌入的 PostgresML 向量类型。支持两种选项：`PG_ARRAY` 和 `PG_VECTOR`。                                  | PG_ARRAY                  |
+| spring.ai.postgresml.embedding.options.metadataMode                  | 文档元数据聚合模式。                                                                                 | EMBED                     |
 
 <Tip>
-All properties prefixed with `spring.ai.postgresml.embedding.options` can be overridden at runtime by adding a request specific [embedding options](#embedding-options) to the `EmbeddingRequest` call.
+所有以 `spring.ai.postgresml.embedding.options` 为前缀的属性都可以在运行时通过向 `EmbeddingRequest` 调用添加特定于请求的[嵌入选项](#embedding-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-Use the [PostgresMlEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-openai/src/main/java/org/springframework/ai/postgresml/PostgresMlEmbeddingOptions.java) to configure the `PostgresMlEmbeddingModel` with options, such as the model to use and etc.
+使用 [PostgresMlEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-openai/src/main/java/org/springframework/ai/postgresml/PostgresMlEmbeddingOptions.java) 通过选项（例如要使用的模型等）配置 `PostgresMlEmbeddingModel`。
 
-On start you can pass a `PostgresMlEmbeddingOptions` to the `PostgresMlEmbeddingModel` constructor to configure the default options used for all embedding requests.
+启动时，您可以将 `PostgresMlEmbeddingOptions` 传递给 `PostgresMlEmbeddingModel` 构造函数，以配置用于所有嵌入请求的默认选项。
 
-At run-time you can override the default options, using a `PostgresMlEmbeddingOptions` in your `EmbeddingRequest`.
+在运行时，您可以通过在 `EmbeddingRequest` 中使用 `PostgresMlEmbeddingOptions` 来覆盖默认选项。
 
-For example to override the default model name for a specific request:
+例如，要覆盖特定请求的默认模型名称：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -95,10 +95,10 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
                 .build()));
 ```
 
-## Sample Controller
+## 示例控制器
 
-This will create a `EmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the `EmbeddingModel` implementation.
+这将创建一个 `EmbeddingModel` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用 `EmbeddingModel` 实现。
 
 ```properties
 spring.ai.postgresml.embedding.options.transformer=distilbert-base-uncased
@@ -126,10 +126,10 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-Instead of using the Spring Boot auto-configuration, you can create the `PostgresMlEmbeddingModel` manually.
-For this add the `spring-ai-postgresml` dependency to your project's Maven `pom.xml` file:
+您可以不使用 Spring Boot 自动配置，而是手动创建 `PostgresMlEmbeddingModel`。
+为此，请将 `spring-ai-postgresml` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -138,7 +138,7 @@ For this add the `spring-ai-postgresml` dependency to your project's Maven `pom.
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -147,32 +147,32 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-Next, create an `PostgresMlEmbeddingModel` instance and use it to compute the similarity between two input texts:
+接下来，创建一个 `PostgresMlEmbeddingModel` 实例，并用它来计算两个输入文本之间的相似度：
 
 ```java
-var jdbcTemplate = new JdbcTemplate(dataSource); // your posgresml data source
+var jdbcTemplate = new JdbcTemplate(dataSource); // 您的 postgresml 数据源
 
 PostgresMlEmbeddingModel embeddingModel = new PostgresMlEmbeddingModel(this.jdbcTemplate,
         PostgresMlEmbeddingOptions.builder()
-            .transformer("distilbert-base-uncased") // huggingface transformer model name.
-            .vectorType(VectorType.PG_VECTOR) //vector type in PostgreSQL.
-            .kwargs(Map.of("device", "cpu")) // optional arguments.
-            .metadataMode(MetadataMode.EMBED) // Document metadata mode.
+            .transformer("distilbert-base-uncased") // huggingface 转换器模型名称。
+            .vectorType(VectorType.PG_VECTOR) //PostgreSQL 中的向量类型。
+            .kwargs(Map.of("device", "cpu")) // 可选参数。
+            .metadataMode(MetadataMode.EMBED) // 文档元数据模式。
             .build());
 
-embeddingModel.afterPropertiesSet(); // initialize the jdbc template and database.
+embeddingModel.afterPropertiesSet(); // 初始化 jdbc 模板和数据库。
 
 EmbeddingResponse embeddingResponse = this.embeddingModel
     .embedForResponse(List.of("Hello World", "World is big and salvation is near"));
 ```
 
 <Note>
-When created manually, you must call the `afterPropertiesSet()` after setting the properties and before using the client.
-It is more convenient (and preferred) to create the PostgresMlEmbeddingModel as a `@Bean`.
-Then you don't have to call the `afterPropertiesSet()` manually:
+手动创建时，必须在设置属性之后和使用客户端之前调用 `afterPropertiesSet()`。
+将 PostgresMlEmbeddingModel 创建为 `@Bean` 更方便（且推荐）。
+这样您就不必手动调用 `afterPropertiesSet()`：
 
 ```java
 @Bean

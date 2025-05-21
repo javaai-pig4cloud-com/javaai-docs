@@ -1,38 +1,62 @@
 ---
-title: Stability AI Image Generation
-description: Using Stability AI's models for image generation
+title: "StabilityAI 图像模型"
 ---
 
-# Stability AI Image Generation
+# StabilityAI 图像模型
 
-Spring AI provides integration with Stability AI's models for image generation capabilities.
+Spring AI 项目集成了 StabilityAI 的图像生成模型。
 
-## Configuration
+## 添加依赖
 
-Add the following dependency to your project:
+将 `spring-ai-stabilityai-spring-boot-starter` 依赖项添加到您的 `pom.xml` 文件中：
 
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-stability-ai-spring-boot-starter</artifactId>
+    <artifactId>spring-ai-stabilityai-spring-boot-starter</artifactId>
 </dependency>
 ```
 
-## Properties
+## 配置 StabilityAI 凭证
+
+请确保在您的 `application.properties` 文件中设置了 `spring.ai.stabilityai.api-key` 属性：
 
 ```properties
-spring.ai.stability.api-key=YOUR_API_KEY
-spring.ai.stability.image.model=stable-diffusion-xl-1024-v1-0
+spring.ai.stabilityai.api-key=YOUR_API_KEY
 ```
 
-## Usage
+您还需要通过设置 `spring.ai.stabilityai.image.enabled=true` 属性来启用 StabilityAI 图像客户端。
+
+此外，请浏览 [StabilityAI图像选项 (StabilityAiImageOptions)](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-stabilityai/src/main/java/org/springframework/ai/stabilityai/api/StabilityAiImageOptions.java) 了解可用的调用选项。常用选项也可以通过 `spring.ai.stabilityai.image.options.*` 属性进行配置。
+
+## 调用 ImageClient
+
+`ImageClient` 接口提供了一种与图像生成模型交互的便携方式。
 
 ```java
-@Autowired
-private ImageClient imageClient;
-
-// Generate an image
-ImageResponse response = imageClient.call(
-    new ImagePrompt("A magical forest with glowing mushrooms")
+ImageResponse imageResponse = imageClient.call(
+    new ImagePrompt("A light cream cat on a purple background") // 示例提示内容通常保留英文
 );
-``` 
+```
+---
+
+`ImageClient` 会自动配置和注入。
+
+```java
+@RestController
+public class ImageController {
+
+    private final ImageClient imageClient;
+
+    @Autowired
+    public ImageController(ImageClient imageClient) {
+        this.imageClient = imageClient;
+    }
+
+    @GetMapping("/image")
+    public String image(@RequestParam String prompt) {
+        ImageResponse response = imageClient.call(new ImagePrompt(prompt));
+        // 处理响应
+        return response.getResult().getOutput().getUrl();
+    }
+} 

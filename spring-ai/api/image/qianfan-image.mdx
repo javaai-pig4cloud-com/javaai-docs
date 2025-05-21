@@ -1,15 +1,14 @@
 ---
-title: QianFan Image Generation
-description: Using QianFan's models for image generation
+title: "千帆图像模型"
 ---
 
-# QianFan Image Generation
+# 千帆图像模型
 
-Spring AI provides integration with QianFan's models for image generation capabilities.
+Spring AI 项目集成了百度智能云千帆的图像生成模型。
 
-## Configuration
+## 添加依赖
 
-Add the following dependency to your project:
+将 `spring-ai-qianfan-spring-boot-starter` 依赖项添加到您的 `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -18,22 +17,48 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-## Properties
+## 配置千帆凭证
+
+请确保在您的 `application.properties` 文件中设置了 `spring.ai.qianfan.api-key` 和 `spring.ai.qianfan.secret-key` 属性：
 
 ```properties
 spring.ai.qianfan.api-key=YOUR_API_KEY
 spring.ai.qianfan.secret-key=YOUR_SECRET_KEY
-spring.ai.qianfan.image.model=stable-diffusion-xl
 ```
 
-## Usage
+您还需要通过设置 `spring.ai.qianfan.image.enabled=true` 属性来启用千帆图像客户端。
+
+此外，请浏览 [千帆图像选项 (QianfanImageOptions)](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-qianfan/src/main/java/org/springframework/ai/qianfan/api/QianfanImageApi.java)
+了解可用的调用选项。常用选项也可以通过 `spring.ai.qianfan.image.options.*` 属性进行配置。
+
+## 调用 ImageClient
+
+`ImageClient` 接口提供了一种与图像生成模型交互的便携方式。
 
 ```java
-@Autowired
-private ImageClient imageClient;
-
-// Generate an image
-ImageResponse response = imageClient.call(
-    new ImagePrompt("A modern Chinese cityscape")
+ImageResponse imageResponse = imageClient.call(
+    new ImagePrompt("A light cream cat on a purple background") // 示例提示内容通常保留英文
 );
-``` 
+```
+---
+
+`ImageClient` 会自动配置和注入。
+
+```java
+@RestController
+public class ImageController {
+
+    private final ImageClient imageClient;
+
+    @Autowired
+    public ImageController(ImageClient imageClient) {
+        this.imageClient = imageClient;
+    }
+
+    @GetMapping("/image")
+    public String image(@RequestParam String prompt) {
+        ImageResponse response = imageClient.call(new ImagePrompt(prompt));
+        // 处理响应
+        return response.getResult().getOutput().getUrl();
+    }
+} 

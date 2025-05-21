@@ -1,31 +1,31 @@
 ---
-title: "Bedrock Cohere Embeddings"
+title: "Bedrock Cohere 向量模型"
 ---
 
-Provides Bedrock Cohere Embedding model.
-Integrate generative AI capabilities into essential apps and workflows that improve business outcomes.
+提供 Bedrock Cohere Embedding 模型。
+将生成式 AI 功能集成到可改善业务成果的基本应用程序和工作流程中。
 
-The [AWS Bedrock Cohere Model Page](https://aws.amazon.com/bedrock/cohere-command-embed/) and [Amazon Bedrock User Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html) contains detailed information on how to use the AWS hosted model.
+[AWS Bedrock Cohere 模型页面](https://aws.amazon.com/bedrock/cohere-command-embed/)和 [Amazon Bedrock 用户指南](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html)包含有关如何使用 AWS 托管模型的详细信息。
 
-## Prerequisites
+## 先决条件
 
-Refer to the [Spring AI documentation on Amazon Bedrock](/spring4ai/api/bedrock) for setting up API access.
+有关设置 API 访问权限，请参阅 [Amazon Bedrock 上的 Spring AI 文档](/spring4ai/api/bedrock)。
 
-### Add Repositories and BOM
+### 添加存储库和 BOM
 
-Spring AI artifacts are published in Maven Central and Spring Snapshot repositories.
-Refer to the [Artifact Repositories](/spring4ai/getting-started#artifact-repositories) section to add these repositories to your build system.
+Spring AI 工件发布在 Maven Central 和 Spring Snapshot 存储库中。
+请参阅[工件存储库](/spring4ai/getting-started#artifact-repositories)部分，将这些存储库添加到您的构建系统中。
 
-To help with dependency management, Spring AI provides a BOM (bill of materials) to ensure that a consistent version of Spring AI is used throughout the entire project. Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build system.
+为了帮助进行依赖管理，Spring AI 提供了一个 BOM (物料清单) 以确保在整个项目中使用一致版本的 Spring AI。请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建系统中。
 
-## Auto-configuration
+## 自动配置
 
 <Note>
-There has been a significant change in the Spring AI auto-configuration, starter modules' artifact names.
-Please refer to the [upgrade notes](https://docs.spring.io/spring-ai/reference/upgrade-notes.html) for more information.
+Spring AI 自动配置和启动器模块的工件名称已发生重大更改。
+有关更多信息，请参阅[升级说明](https://docs.spring.io/spring-ai/reference/upgrade-notes.html)。
 </Note>
 
-Add the `spring-ai-starter-model-bedrock` dependency to your project's Maven `pom.xml` file:
+将 `spring-ai-starter-model-bedrock` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -34,7 +34,7 @@ Add the `spring-ai-starter-model-bedrock` dependency to your project's Maven `po
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -43,22 +43,22 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-### Enable Cohere Embedding Support
+### 启用 Cohere Embedding 支持
 
-By default, the Cohere embedding model is disabled.
-To enable it, set the `spring.ai.model.embedding` property to `bedrock-cohere` in your application configuration:
+默认情况下，Cohere embedding 模型是禁用的。
+要启用它，请在您的应用程序配置中将 `spring.ai.model.embedding` 属性设置为 `bedrock-cohere`：
 
 ```properties
 spring.ai.model.embedding=bedrock-cohere
 ```
 
-Alternatively, you can use Spring Expression Language (SpEL) to reference an environment variable:
+或者，您可以使用 Spring 表达式语言 (SpEL) 来引用环境变量：
 
 ```yaml
-# In application.yml
+# 在 application.yml 中
 spring:
   ai:
     model:
@@ -66,66 +66,66 @@ spring:
 ```
 
 ```bash
-# In your environment or .env file
+# 在您的环境或 .env 文件中
 export AI_MODEL_EMBEDDING=bedrock-cohere
 ```
 
-You can also set this property using Java system properties when starting your application:
+您还可以在启动应用程序时使用 Java 系统属性设置此属性：
 
 ```shell
 java -Dspring.ai.model.embedding=bedrock-cohere -jar your-application.jar
 ```
 
-### Embedding Properties
+### Embedding 属性
 
-The prefix `spring.ai.bedrock.aws` is the property prefix to configure the connection to AWS Bedrock.
+前缀 `spring.ai.bedrock.aws` 是用于配置与 AWS Bedrock 连接的属性前缀。
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.bedrock.aws.region | AWS region to use. | us-east-1 |
-| spring.ai.bedrock.aws.access-key | AWS access key. | - |
-| spring.ai.bedrock.aws.secret-key | AWS secret key. | - |
-
-<Note>
-Enabling and disabling of the embedding auto-configurations are now configured via top level properties with the prefix `spring.ai.model.embedding`.
-
-To enable, spring.ai.model.embedding=bedrock-cohere (It is enabled by default)
-
-To disable, spring.ai.model.embedding=none (or any value which doesn't match bedrock-cohere)
-
-This change is done to allow configuration of multiple models.
-</Note>
-
-The prefix `spring.ai.bedrock.cohere.embedding` (defined in `BedrockCohereEmbeddingProperties`) is the property prefix that configures the embedding model implementation for Cohere.
-
-| Property | Description | Default |
-|----------|-------------|---------|
-| spring.ai.model.embedding | Enable or disable support for Cohere | bedrock-cohere |
-| spring.ai.bedrock.cohere.embedding.enabled (Removed and no longer valid) | Enable or disable support for Cohere | false |
-| spring.ai.bedrock.cohere.embedding.model | The model id to use. See the [CohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/056b95a00efa5b014a1f488329fbd07a46c02378/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/api/CohereEmbeddingBedrockApi.java#L150) for the supported models. | cohere.embed-multilingual-v3 |
-| spring.ai.bedrock.cohere.embedding.options.input-type | Prepends special tokens to differentiate each type from one another. You should not mix different types together, except when mixing types for search and retrieval. In this case, embed your corpus with the search_document type and embedded queries with type search_query type. | SEARCH_DOCUMENT |
-| spring.ai.bedrock.cohere.embedding.options.truncate | Specifies how the API handles inputs longer than the maximum token length. If you specify LEFT or RIGHT, the model discards the input until the remaining input is exactly the maximum input token length for the model. | NONE |
+| 属性                             | 描述                | 默认值      |
+| :------------------------------- | :------------------ | :---------- |
+| spring.ai.bedrock.aws.region     | 要使用的 AWS 区域。   | us-east-1   |
+| spring.ai.bedrock.aws.access-key | AWS 访问密钥。      | -           |
+| spring.ai.bedrock.aws.secret-key | AWS 秘密密钥。      | -           |
 
 <Note>
-When accessing Cohere via Amazon Bedrock, the functionality of truncating is not available. This is an issue with Amazon Bedrock. The Spring AI class `BedrockCohereEmbeddingModel` will truncate to 2048 character length, which is the maximum supported by the model.
+嵌入自动配置的启用和禁用现在通过前缀为 `spring.ai.model.embedding` 的顶级属性进行配置。
+
+要启用，请设置 spring.ai.model.embedding=bedrock-cohere (默认情况下启用)
+
+要禁用，请设置 spring.ai.model.embedding=none (或任何与 bedrock-cohere 不匹配的值)
+
+此更改是为了允许配置多个模型。
 </Note>
 
-Look at the [CohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/056b95a00efa5b014a1f488329fbd07a46c02378/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/api/CohereEmbeddingBedrockApi.java#L150) for other model IDs.
-Supported values are: `cohere.embed-multilingual-v3` and `cohere.embed-english-v3`.
-Model ID values can also be found in the [AWS Bedrock documentation for base model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids-arns.html).
+前缀 `spring.ai.bedrock.cohere.embedding` (在 `BedrockCohereEmbeddingProperties` 中定义) 是为 Cohere 配置嵌入模型实现的属性前缀。
+
+| 属性                                                                               | 描述                                                                                                                                                                                                                            | 默认值                         |
+| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------- |
+| spring.ai.model.embedding                                                          | 启用或禁用对 Cohere 的支持                                                                                                                                                                                                        | bedrock-cohere                 |
+| spring.ai.bedrock.cohere.embedding.enabled (已删除且不再有效)                        | 启用或禁用对 Cohere 的支持                                                                                                                                                                                                        | false                          |
+| spring.ai.bedrock.cohere.embedding.model                                           | 要使用的模型 ID。有关支持的模型，请参阅 [CohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/056b95a00efa5b014a1f488329fbd07a46c02378/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/api/CohereEmbeddingBedrockApi.java#L150)。 | cohere.embed-multilingual-v3   |
+| spring.ai.bedrock.cohere.embedding.options.input-type                            | 在每种类型前面添加特殊标记以区分它们。您不应混合使用不同类型，除非在混合类型进行搜索和检索时。在这种情况下，使用 search_document 类型嵌入您的语料库，并使用 search_query 类型嵌入查询。                                                                                             | SEARCH_DOCUMENT                |
+| spring.ai.bedrock.cohere.embedding.options.truncate                              | 指定 API 如何处理长于最大令牌长度的输入。如果指定 LEFT 或 RIGHT，模型将丢弃输入，直到剩余输入恰好是模型的最大输入令牌长度。                                                                                                                             | NONE                           |
+
+<Note>
+通过 Amazon Bedrock 访问 Cohere 时，截断功能不可用。这是 Amazon Bedrock 的一个问题。Spring AI 类 `BedrockCohereEmbeddingModel` 将截断到 2048 个字符长度，这是模型支持的最大长度。
+</Note>
+
+有关其他模型 ID，请查看 [CohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/056b95a00efa5b014a1f488329fbd07a46c02378/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/api/CohereEmbeddingBedrockApi.java#L150)。
+支持的值为：`cohere.embed-multilingual-v3` 和 `cohere.embed-english-v3`。
+模型 ID 值也可以在 [AWS Bedrock 基础模型 ID 文档](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids-arns.html)中找到。
 
 <Tip>
-All properties prefixed with `spring.ai.bedrock.cohere.embedding.options` can be overridden at runtime by adding a request specific [embedding options](#embedding-options) to the `EmbeddingRequest` call.
+所有以 `spring.ai.bedrock.cohere.embedding.options` 为前缀的属性都可以在运行时通过向 `EmbeddingRequest` 调用添加特定于请求的[嵌入选项](#embedding-options)来覆盖。
 </Tip>
 
-## Runtime Options
+## 运行时选项
 
-The [BedrockCohereEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/BedrockCohereEmbeddingOptions.java) provides model configurations, such as `input-type` or `truncate`.
+[BedrockCohereEmbeddingOptions.java](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/BedrockCohereEmbeddingOptions.java) 提供模型配置，例如 `input-type` 或 `truncate`。
 
-On start-up, the default options can be configured with the `BedrockCohereEmbeddingModel(api, options)` constructor or the `spring.ai.bedrock.cohere.embedding.options.*` properties.
+启动时，可以使用 `BedrockCohereEmbeddingModel(api, options)` 构造函数或 `spring.ai.bedrock.cohere.embedding.options.*` 属性配置默认选项。
 
-At runtime you can override the default options by adding new, request-specific, options to the `EmbeddingRequest` call.
-For example to override the default input type for a specific request:
+在运行时，您可以通过向 `EmbeddingRequest` 调用添加新的、特定于请求的选项来覆盖默认选项。
+例如，要覆盖特定请求的默认输入类型：
 
 ```java
 EmbeddingResponse embeddingResponse = embeddingModel.call(
@@ -135,11 +135,11 @@ EmbeddingResponse embeddingResponse = embeddingModel.call(
         .build()));
 ```
 
-## Sample Controller
+## 示例控制器
 
-[Create](https://start.spring.io/) a new Spring Boot project and add the `spring-ai-starter-model-bedrock` to your pom (or gradle) dependencies.
+[创建](https://start.spring.io/)一个新的 Spring Boot 项目，并将 `spring-ai-starter-model-bedrock` 添加到您的 pom (或 gradle) 依赖项中。
 
-Add a `application.properties` file, under the `src/main/resources` directory, to enable and configure the Cohere Embedding model:
+在 `src/main/resources` 目录下添加一个 `application.properties` 文件，以启用和配置 Cohere Embedding 模型：
 
 ```properties
 spring.ai.bedrock.aws.region=eu-central-1
@@ -151,11 +151,11 @@ spring.ai.bedrock.cohere.embedding.options.input-type=search-document
 ```
 
 <Tip>
-replace the `regions`, `access-key` and `secret-key` with your AWS credentials.
+将 `regions`、`access-key` 和 `secret-key` 替换为您的 AWS 凭证。
 </Tip>
 
-This will create a `BedrockCohereEmbeddingModel` implementation that you can inject into your class.
-Here is an example of a simple `@Controller` class that uses the chat model for text generations.
+这将创建一个 `BedrockCohereEmbeddingModel` 实现，您可以将其注入到您的类中。
+这是一个简单的 `@Controller` 类示例，它使用聊天模型进行文本生成。
 
 ```java
 @RestController
@@ -176,11 +176,11 @@ public class EmbeddingController {
 }
 ```
 
-## Manual Configuration
+## 手动配置
 
-The [BedrockCohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/BedrockCohereEmbeddingModel.java) implements the `EmbeddingModel` and uses the [low-level-api](#low-level-api) to connect to the Bedrock Cohere service.
+[BedrockCohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/BedrockCohereEmbeddingModel.java) 实现了 `EmbeddingModel` 并使用[低级 API](#low-level-api) 连接到 Bedrock Cohere 服务。
 
-Add the `spring-ai-bedrock` dependency to your project's Maven `pom.xml` file:
+将 `spring-ai-bedrock` 依赖项添加到项目的 Maven `pom.xml` 文件中：
 
 ```xml
 <dependency>
@@ -189,7 +189,7 @@ Add the `spring-ai-bedrock` dependency to your project's Maven `pom.xml` file:
 </dependency>
 ```
 
-or to your Gradle `build.gradle` build file.
+或添加到您的 Gradle `build.gradle` 构建文件中。
 
 ```groovy
 dependencies {
@@ -198,10 +198,10 @@ dependencies {
 ```
 
 <Tip>
-Refer to the [Dependency Management](/spring4ai/getting-started#dependency-management) section to add the Spring AI BOM to your build file.
+请参阅[依赖管理](/spring4ai/getting-started#dependency-management)部分，将 Spring AI BOM 添加到您的构建文件中。
 </Tip>
 
-Next, create a [BedrockCohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/BedrockCohereEmbeddingModel.java) and use it for text embeddings:
+接下来，创建一个 [BedrockCohereEmbeddingModel](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/BedrockCohereEmbeddingModel.java) 并将其用于文本嵌入：
 
 ```java
 var cohereEmbeddingApi = new CohereEmbeddingBedrockApi(
@@ -214,17 +214,17 @@ EmbeddingResponse embeddingResponse = this.embeddingModel
     .embedForResponse(List.of("Hello World", "World is big and salvation is near"));
 ```
 
-## Low-level CohereEmbeddingBedrockApi Client
+## 低级 CohereEmbeddingBedrockApi 客户端
 
-The [CohereEmbeddingBedrockApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/api/CohereEmbeddingBedrockApi.java) provides is lightweight Java client on top of AWS Bedrock [Cohere Command models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-cohere-command.html).
+[CohereEmbeddingBedrockApi](https://github.com/spring-projects/spring-ai/blob/main/models/spring-ai-bedrock/src/main/java/org/springframework/ai/bedrock/cohere/api/CohereEmbeddingBedrockApi.java) 提供了基于 AWS Bedrock [Cohere Command 模型](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-cohere-command.html)的轻量级 Java 客户端。
 
-Following class diagram illustrates the CohereEmbeddingBedrockApi interface and building blocks:
+以下类图说明了 CohereEmbeddingBedrockApi 接口和构建块：
 
 ![Bedrock Cohere Embedding Low Level API](bedrock/bedrock-cohere-embedding-low-level-api.jpg)
 
-The CohereEmbeddingBedrockApi supports the `cohere.embed-english-v3` and `cohere.embed-multilingual-v3` models for single and batch embedding computation.
+CohereEmbeddingBedrockApi 支持 `cohere.embed-english-v3` 和 `cohere.embed-multilingual-v3` 模型进行单个和批量嵌入计算。
 
-Here is a simple snippet how to use the api programmatically:
+这是一个如何以编程方式使用 api 的简单代码片段：
 
 ```java
 CohereEmbeddingBedrockApi api = new CohereEmbeddingBedrockApi(
