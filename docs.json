@@ -59,13 +59,7 @@
                       "spring-ai/api/chat/azure-openai-chat",
                       "spring-ai/api/chat/deepseek-chat",
                       "spring-ai/api/chat/dmr-chat",
-                      {
-                        "group": "Google VertexAI",
-                        "pages": [
-                          "spring-ai/api/chat/google-vertexai",
-                          "spring-ai/api/chat/vertexai-gemini-chat"
-                        ]
-                      },
+                      "spring-ai/api/chat/vertexai-gemini-chat",
                       "spring-ai/api/chat/groq-chat",
                       "spring-ai/api/chat/mistralai-chat",
                       "spring-ai/api/chat/minimax-chat",
@@ -73,12 +67,7 @@
                       "spring-ai/api/chat/nvidia-chat",
                       "spring-ai/api/chat/ollama-chat",
                       "spring-ai/api/chat/perplexity-chat",
-                      {
-                        "group": "OCI Generative AI",
-                        "pages": [
-                          "spring-ai/api/chat/oci-genai/cohere-chat"
-                        ]
-                      },
+                      "spring-ai/api/chat/oci-genai/cohere-chat",
                       "spring-ai/api/chat/openai-chat",
                       "spring-ai/api/chat/qianfan-chat",
                       "spring-ai/api/chat/zhipuai-chat"
