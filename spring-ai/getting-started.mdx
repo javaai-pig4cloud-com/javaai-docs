@@ -14,81 +14,10 @@ title: "快速入门"
 
 ## 制品仓库
 
-### 里程碑版本 - 使用Maven中央仓库
+### 正式版本 - 使用Maven中央仓库
 
 从1.0.0-M6开始，发布版本可在Maven中央仓库获得。
 您的构建文件不需要任何更改。
-
-### 快照版本 - 添加快照仓库
-
-要使用快照版本（和1.0.0-M6之前的里程碑版本），您需要在构建文件中添加以下快照仓库。
-
-在您的Maven或Gradle构建文件中添加以下仓库定义：
-
-<Tabs>
-  <Tab title="Maven">
-```xml
-<repositories>
-  <repository>
-    <id>spring-snapshots</id>
-    <n>Spring Snapshots</n>
-    <url>https://repo.spring.io/snapshot</url>
-    <releases>
-      <enabled>false</enabled>
-    </releases>
-  </repository>
-  <repository>
-    <n>Central Portal Snapshots</n>
-    <id>central-portal-snapshots</id>
-    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-    <releases>
-      <enabled>false</enabled>
-    </releases>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
-</repositories>
-```
-  </Tab>
-  <Tab title="Gradle">
-```groovy
-repositories {
-  mavenCentral()
-  maven { url 'https://repo.spring.io/milestone' }
-  maven { url 'https://repo.spring.io/snapshot' }
-  maven {
-    name = 'Central Portal Snapshots'
-    url = 'https://central.sonatype.com/repository/maven-snapshots/'
-  }  
-}
-```
-  </Tab>
-</Tabs>
-
-<Warning>
-使用Maven和Spring AI快照时，请注意您的Maven镜像配置。如果您在`settings.xml`中配置了类似这样的镜像：
-
-```xml
-<mirror>
-    <id>my-mirror</id>
-    <mirrorOf>*</mirrorOf>
-    <url>https://my-company-repository.com/maven</url>
-</mirror>
-```
-
-通配符`*`将把所有仓库请求重定向到您的镜像，从而阻止访问Spring快照仓库。要解决此问题，请修改`mirrorOf`配置以排除Spring仓库：
-
-```xml
-<mirror>
-    <id>my-mirror</id>
-    <mirrorOf>*,!spring-snapshots,!central-portal-snapshots</mirrorOf>
-    <url>https://my-company-repository.com/maven</url>
-</mirror>
-```
-
-这种配置允许Maven直接访问Spring快照仓库，同时仍然使用您的镜像获取其他依赖项。
-</Warning>
 
 ## 依赖管理
 
@@ -103,21 +32,21 @@ Spring AI物料清单(BOM)声明了Spring AI特定发布版本使用的所有依
 ```xml
 <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-bom</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-bom</artifactId>
+        <version>${spring-ai.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
-</dependencyManagement>
+  </dependencyManagement>
 ```
   </Tab>
   <Tab title="Gradle">
 ```groovy
 dependencies {
-  implementation platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT")
+  implementation platform("org.springframework.ai:spring-ai-bom:1.0.0")
   // 将以下内容替换为您希望使用的特定模块的启动器依赖项
   implementation 'org.springframework.ai:spring-ai-openai'
 }
