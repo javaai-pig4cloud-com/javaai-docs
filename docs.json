@@ -240,12 +240,8 @@
         ]
       },
       {
-        "tab":"Cursor 进阶课程",
-        "pages":[
-          "vibe/index",
-          "vibe/1cursor",
-          "vibe/2cursor"
-        ]
+        "tab": "🔥 AI 辅助编程",
+        "href": "https://ai.pig4cloud.com/doc/cursor"
       },
       {
         "tab": "PIG AI开发平台",
