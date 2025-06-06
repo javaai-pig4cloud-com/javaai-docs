@@ -213,14 +213,7 @@
           "docs/15-rag-api",
           "docs/15-rag-api2",
           "docs/17-rag-reranking",
-          "docs/20-rag",
-          {
-            "group": "Cursor: 革新性的AI代码编辑器",
-            "pages": [
-              "docs/cursor/1cursor",
-              "docs/cursor/2cursor"
-            ]
-          }
+          "docs/20-rag"
         ]
       },
       {
@@ -244,6 +237,14 @@
           "deepseek/configuration",
           "deepseek/sse",
           "deepseek/qa"
+        ]
+      },
+      {
+        "tab":"Cursor 进阶课程：从入门到精通的AI编程",
+        "pages":[
+          "vibe/index",
+          "vibe/1cursor",
+          "vibe/2cursor"
         ]
       },
       {
