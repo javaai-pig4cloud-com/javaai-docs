@@ -64,7 +64,7 @@ void testStreamingChatModelWithCallback() throws InterruptedException {
 
 ### 示例说明
 1. **模型初始化**：通过 `OpenAiStreamingChatModel.builder()` 创建一个流式模型实例，并从环境变量中获取 API 密钥。
-2. **用户输入**：定义用户输入消息，此处为"讲个笑话"。
+2. **用户输入**：定义用户输入消息，此处为"hello, 北京有什么好吃的？"。
 3. **处理响应**：传递实现了 `StreamingChatResponseHandler` 的匿名类，分别定义 `onPartialResponse`、`onCompleteResponse` 和 `onError` 的处理逻辑。
 
 ## 使用 `TokenStream` 进行流式处理
