@@ -116,10 +116,8 @@ public interface ChatAssistant {
 
 ```java
 @Bean
-public ChatAssistant chatAssistant() {
-    return AiServices.builder(ChatAssistant.class)
-            .chatModel(chatModel())
-            .build();
+public ChatAssistant chatAssistant(ChatModel chatModel) {
+    return AiServices.create(ChatAssistant.class, chatModel);
 }
 ```
 
