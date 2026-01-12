@@ -139,7 +139,7 @@
               "spring-ai/api/chat-memory",
               "spring-ai/api/tools",
               {
-                "group": "MCModel Context Protocol",
+                "group": "Model Context Protocol",
                 "pages": [
                   "spring-ai/api/mcp/mcp-overview",
                   "spring-ai/api/mcp/mcp-client-boot-starter-docs",
